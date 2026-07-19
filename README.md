@@ -52,9 +52,24 @@ browser on the same machine as Ollama (e.g. `http://localhost:8000`, see
 phone would need something like Tailscale Serve to give Ollama a real HTTPS
 address — not set up yet.
 
-The base URL/model fields in Settings work with any OpenAI-compatible
-`/v1/chat/completions` endpoint, not just Ollama, so switching providers
-later is a settings change, not a code change.
+The app calls Ollama's **native** `/api/chat` endpoint (not the generic
+OpenAI-compatible `/v1/chat/completions`) with an explicit `num_predict`/
+`num_ctx` budget. This was a deliberate, tested choice, not an oversight:
+on real hardware, the OpenAI-compatible endpoint silently ignored every
+attempt to raise the token budget (`max_tokens`, and an `options` passthrough)
+and always capped out at a small default — reasoning/"thinking" models
+(e.g. Ollama's `gemma4` family) then spend their entire budget on internal
+chain-of-thought and return an empty answer, `finish_reason: "length"`.
+The native endpoint's `options.num_predict` fixed this reliably. Trade-off:
+this ties the integration to Ollama specifically rather than any
+OpenAI-compatible local server — accepted deliberately since Ollama is
+what's actually being used.
+
+**Expect slow responses from small local models with reasoning/thinking
+enabled** — 60-90+ seconds is normal for a single "Ask AI" or "Get Insights"
+call on modest hardware, not a hang. The client-side timeout is set to
+120s to accommodate this; don't lower it without testing against your
+actual model first.
 
 Installing via **Add to Home Screen** (iOS Safari) or **Add to Home
 screen/Install app** (Android Chrome) matters beyond convenience: an

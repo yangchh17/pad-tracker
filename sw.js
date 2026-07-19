@@ -1,7 +1,7 @@
 /* PAD Tracker service worker — cache-first shell, network-refresh in background.
    Bump CACHE_VERSION whenever index.html changes to push an update to installed apps. */
 
-const CACHE_VERSION = "pad-tracker-v7";
+const CACHE_VERSION = "pad-tracker-v8";
 const SHELL = [
   "./",
   "./index.html",

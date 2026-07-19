@@ -583,16 +583,24 @@ const LlmSettings={
     }
   }
 };
-const LLM_TIMEOUT_MS=20000;
+const LLM_TIMEOUT_MS=120000;
 function llmChat(settings, messages, opts){
   const timeoutMs=(opts&&opts.timeoutMs)||LLM_TIMEOUT_MS;
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
   const base=(settings.baseUrl||'').replace(/\/+$/,'');
-  return fetch(base+'/v1/chat/completions',{
+  // Ollama's native /api/chat (not the OpenAI-compatible /v1/chat/completions) is used
+  // deliberately: local "thinking"/reasoning models can spend their entire token budget
+  // on chain-of-thought before ever emitting the answer, and only the native endpoint's
+  // options.num_predict reliably raises that budget on every Ollama version/install we
+  // tested — the OpenAI-compat endpoint silently ignored max_tokens and any options
+  // passthrough attempt, always capping at a small default and returning an empty
+  // response. This does trade away portability to non-Ollama OpenAI-compatible servers
+  // (LM Studio etc.) for actually working with real local reasoning models.
+  return fetch(base+'/api/chat',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:settings.model, messages, stream:false, temperature:0.2}),
+    body:JSON.stringify({model:settings.model, messages, stream:false, options:{temperature:0.2, num_predict:8192, num_ctx:8192}}),
     signal:controller.signal
   }).then(res=>{
     if(!res.ok){
@@ -602,7 +610,7 @@ function llmChat(settings, messages, opts){
     }
     return res.json();
   }).then(data=>{
-    const content=data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    const content=data && data.message && data.message.content;
     if(typeof content!=='string' || !content.length) throw new Error('empty_response');
     return content;
   }).catch(err=>{
@@ -863,7 +871,7 @@ class Component extends DCLogic {
     if(this.state.testConnStatus==='testing')return;
     this.setState({testConnStatus:'testing', testConnErrorMsg:''});
     const t=TEXT[this.state.lang];
-    llmChat(this.state.llm, [{role:'user',content:'Say OK.'}], {timeoutMs:8000}).then(()=>{
+    llmChat(this.state.llm, [{role:'user',content:'Say OK.'}], {timeoutMs:30000}).then(()=>{
       this.setState({testConnStatus:'ok'});
     }).catch(err=>{
       console.error('PAD Tracker: test connection failed',err);
