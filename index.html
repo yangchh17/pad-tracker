@@ -513,6 +513,19 @@ function buildHighlightDot(v,a,d,size,rx,ry){
 const CHART_SPACING=56, CHART_PADL=8, CHART_PADR=40, CHART_PADTOP=10, CHART_PADBOTTOM=22, CHART_H=110;
 const CHART_MS_PER_UNIT=86400000;
 function chartXTime(ts,originTs,zoom){return CHART_PADL+((ts-originTs)/CHART_MS_PER_UNIT)*CHART_SPACING*zoom;}
+function computeChartXs(sortedEntries,originTs,zoom){
+  // Pure time-proportional spacing collapses entries logged close together
+  // (e.g. several in one sitting) into a fraction of a pixel, making the
+  // line invisible even though the data is there. Enforce a minimum gap
+  // between adjacent points so multi-day spans still read as real gaps,
+  // but same-day/close-together entries stay visually spread out.
+  const xs=sortedEntries.map(e=>chartXTime(e.ts,originTs,zoom));
+  const minGap=CHART_SPACING*zoom;
+  for(let i=1;i<xs.length;i++){
+    if(xs[i]-xs[i-1]<minGap) xs[i]=xs[i-1]+minGap;
+  }
+  return xs;
+}
 function chartYPad(v){const plotH=CHART_H-CHART_PADTOP-CHART_PADBOTTOM;return CHART_PADTOP+(1-(v+1)/2)*plotH;}
 function chartYScore(v){const plotH=CHART_H-CHART_PADTOP-CHART_PADBOTTOM;return CHART_PADTOP+(1-v/10)*plotH;}
 function fmtSigned(v){return (v>=0?'+':'')+v.toFixed(2);}
@@ -797,14 +810,14 @@ class Component extends DCLogic {
   chartHoverAt(clientX){
     if(!this.chartScrollNode)return;
     const pts=this._sortedEntries;
+    const xs=this._chartXs;
     if(!pts||!pts.length)return;
     const rect=this.chartScrollNode.getBoundingClientRect();
     const scrollLeft=this.chartScrollNode.scrollLeft;
     const localX=clientX-rect.left+scrollLeft;
     let best=0,bestDist=Infinity;
     for(let i=0;i<pts.length;i++){
-      const x=chartXTime(pts[i].ts,this._chartOriginTs,this.state.chartZoom);
-      const dist=Math.abs(x-localX);
+      const dist=Math.abs(xs[i]-localX);
       if(dist<bestDist){bestDist=dist;best=i;}
     }
     const screenX=clamp(clientX-rect.left,0,rect.width);
@@ -971,6 +984,8 @@ class Component extends DCLogic {
     const chartOriginTs=hasEntries?sortedEntries[0].ts:now;
     this._sortedEntries=sortedEntries;
     this._chartOriginTs=chartOriginTs;
+    const chartXs=hasEntries?computeChartXs(sortedEntries,chartOriginTs,this.state.chartZoom):[];
+    this._chartXs=chartXs;
 
     const scoredAll=EMOTION_BANK.map(w=>{
       const dist=Math.sqrt((rec.v-w.tv)**2+(rec.a-w.ta)**2+(rec.d-w.td)**2);
@@ -1103,23 +1118,23 @@ class Component extends DCLogic {
       chartScrollRef:(node)=>this.chartScrollRef(node),
       chartDown:(e)=>this.chartDown(e), chartMove:(e)=>this.chartMove(e), chartUp:()=>this.chartUp(),
       chartWheel:(e)=>this.chartWheel(e), chartZoomIn:()=>this.chartZoomIn(), chartZoomOut:()=>this.chartZoomOut(),
-      chartTotalWidth: hasEntries ? Math.max(chartXTime(latest.ts,chartOriginTs,this.state.chartZoom)+CHART_PADR,300) : 300,
-      padPolyV: sortedEntries.map(e=>`${chartXTime(e.ts,chartOriginTs,this.state.chartZoom).toFixed(1)},${chartYPad(e.v).toFixed(1)}`).join(' '),
-      padPolyA: sortedEntries.map(e=>`${chartXTime(e.ts,chartOriginTs,this.state.chartZoom).toFixed(1)},${chartYPad(e.a).toFixed(1)}`).join(' '),
-      padPolyD: sortedEntries.map(e=>`${chartXTime(e.ts,chartOriginTs,this.state.chartZoom).toFixed(1)},${chartYPad(e.d).toFixed(1)}`).join(' '),
-      scorePoly: sortedEntries.map(e=>`${chartXTime(e.ts,chartOriginTs,this.state.chartZoom).toFixed(1)},${chartYScore(e.score).toFixed(1)}`).join(' '),
+      chartTotalWidth: hasEntries ? Math.max(chartXs[chartXs.length-1]+CHART_PADR,300) : 300,
+      padPolyV: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.v).toFixed(1)}`).join(' '),
+      padPolyA: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.a).toFixed(1)}`).join(' '),
+      padPolyD: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.d).toFixed(1)}`).join(' '),
+      scorePoly: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYScore(e.score).toFixed(1)}`).join(' '),
       xTicks: sortedEntries.map((e,i)=>{
         const prev=i>0?new Date(sortedEntries[i-1].ts):null;
         const d=new Date(e.ts);
         const isNewDay=!prev||prev.getFullYear()!==d.getFullYear()||prev.getMonth()!==d.getMonth()||prev.getDate()!==d.getDate();
-        return {key:e.id, x:chartXTime(e.ts,chartOriginTs,this.state.chartZoom), label: isNewDay?`${d.getMonth()+1}/${d.getDate()}`:''};
+        return {key:e.id, x:chartXs[i], label: isNewDay?`${d.getMonth()+1}/${d.getDate()}`:''};
       }),
       gridLines: this.state.chartTab==='pad'
         ? [{key:'g0',y:chartYPad(1)},{key:'g1',y:chartYPad(0)},{key:'g2',y:chartYPad(-1)}]
         : [{key:'g0',y:chartYScore(10)},{key:'g1',y:chartYScore(5)},{key:'g2',y:chartYScore(0)}],
       yLabels: this.state.chartTab==='pad' ? ['+1.0','0','\u22121.0'] : ['10','5','0'],
       hasHover: this.state.hoverIndex!==null && hasEntries,
-      hoverX: (this.state.hoverIndex!==null && hasEntries) ? chartXTime(sortedEntries[this.state.hoverIndex].ts,chartOriginTs,this.state.chartZoom) : 0,
+      hoverX: (this.state.hoverIndex!==null && hasEntries) ? chartXs[this.state.hoverIndex] : 0,
       hoverDate: hasEntries ? fmtDateTime(sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1].ts,lang) : '',
       hoverSummary: hasEntries ? (()=>{const day=sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1];return this.state.chartTab==='pad'?`V ${fmtSigned(day.v)}  A ${fmtSigned(day.a)}  D ${fmtSigned(day.d)}`:`${t.score} ${day.score}`;})() : '',
       hasHoverNote: hasEntries ? !!sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1].note : false,
