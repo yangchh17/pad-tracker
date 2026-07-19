@@ -321,11 +321,11 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   </div>
 
   <div class="panel">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
       <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.overallScore }}</span>
       <span style="font:300 22px 'JetBrains Mono',monospace;color:#EDE7F6">{{ score }}</span>
     </div>
-    <div ref="{{ scoreTrackRef }}" onPointerDown="{{ scoreDown }}" onPointerMove="{{ scoreMove }}" onPointerUp="{{ scoreUp }}" onPointerCancel="{{ scoreUp }}" style="position:relative;height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin:14px 0 10px;touch-action:none">
+    <div ref="{{ scoreTrackRef }}" onPointerDown="{{ scoreDown }}" onPointerMove="{{ scoreMove }}" onPointerUp="{{ scoreUp }}" onPointerCancel="{{ scoreUp }}" style="position:relative;height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin:8px 0 4px;touch-action:none">
       <div style="position:absolute;left:0;top:0;height:100%;border-radius:3px;background:linear-gradient(90deg,#8a6b2f,#D9BE7A);width:{{ scoreFillPct }}%;pointer-events:none"></div>
       <sc-for list="{{ scoreTicks }}" as="tk" hint-placeholder-count="10">
         <div style="position:absolute;top:-3px;left:{{ tk.pct }}%;width:1px;height:12px;background:rgba(255,255,255,.15);transform:translateX(-50%);pointer-events:none"></div>
@@ -333,16 +333,18 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <div style="position:absolute;top:50%;left:{{ scoreFillPct }}%;width:16px;height:16px;border-radius:50%;background:#F5EFE0;box-shadow:0 0 10px #D9BE7A;transform:translate(-50%,-50%);cursor:grab;pointer-events:none"></div>
     </div>
     <div style="display:flex;justify-content:space-between">
-      <sc-for list="{{ scoreTicks }}" as="tk" hint-placeholder-count="10">
-        <span style="font:{{ tk.weight }} 9px 'JetBrains Mono',monospace;color:{{ tk.color }}">{{ tk.label }}</span>
-      </sc-for>
+      <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">1</span>
+      <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">10</span>
     </div>
   </div>
 
   <div class="panel">
-    <div style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:12px">{{ t.suggested }}</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.suggested }}</span>
+      <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
+    </div>
     <div style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;overflow-x:hidden">
-      <sc-for list="{{ emotionWords }}" as="w" hint-placeholder-count="5">
+      <sc-for list="{{ visibleWords }}" as="w" hint-placeholder-count="1">
         <div class="chip" onClick="{{ w.onSelect }}" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border:1px solid {{ w.border }};border-radius:4px;background:{{ w.bg }}">
           <div>
             <div style="font:500 12px Inter,sans-serif;color:#EDE7F6">{{ w.en }} · {{ w.zh }}</div>
@@ -516,8 +518,8 @@ function mapScore(vals,w,h,pad){
 function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 
 const TEXT={
-  en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled'},
-  zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名'}
+  en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled',showMore:'Show more',showLess:'Show less'},
+  zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起'}
 };
 
 const EMOTION_BANK=[
@@ -574,7 +576,8 @@ class Component extends DCLogic {
     record:{v:0,a:0,d:0,title:null,score:6,note:''},
     selectedEntry:null, zoom:1, hoverIndex:null, hoverScreenX:0, chartZoom:1,
     entries: Storage.load(),
-    rx2:-12, ry2:24, zoom2:1
+    rx2:-12, ry2:24, zoom2:1,
+    wordsExpanded:false
   };
 
   constructor(props){
@@ -680,9 +683,11 @@ class Component extends DCLogic {
     this.setState({
       entries,
       record:{v:0,a:0,d:0,title:null,score:6,note:''},
+      wordsExpanded:false,
       view:'journal'
     });
   }
+  toggleWords(){this.setState(s=>({wordsExpanded:!s.wordsExpanded}));}
   exportCsv(){
     const rows=[['date','time','valence','arousal','dominance','score','emotion','note']];
     [...this.state.entries].sort((a,b)=>a.ts-b.ts).forEach(e=>{
@@ -729,6 +734,9 @@ class Component extends DCLogic {
       bg: rec.title===w.en?'rgba(217,190,122,.1)':'transparent',
       onSelect:()=>this.selectWord(w)
     }));
+    const wordsExpanded=this.state.wordsExpanded;
+    const visibleWords=wordsExpanded?emotionWords:emotionWords.slice(0,1);
+    const wordsToggleLabel=wordsExpanded?t.showLess:`${t.showMore}${emotionWords.length>1?' (+'+(emotionWords.length-1)+')':''}`;
 
     const sliderDefs=[
       {axis:'v',label:t.v,color:'#E8B54D',ref:this.vTrackRef,val:rec.v},
@@ -836,7 +844,7 @@ class Component extends DCLogic {
         ? buildHighlightDot(sortedEntries[this.state.hoverIndex].v,sortedEntries[this.state.hoverIndex].a,sortedEntries[this.state.hoverIndex].d,size,this.state.rx,this.state.ry)
         : '',
 
-      sliders, emotionWords, score:rec.score, scoreTicks, scoreFillPct,
+      sliders, visibleWords, wordsToggleLabel, toggleWords:()=>this.toggleWords(), score:rec.score, scoreTicks, scoreFillPct,
       scoreTrackRef:this.scoreTrackRef,
       scoreDown:(e)=>this.scoreDown(e), scoreMove:(e)=>this.scoreMove(e), scoreUp:()=>this.scoreUp(),
       noteVal:rec.note, onNoteChange:(e)=>this.onNoteChange(e),
