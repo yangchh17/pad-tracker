@@ -52,7 +52,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 <div class="frame">
 <div class="stars"></div>
 
-<div style="position:absolute;left:0;right:0;top:0;height:44px;display:flex;justify-content:flex-end;align-items:center;padding:env(safe-area-inset-top,0px) 20px 0;font:400 12px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5);z-index:5;box-sizing:border-box">
+<div style="position:absolute;left:0;right:0;top:0;height:44px;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:env(safe-area-inset-top,0px) 20px 0;font:400 12px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5);z-index:5;box-sizing:border-box">
+  <div class="chip" onClick="{{ openSettings }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(217,190,122,.4);display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">⚙</div>
   <div class="pv" onClick="{{ toggleLang }}"><div class="pv-knob" style="left:{{ knob }}px"></div></div>
 </div>
 
@@ -167,12 +168,31 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   <div class="hdr">
     <div style="font:400 24px/1.1 'EB Garamond',serif;color:#EDE7F6">{{ t.journal }}</div>
     <sc-if value="{{ hasEntries }}" hint-placeholder-val="{{ false }}">
-      <div class="chip" onClick="{{ exportCsv }}" style="font:italic 400 11px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ t.export }}</div>
+      <div style="display:flex;gap:14px">
+        <div class="chip" onClick="{{ exportCsv }}" style="font:italic 400 11px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ t.export }}</div>
+        <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+          <div class="chip" onClick="{{ getInsights }}" style="font:italic 400 11px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ insightsLabel }}</div>
+        </sc-if>
+      </div>
     </sc-if>
   </div>
 
   <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
     <div style="margin:32px 20px 0;text-align:center;font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.emptyJournal }}</div>
+  </sc-if>
+
+  <sc-if value="{{ showInsightsPanel }}" hint-placeholder-val="{{ false }}">
+    <div class="panel">
+      <sc-if value="{{ insightsLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.5)">{{ t.insightsLoading }}</div>
+      </sc-if>
+      <sc-if value="{{ insightsError }}" hint-placeholder-val="{{ false }}">
+        <div style="font:400 12px 'JetBrains Mono',monospace;color:#E0645C">{{ insightsErrorMsg }}</div>
+      </sc-if>
+      <sc-if value="{{ insightsResult }}" hint-placeholder-val="{{ false }}">
+        <div style="font:400 13px/1.6 Inter,sans-serif;color:rgba(232,224,255,.75)">{{ insightsText }}</div>
+      </sc-if>
+    </div>
   </sc-if>
 
   <sc-for list="{{ journalGroups }}" as="grp" hint-placeholder-count="3">
@@ -297,6 +317,37 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 </div>
 </sc-if>
 
+<sc-if value="{{ viewIsSettings }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr">
+    <div class="chip" onClick="{{ closeSettings }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.settings }}</div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.llmEnable }}</span>
+      <div class="pv" onClick="{{ toggleLlmEnabled }}"><div class="pv-knob" style="left:{{ llmKnob }}px"></div></div>
+    </div>
+
+    <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-bottom:6px">
+        <div style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:rgba(232,224,255,.5);margin-bottom:6px">{{ t.baseUrl }}</div>
+        <input value="{{ llmBaseUrlVal }}" onChange="{{ onBaseUrlChange }}" placeholder="http://localhost:11434" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.02);border:1px solid rgba(217,190,122,.15);border-radius:4px;padding:9px 10px;font:400 12px 'JetBrains Mono',monospace;color:#EDE7F6"/>
+      </div>
+      <div style="font:italic 400 10px 'EB Garamond',serif;color:rgba(232,224,255,.35);margin-bottom:14px">{{ t.llmOriginsHint }}</div>
+      <div style="margin-bottom:14px">
+        <div style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:rgba(232,224,255,.5);margin-bottom:6px">{{ t.modelName }}</div>
+        <input value="{{ llmModelVal }}" onChange="{{ onModelChange }}" placeholder="llama3.1" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.02);border:1px solid rgba(217,190,122,.15);border-radius:4px;padding:9px 10px;font:400 12px 'JetBrains Mono',monospace;color:#EDE7F6"/>
+      </div>
+      <div class="chip" onClick="{{ testConnection }}" style="display:inline-block;padding:9px 18px;border:1px solid rgba(217,190,122,.5);border-radius:2px;font:400 12px 'EB Garamond',serif;font-style:italic;color:#D9BE7A">{{ testConnLabel }}</div>
+      <sc-if value="{{ hasTestResult }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:10px;font:400 11px 'JetBrains Mono',monospace;color:{{ testResultColor }}">{{ testResultMsg }}</div>
+      </sc-if>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
 <sc-if value="{{ viewIsRecord }}" hint-placeholder-val="{{ false }}">
 <div>
   <div class="hdr"><div style="font:400 24px/1.1 'EB Garamond',serif;color:#EDE7F6">{{ t.record }}</div></div>
@@ -341,8 +392,16 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
       <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.suggested }}</span>
-      <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
+      <div style="display:flex;gap:10px">
+        <sc-if value="{{ showAskAi }}" hint-placeholder-val="{{ false }}">
+          <span class="chip" onClick="{{ askAi }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ askAiLabel }}</span>
+        </sc-if>
+        <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
+      </div>
     </div>
+    <sc-if value="{{ hasAiError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-bottom:8px;font:400 10px 'JetBrains Mono',monospace;color:#E0645C">{{ aiSuggestErrorMsg }}</div>
+    </sc-if>
     <div style="display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;overflow-x:hidden">
       <sc-for list="{{ visibleWords }}" as="w" hint-placeholder-count="1">
         <div class="chip" onClick="{{ w.onSelect }}" style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border:1px solid {{ w.border }};border-radius:4px;background:{{ w.bg }}">
@@ -462,6 +521,106 @@ const Storage={
     }
   }
 };
+const LLM_SETTINGS_KEY='pad-tracker:llm-settings';
+const LlmSettings={
+  load(){
+    try{
+      const raw=localStorage.getItem(LLM_SETTINGS_KEY);
+      if(!raw)return{enabled:false,baseUrl:'http://localhost:11434',model:''};
+      const parsed=JSON.parse(raw);
+      return{
+        enabled: !!parsed.enabled,
+        baseUrl: typeof parsed.baseUrl==='string'&&parsed.baseUrl?parsed.baseUrl:'http://localhost:11434',
+        model: typeof parsed.model==='string'?parsed.model:''
+      };
+    }catch(e){return{enabled:false,baseUrl:'http://localhost:11434',model:''};}
+  },
+  save(settings){
+    try{
+      localStorage.setItem(LLM_SETTINGS_KEY,JSON.stringify({
+        enabled:!!settings.enabled, baseUrl:settings.baseUrl||'', model:settings.model||''
+      }));
+    }catch(e){
+      console.error('PAD Tracker: failed to save LLM settings',e);
+    }
+  }
+};
+const LLM_TIMEOUT_MS=20000;
+function llmChat(settings, messages, opts){
+  const timeoutMs=(opts&&opts.timeoutMs)||LLM_TIMEOUT_MS;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  const base=(settings.baseUrl||'').replace(/\/+$/,'');
+  return fetch(base+'/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:settings.model, messages, stream:false, temperature:0.2}),
+    signal:controller.signal
+  }).then(res=>{
+    if(!res.ok){
+      return res.text().catch(()=>'').then(bodyText=>{
+        throw new Error('http_'+res.status+(bodyText?': '+bodyText.slice(0,200):''));
+      });
+    }
+    return res.json();
+  }).then(data=>{
+    const content=data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if(typeof content!=='string' || !content.length) throw new Error('empty_response');
+    return content;
+  }).catch(err=>{
+    if(err && err.name==='AbortError') throw new Error('timeout');
+    throw err;
+  }).finally(()=>{
+    clearTimeout(timer);
+  });
+}
+function extractJsonBlock(text){
+  const fenced=text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const candidate=fenced?fenced[1]:text;
+  const objStart=candidate.indexOf('{'), arrStart=candidate.indexOf('[');
+  let start=-1, closeCh;
+  if(objStart!==-1 && (arrStart===-1 || objStart<arrStart)){ start=objStart; closeCh='}'; }
+  else if(arrStart!==-1){ start=arrStart; closeCh=']'; }
+  if(start===-1) return null;
+  const end=candidate.lastIndexOf(closeCh);
+  if(end===-1 || end<start) return null;
+  try{ return JSON.parse(candidate.slice(start,end+1)); }catch(e){ return null; }
+}
+function llmErrorMessage(err,t){
+  const msg=(err && err.message)||'';
+  if(msg==='timeout')return t.errTimeout;
+  if(msg.startsWith('http_404'))return t.errModel;
+  if(msg.startsWith('http_'))return t.errServer;
+  return t.errNetwork;
+}
+const INSIGHTS_MAX_ENTRIES=20;
+function buildEmotionPrompt(note,v,a,d,bank){
+  const list=bank.map((w,i)=>`${i}: ${w.en} (${w.zh}) [v=${w.tv}, a=${w.ta}, d=${w.td}]`).join('\n');
+  const system='You are a precise classifier. You only choose from a fixed list of options by index number. You never invent new words. You always answer with a single fenced JSON code block and nothing else.';
+  const user=`A person is tracking their mood using the Valence-Arousal-Dominance (PAD) model.\nTheir current slider values are: valence=${v.toFixed(2)}, arousal=${a.toFixed(2)}, dominance=${d.toFixed(2)} (each ranges -1 to 1).\nThey wrote this note about how they feel: "${note}"\n\nHere is a fixed list of emotion words, each with its own reference V/A/D coordinates:\n${list}\n\nTask: pick the 5 indices from the list above that best match BOTH the note's meaning AND the numeric V/A/D values, ranked best first. Do not invent new words or indices outside this list.\n\nRespond with ONLY a fenced code block containing a JSON array of exactly 5 integers (the indices), like:\n\`\`\`json\n[3, 17, 0, 22, 9]\n\`\`\`\nNo other text.`;
+  return [{role:'system',content:system},{role:'user',content:user}];
+}
+function parseEmotionIndices(raw,bankLen){
+  const parsed=extractJsonBlock(raw);
+  if(!Array.isArray(parsed))return null;
+  const seen=new Set();
+  const idxs=[];
+  for(const v of parsed){
+    const n=typeof v==='number'?v:(typeof v==='string'?parseInt(v,10):NaN);
+    if(Number.isInteger(n) && n>=0 && n<bankLen && !seen.has(n)){ seen.add(n); idxs.push(n); }
+  }
+  return idxs.length?idxs:null;
+}
+function buildInsightsPrompt(entries,lang){
+  const recent=[...entries].sort((a,b)=>a.ts-b.ts).slice(-INSIGHTS_MAX_ENTRIES);
+  const rows=recent.map(e=>{
+    const d=new Date(e.ts);
+    return `${d.toISOString().slice(0,10)} ${fmtTime(e.ts)} | V=${e.v.toFixed(2)} A=${e.a.toFixed(2)} D=${e.d.toFixed(2)} score=${e.score} | ${e.emotion||'(untitled)'} | note: ${(e.note||'').replace(/\n/g,' ')}`;
+  }).join('\n');
+  const system='You are a supportive, non-clinical mood-journal assistant. You are not a therapist and must not diagnose. Respond in plain prose only, no JSON, no markdown headers, 3-5 short sentences maximum.';
+  const user=`Here are the ${recent.length} most recent mood-tracking entries (Valence/Arousal/Dominance model, each axis from -1 to 1, plus a 1-10 overall score):\n\n${rows}\n\nIn 3-5 short sentences, describe any noticeable patterns: recurring emotional themes, time-of-day or day-of-week trends, or notable shifts. Be gentle and observational, not diagnostic. Write in ${lang==='zh'?'Chinese':'English'}.`;
+  return [{role:'system',content:system},{role:'user',content:user}];
+}
 function classifyDate(ts,now){
   const startOfDay=(ms)=>{const d=new Date(ms);return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();};
   const dayDiff=Math.round((startOfDay(now)-startOfDay(ts))/CHART_MS_PER_UNIT);
@@ -518,8 +677,18 @@ function mapScore(vals,w,h,pad){
 function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 
 const TEXT={
-  en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled',showMore:'Show more',showLess:'Show less'},
-  zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起'}
+  en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled',showMore:'Show more',showLess:'Show less',
+    settings:'Settings',llmEnable:'Use local AI (Ollama)',baseUrl:'Base URL',modelName:'Model name',llmOriginsHint:'Requires Ollama running with OLLAMA_ORIGINS allowing this page\'s address (see README).',
+    testConnection:'Test connection',testing:'Testing…',testOk:'Connected successfully.',
+    askAi:'Ask AI',askAiThinking:'Asking…',
+    getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',
+    errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.'},
+  zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
+    settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
+    testConnection:'测试连接',testing:'测试中…',testOk:'连接成功。',
+    askAi:'问问AI',askAiThinking:'询问中…',
+    getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',
+    errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。'}
 };
 
 const EMOTION_BANK=[
@@ -577,7 +746,11 @@ class Component extends DCLogic {
     selectedEntry:null, zoom:1, hoverIndex:null, hoverScreenX:0, chartZoom:1,
     entries: Storage.load(),
     rx2:-12, ry2:24, zoom2:1,
-    wordsExpanded:false
+    wordsExpanded:false,
+    llm: LlmSettings.load(),
+    aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
+    insightsStatus:'idle', insightsText:'', insightsErrorMsg:'',
+    testConnStatus:'idle', testConnErrorMsg:''
   };
 
   constructor(props){
@@ -628,6 +801,35 @@ class Component extends DCLogic {
   setView(v){this.setState({view:v});}
   setChart(v){this.setState({chartTab:v});}
 
+  openSettings(){this.setState({view:'settings'});}
+  closeSettings(){this.setState({view:'home'});}
+  toggleLlmEnabled(){
+    this.setState(s=>{
+      const llm={...s.llm, enabled:!s.llm.enabled};
+      LlmSettings.save(llm);
+      return {llm};
+    });
+  }
+  onBaseUrlChange(e){
+    const val=e.target.value;
+    this.setState(s=>{ const llm={...s.llm, baseUrl:val}; LlmSettings.save(llm); return {llm}; });
+  }
+  onModelChange(e){
+    const val=e.target.value;
+    this.setState(s=>{ const llm={...s.llm, model:val}; LlmSettings.save(llm); return {llm}; });
+  }
+  testConnection(){
+    if(this.state.testConnStatus==='testing')return;
+    this.setState({testConnStatus:'testing', testConnErrorMsg:''});
+    const t=TEXT[this.state.lang];
+    llmChat(this.state.llm, [{role:'user',content:'Say OK.'}], {timeoutMs:8000}).then(()=>{
+      this.setState({testConnStatus:'ok'});
+    }).catch(err=>{
+      console.error('PAD Tracker: test connection failed',err);
+      this.setState({testConnStatus:'fail', testConnErrorMsg: llmErrorMessage(err,t)});
+    });
+  }
+
   cubeDown(e){e.target.setPointerCapture(e.pointerId);this._dragCube=true;this._lx=e.clientX;this._ly=e.clientY;}
   cubeMove(e){if(!this._dragCube)return;const dx=e.clientX-this._lx,dy=e.clientY-this._ly;this._lx=e.clientX;this._ly=e.clientY;this.setState(s=>({rx:clamp(s.rx-dy*0.4,-85,10),ry:s.ry+dx*0.4}));}
   cubeUp(){this._dragCube=false;}
@@ -668,6 +870,33 @@ class Component extends DCLogic {
   backToJournal(){this.setState({view:'journal'});}
   selectWord(w){this.setState(s=>({record:{...s.record,title:w.en}}));}
   onNoteChange(e){const val=e.target.value;this.setState(s=>({record:{...s.record,note:val}}));}
+  askAi(){
+    if(this.state.aiSuggestStatus==='loading')return;
+    const rec=this.state.record;
+    if(!this.state.llm.enabled || !rec.note || !rec.note.trim())return;
+    this.setState({aiSuggestStatus:'loading'});
+    const t=TEXT[this.state.lang];
+    const messages=buildEmotionPrompt(rec.note, rec.v, rec.a, rec.d, EMOTION_BANK);
+    llmChat(this.state.llm, messages).then(raw=>{
+      const idxs=parseEmotionIndices(raw, EMOTION_BANK.length);
+      this.setState({aiSuggestStatus:'idle', aiOrderIdxs: idxs || null});
+    }).catch(err=>{
+      console.error('PAD Tracker: askAi failed',err);
+      this.setState({aiSuggestStatus:'error', aiSuggestErrorMsg: llmErrorMessage(err,t)});
+    });
+  }
+  getInsights(){
+    if(this.state.insightsStatus==='loading')return;
+    this.setState({insightsStatus:'loading', insightsErrorMsg:''});
+    const lang=this.state.lang;
+    const messages=buildInsightsPrompt(this.state.entries, lang);
+    llmChat(this.state.llm, messages).then(text=>{
+      this.setState({insightsStatus:'success', insightsText:text.trim()});
+    }).catch(err=>{
+      console.error('PAD Tracker: getInsights failed',err);
+      this.setState({insightsStatus:'error', insightsErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
   saveEntry(){
     const rec=this.state.record;
     const entry={
@@ -684,6 +913,7 @@ class Component extends DCLogic {
       entries,
       record:{v:0,a:0,d:0,title:null,score:6,note:''},
       wordsExpanded:false,
+      aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
       view:'journal'
     });
   }
@@ -722,11 +952,21 @@ class Component extends DCLogic {
     this._sortedEntries=sortedEntries;
     this._chartOriginTs=chartOriginTs;
 
-    const scored=EMOTION_BANK.map(w=>{
+    const scoredAll=EMOTION_BANK.map(w=>{
       const dist=Math.sqrt((rec.v-w.tv)**2+(rec.a-w.ta)**2+(rec.d-w.td)**2);
       const sim=clamp(1-dist/3.46,0,1);
       return {...w,pct:Math.round(sim*100)};
-    }).sort((x,y)=>y.pct-x.pct).slice(0,8);
+    });
+    const aiOrderIdxs=this.state.aiOrderIdxs;
+    let scored;
+    if(aiOrderIdxs && aiOrderIdxs.length){
+      const picked=aiOrderIdxs.map(i=>scoredAll[i]).filter(Boolean);
+      const pickedSet=new Set(aiOrderIdxs);
+      const rest=scoredAll.filter((w,i)=>!pickedSet.has(i)).sort((x,y)=>y.pct-x.pct);
+      scored=[...picked,...rest].slice(0,8);
+    }else{
+      scored=[...scoredAll].sort((x,y)=>y.pct-x.pct).slice(0,8);
+    }
 
     const emotionWords=scored.map(w=>({
       key:w.en, en:w.en, zh:w.zh, poetic:w.poetic, poeticZh:w.poeticZh, pct:w.pct,
@@ -778,6 +1018,7 @@ class Component extends DCLogic {
     return {
       lang, knob: lang==='en'?2:24, t, dateStr,
       viewIsHome: view==='home', viewIsRecord: view==='record', viewIsJournal: view==='journal',
+      viewIsSettings: view==='settings',
       toggleLang:()=>this.toggleLang(),
       navHome:()=>this.setView('home'), navRecord:()=>this.setView('record'), navJournal:()=>this.setView('journal'),
       goRecord:()=>this.setView('record'),
@@ -785,9 +1026,30 @@ class Component extends DCLogic {
       navColorRecord: view==='record'?'#D9BE7A':'rgba(232,224,255,.35)',
       navColorJournal: view==='journal'?'#D9BE7A':'rgba(232,224,255,.35)',
 
+      openSettings:()=>this.openSettings(), closeSettings:()=>this.closeSettings(),
+      llmEnabled: this.state.llm.enabled,
+      llmKnob: this.state.llm.enabled?24:2,
+      toggleLlmEnabled:()=>this.toggleLlmEnabled(),
+      llmBaseUrlVal: this.state.llm.baseUrl,
+      llmModelVal: this.state.llm.model,
+      onBaseUrlChange:(e)=>this.onBaseUrlChange(e), onModelChange:(e)=>this.onModelChange(e),
+      testConnection:()=>this.testConnection(),
+      testConnLabel: this.state.testConnStatus==='testing'?t.testing:t.testConnection,
+      hasTestResult: this.state.testConnStatus==='ok' || this.state.testConnStatus==='fail',
+      testResultMsg: this.state.testConnStatus==='ok'?t.testOk:this.state.testConnErrorMsg,
+      testResultColor: this.state.testConnStatus==='ok'?'#8FBF7F':'#E0645C',
+
       hasEntries,
       latestV: latest?fmtSigned(latest.v):'—', latestA: latest?fmtSigned(latest.a):'—', latestD: latest?fmtSigned(latest.d):'—',
       exportCsv:()=>this.exportCsv(),
+      getInsights:()=>this.getInsights(),
+      insightsLabel: t.getInsights,
+      showInsightsPanel: this.state.insightsStatus!=='idle',
+      insightsLoading: this.state.insightsStatus==='loading',
+      insightsError: this.state.insightsStatus==='error',
+      insightsErrorMsg: this.state.insightsErrorMsg,
+      insightsResult: this.state.insightsStatus==='success',
+      insightsText: this.state.insightsText,
 
       cubeTransform:`rotateX(${this.state.rx}deg) rotateY(${this.state.ry}deg)`,
       cubeDown:(e)=>this.cubeDown(e), cubeMove:(e)=>this.cubeMove(e), cubeUp:()=>this.cubeUp(),
@@ -845,6 +1107,11 @@ class Component extends DCLogic {
         : '',
 
       sliders, visibleWords, wordsToggleLabel, toggleWords:()=>this.toggleWords(), score:rec.score, scoreTicks, scoreFillPct,
+      showAskAi: this.state.llm.enabled && !!rec.note && !!rec.note.trim(),
+      askAiLabel: this.state.aiSuggestStatus==='loading'?t.askAiThinking:t.askAi,
+      askAi:()=>this.askAi(),
+      hasAiError: this.state.aiSuggestStatus==='error',
+      aiSuggestErrorMsg: this.state.aiSuggestErrorMsg,
       scoreTrackRef:this.scoreTrackRef,
       scoreDown:(e)=>this.scoreDown(e), scoreMove:(e)=>this.scoreMove(e), scoreUp:()=>this.scoreUp(),
       noteVal:rec.note, onNoteChange:(e)=>this.onNoteChange(e),
