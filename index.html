@@ -45,6 +45,7 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 .slider-handle{position:absolute;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);cursor:grab}
 .cube-drag{touch-action:none;cursor:grab}
 .log-now-fab{position:absolute;right:20px;bottom:98px;z-index:8;padding:13px 22px;background:rgba(217,190,122,.14);border:1px solid rgba(217,190,122,.55);border-radius:2px;font:400 13px 'EB Garamond',serif;font-style:italic;color:#D9BE7A;box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
+.toast{position:absolute;left:50%;top:56px;transform:translateX(-50%);z-index:9;padding:10px 20px;background:rgba(10,8,6,.92);border:1px solid rgba(217,190,122,.5);border-radius:20px;font:400 12px 'EB Garamond',serif;font-style:italic;color:#D9BE7A;box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(6px);pointer-events:none}
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 8px #F5EFE0,0 0 3px #D9BE7A}50%{box-shadow:0 0 20px #F5EFE0,0 0 12px #D9BE7A}}
 </style>
 </helmet>
@@ -53,8 +54,14 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 <div class="stars"></div>
 
 <div style="position:absolute;left:0;right:0;top:0;height:44px;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:env(safe-area-inset-top,0px) 20px 0;font:400 12px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5);z-index:5;box-sizing:border-box">
-  <div class="chip" onClick="{{ openSettings }}" style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(217,190,122,.4);display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">⚙</div>
-  <div class="pv" onClick="{{ toggleLang }}"><div class="pv-knob" style="left:{{ knob }}px"></div></div>
+  <div class="chip" onClick="{{ openSettings }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+    <div style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(217,190,122,.4);display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace;pointer-events:none">⚙</div>
+  </div>
+  <div class="pv" onClick="{{ toggleLang }}" style="width:52px">
+    <span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ enLabelColor }};pointer-events:none">EN</span>
+    <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ zhLabelColor }};pointer-events:none">中</span>
+    <div class="pv-knob" style="left:{{ knob }}px"></div>
+  </div>
 </div>
 
 <div class="scroll">
@@ -85,8 +92,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
         </div>
       </div>
       <div style="position:absolute;right:6px;bottom:6px;display:flex;flex-direction:column;gap:4px">
-        <div class="chip" onClick="{{ zoomIn }}" style="width:22px;height:22px;border:1px solid rgba(217,190,122,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
-        <div class="chip" onClick="{{ zoomOut }}" style="width:22px;height:22px;border:1px solid rgba(217,190,122,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+        <div class="chip" onClick="{{ zoomIn }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">+</div>
+        <div class="chip" onClick="{{ zoomOut }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">–</div>
       </div>
       <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
         <div style="position:absolute;left:0;right:0;bottom:8px;text-align:center;font:italic 400 11px 'EB Garamond',serif;color:rgba(232,224,255,.4);pointer-events:none">{{ t.emptyTrail }}</div>
@@ -105,8 +112,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <div class="chip" onClick="{{ setChartPad }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorPad }};border-bottom:1px solid {{ chartUnderlinePad }};padding-bottom:6px">{{ t.pad }}</div>
       <div class="chip" onClick="{{ setChartScore }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorScore }};border-bottom:1px solid {{ chartUnderlineScore }};padding-bottom:6px">{{ t.score }}</div>
       <div style="flex:1"></div>
-      <div class="chip" onClick="{{ chartZoomOut }}" style="width:18px;height:18px;border:1px solid rgba(217,190,122,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">–</div>
-      <div class="chip" onClick="{{ chartZoomIn }}" style="width:18px;height:18px;border:1px solid rgba(217,190,122,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">+</div>
+      <div class="chip" onClick="{{ chartZoomOut }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+      <div class="chip" onClick="{{ chartZoomIn }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
     </div>
     <div style="position:relative">
       <div style="display:flex;gap:6px">
@@ -179,6 +186,9 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 
   <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
     <div style="margin:32px 20px 0;text-align:center;font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.emptyJournal }}</div>
+    <div style="display:flex;justify-content:center;margin-top:18px">
+      <div class="chip" onClick="{{ goRecord }}" style="padding:11px 26px;background:rgba(217,190,122,.12);border:1px solid rgba(217,190,122,.5);border-radius:2px;font:400 13px 'EB Garamond',serif;font-style:italic;color:#D9BE7A">{{ t.recordFirst }}</div>
+    </div>
   </sc-if>
 
   <sc-if value="{{ showInsightsPanel }}" hint-placeholder-val="{{ false }}">
@@ -247,8 +257,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
         </div>
       </div>
       <div style="position:absolute;right:6px;bottom:6px;display:flex;flex-direction:column;gap:4px">
-        <div class="chip" onClick="{{ zoomIn2 }}" style="width:22px;height:22px;border:1px solid rgba(217,190,122,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
-        <div class="chip" onClick="{{ zoomOut2 }}" style="width:22px;height:22px;border:1px solid rgba(217,190,122,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+        <div class="chip" onClick="{{ zoomIn2 }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">+</div>
+        <div class="chip" onClick="{{ zoomOut2 }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">–</div>
       </div>
     </div>
   </div>
@@ -258,8 +268,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <div class="chip" onClick="{{ setChartPad }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorPad }};border-bottom:1px solid {{ chartUnderlinePad }};padding-bottom:6px">{{ t.pad }}</div>
       <div class="chip" onClick="{{ setChartScore }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorScore }};border-bottom:1px solid {{ chartUnderlineScore }};padding-bottom:6px">{{ t.score }}</div>
       <div style="flex:1"></div>
-      <div class="chip" onClick="{{ chartZoomOut }}" style="width:18px;height:18px;border:1px solid rgba(217,190,122,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">–</div>
-      <div class="chip" onClick="{{ chartZoomIn }}" style="width:18px;height:18px;border:1px solid rgba(217,190,122,.4);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace">+</div>
+      <div class="chip" onClick="{{ chartZoomOut }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+      <div class="chip" onClick="{{ chartZoomIn }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
     </div>
     <div style="position:relative">
       <div style="display:flex;gap:6px">
@@ -430,6 +440,10 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 
 <sc-if value="{{ viewIsHome }}" hint-placeholder-val="{{ true }}">
   <div class="chip log-now-fab" onClick="{{ goRecord }}">{{ t.log }}</div>
+</sc-if>
+
+<sc-if value="{{ showSavedToast }}" hint-placeholder-val="{{ false }}">
+  <div class="toast">{{ t.saved }}</div>
 </sc-if>
 
 <div class="tabbar">
@@ -682,13 +696,15 @@ const TEXT={
     testConnection:'Test connection',testing:'Testing…',testOk:'Connected successfully.',
     askAi:'Ask AI',askAiThinking:'Asking…',
     getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',
-    errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.'},
+    errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.',
+    recordFirst:'Record your first entry',saved:'Saved ✓'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
     testConnection:'测试连接',testing:'测试中…',testOk:'连接成功。',
     askAi:'问问AI',askAiThinking:'询问中…',
     getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',
-    errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。'}
+    errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。',
+    recordFirst:'记录你的第一条',saved:'已保存 ✓'}
 };
 
 const EMOTION_BANK=[
@@ -750,7 +766,8 @@ class Component extends DCLogic {
     llm: LlmSettings.load(),
     aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
     insightsStatus:'idle', insightsText:'', insightsErrorMsg:'',
-    testConnStatus:'idle', testConnErrorMsg:''
+    testConnStatus:'idle', testConnErrorMsg:'',
+    showSavedToast:false
   };
 
   constructor(props){
@@ -914,8 +931,11 @@ class Component extends DCLogic {
       record:{v:0,a:0,d:0,title:null,score:6,note:''},
       wordsExpanded:false,
       aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
-      view:'journal'
+      view:'journal',
+      showSavedToast:true
     });
+    if(this._toastTimer)clearTimeout(this._toastTimer);
+    this._toastTimer=setTimeout(()=>this.setState({showSavedToast:false}),2000);
   }
   toggleWords(){this.setState(s=>({wordsExpanded:!s.wordsExpanded}));}
   exportCsv(){
@@ -1016,7 +1036,10 @@ class Component extends DCLogic {
     const selVals=sel?{v:parseFloat(sel.v),a:parseFloat(sel.a),d:parseFloat(sel.d)}:{v:0,a:0,d:0};
 
     return {
-      lang, knob: lang==='en'?2:24, t, dateStr,
+      lang, knob: lang==='en'?2:32, t, dateStr,
+      showSavedToast: this.state.showSavedToast,
+      enLabelColor: lang==='en'?'#D9BE7A':'rgba(232,224,255,.35)',
+      zhLabelColor: lang==='zh'?'#D9BE7A':'rgba(232,224,255,.35)',
       viewIsHome: view==='home', viewIsRecord: view==='record', viewIsJournal: view==='journal',
       viewIsSettings: view==='settings',
       toggleLang:()=>this.toggleLang(),
