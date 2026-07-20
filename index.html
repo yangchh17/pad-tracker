@@ -333,7 +333,126 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <div style="height:100%;border-radius:2px;background:#D9BE7A;width:{{ selScorePct }}%"></div>
     </div>
     <div style="font:400 13px/1.6 Inter,sans-serif;color:rgba(232,224,255,.6)">{{ selEntry.note }}</div>
+    <sc-if value="{{ selHasBefore }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(217,190,122,.12);font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.45)">{{ t.before }}: {{ selBeforeSummary }} · {{ t.after }}: {{ selAfterSummary }}</div>
+    </sc-if>
+    <sc-if value="{{ selHasChat }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:10px">
+        <span class="chip" onClick="{{ toggleEntryChat }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ entryChatToggleLabel }}</span>
+        <sc-if value="{{ entryChatExpanded }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ selChatMessages }}" as="m" hint-placeholder-count="2">
+              <div style="display:flex;justify-content:{{ m.justify }}">
+                <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 12px/1.5 Inter,sans-serif;color:{{ m.color }}">{{ m.content }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
   </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsChat }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr">
+    <sc-if value="{{ chatConfirmDiscard }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.6)">{{ t.discardConfirm }}</span>
+        <div class="chip" onClick="{{ backFromChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:#E0645C">{{ t.discardYes }}</div>
+        <div class="chip" onClick="{{ cancelDiscardChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5)">{{ t.discardCancel }}</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ !chatConfirmDiscard }}" hint-placeholder-val="{{ true }}">
+      <div class="chip" onClick="{{ backFromChat }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.record }}</div>
+      <sc-if value="{{ chatIsTalking }}" hint-placeholder-val="{{ true }}">
+        <div class="chip" onClick="{{ wrapUpChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.wrapUp }}</div>
+      </sc-if>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ chatIsTalking }}" hint-placeholder-val="{{ true }}">
+    <div class="panel" style="max-height:46vh;overflow-y:auto">
+      <sc-for list="{{ chatMessages }}" as="m" hint-placeholder-count="2">
+        <div style="display:flex;justify-content:{{ m.justify }};margin-bottom:8px">
+          <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 13px/1.5 Inter,sans-serif;color:{{ m.color }}">{{ m.content }}</div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ chatSending }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:flex-start">
+          <div style="padding:9px 12px;font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.6);animation:pulseGlow 1.6s ease-in-out infinite">{{ t.chatThinking }}</div>
+        </div>
+      </sc-if>
+    </div>
+    <sc-if value="{{ hasChatError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:0 20px 14px;display:flex;align-items:center;gap:10px">
+        <span style="font:400 11px 'JetBrains Mono',monospace;color:#E0645C;flex:1">{{ chatErrorMsg }}</span>
+        <div class="chip" onClick="{{ retryLastMessage }}" style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.retry }}</div>
+      </div>
+    </sc-if>
+    <div class="panel">
+      <textarea value="{{ chatInput }}" onChange="{{ onChatInputChange }}" placeholder="{{ t.chatPlaceholder }}" style="width:100%;min-height:70px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
+      <sc-if value="{{ chatCapReached }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;font:italic 400 11px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.chatCapReached }}</div>
+      </sc-if>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <div class="chip primary-action" onClick="{{ sendChatMessage }}" style="opacity:{{ sendButtonOpacity }}">{{ t.send }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ chatIsAfterReading }}" hint-placeholder-val="{{ false }}">
+    <div class="panel" style="overflow:visible">
+      <div style="font:400 12px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:4px">{{ t.afterReadingTitle }}</div>
+      <div style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4);margin-bottom:14px">{{ t.before }}: {{ chatBeforeSummary }}</div>
+      <sc-for list="{{ sliders }}" as="s" hint-placeholder-count="3">
+        <div style="margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <span style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:{{ s.color }}">{{ s.label }}</span>
+            <span style="font:300 15px 'JetBrains Mono',monospace;color:#EDE7F6">{{ s.valStr }}</span>
+          </div>
+          <div class="slider-track" ref="{{ s.trackRef }}" onPointerDown="{{ s.onDown }}" onPointerMove="{{ s.onMove }}" onPointerUp="{{ s.onUp }}" onPointerCancel="{{ s.onUp }}">
+            <div style="position:absolute;left:50%;top:5px;width:1px;height:10px;background:rgba(255,255,255,.2)"></div>
+            <div class="slider-handle" style="left:{{ s.pct }}%">
+              <div style="position:absolute;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%);border:1px solid {{ s.color }};border-radius:50%;background:rgba(5,6,12,.8);box-shadow:0 0 10px {{ s.color }}"></div>
+              <div style="position:absolute;left:50%;top:50%;width:9px;height:1px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+              <div style="position:absolute;left:50%;top:50%;width:1px;height:9px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+            </div>
+          </div>
+          <div class="range-labels"><span>{{ s.low }}</span><span>{{ s.high }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.overallScore }}</span>
+        <span style="font:300 22px 'JetBrains Mono',monospace;color:#EDE7F6">{{ score }}</span>
+      </div>
+      <div ref="{{ scoreTrackRef }}" onPointerDown="{{ scoreDown }}" onPointerMove="{{ scoreMove }}" onPointerUp="{{ scoreUp }}" onPointerCancel="{{ scoreUp }}" style="position:relative;height:24px;background:transparent;border-radius:12px;margin:8px 0 4px;touch-action:none">
+        <div style="position:absolute;left:0;right:0;top:10px;height:6px;background:rgba(255,255,255,.1);border-radius:3px"></div>
+        <div style="position:absolute;left:0;top:10px;height:6px;border-radius:3px;background:linear-gradient(90deg,#8a6b2f,#D9BE7A);width:{{ scoreFillPct }}%;pointer-events:none"></div>
+        <sc-for list="{{ scoreTicks }}" as="tk" hint-placeholder-count="10">
+          <div style="position:absolute;top:7px;left:{{ tk.pct }}%;width:1px;height:12px;background:rgba(255,255,255,.15);transform:translateX(-50%);pointer-events:none"></div>
+        </sc-for>
+        <div style="position:absolute;top:50%;left:{{ scoreFillPct }}%;width:24px;height:24px;border-radius:50%;background:#F5EFE0;box-shadow:0 0 12px #D9BE7A;transform:translate(-50%,-50%);cursor:grab;pointer-events:none"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">1</span>
+        <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">10</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:10px">{{ t.note }}</div>
+      <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
+    </div>
+
+    <div style="position:relative;height:90px;display:flex;align-items:center;justify-content:center">
+      <div class="chip primary-action" onClick="{{ saveChatEntry }}">{{ t.save }}</div>
+    </div>
+  </sc-if>
 </div>
 </sc-if>
 
@@ -423,16 +542,8 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
       <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.suggested }}</span>
-      <div style="display:flex;gap:10px">
-        <sc-if value="{{ showAskAi }}" hint-placeholder-val="{{ false }}">
-          <span class="chip" onClick="{{ askAi }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ askAiLabel }}</span>
-        </sc-if>
-        <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
-      </div>
+      <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
     </div>
-    <sc-if value="{{ hasAiError }}" hint-placeholder-val="{{ false }}">
-      <div style="margin-bottom:8px;font:400 10px 'JetBrains Mono',monospace;color:#E0645C">{{ aiSuggestErrorMsg }}</div>
-    </sc-if>
     <div style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;overflow-x:hidden">
       <sc-for list="{{ visibleWords }}" as="w" hint-placeholder-count="3">
         <div class="chip" onClick="{{ w.onSelect }}" style="display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:54px;padding:9px 10px;border:1px solid {{ w.border }};border-radius:6px;background:{{ w.bg }}">
@@ -447,7 +558,12 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   </div>
 
   <div class="panel">
-    <div style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:10px">{{ t.note }}</div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.note }}</span>
+      <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+        <span class="chip" onClick="{{ talkItThrough }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.talkItThrough }}</span>
+      </sc-if>
+    </div>
     <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
   </div>
 
@@ -640,18 +756,6 @@ function llmChat(settings, messages, opts){
     clearTimeout(timer);
   });
 }
-function extractJsonBlock(text){
-  const fenced=text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate=fenced?fenced[1]:text;
-  const objStart=candidate.indexOf('{'), arrStart=candidate.indexOf('[');
-  let start=-1, closeCh;
-  if(objStart!==-1 && (arrStart===-1 || objStart<arrStart)){ start=objStart; closeCh='}'; }
-  else if(arrStart!==-1){ start=arrStart; closeCh=']'; }
-  if(start===-1) return null;
-  const end=candidate.lastIndexOf(closeCh);
-  if(end===-1 || end<start) return null;
-  try{ return JSON.parse(candidate.slice(start,end+1)); }catch(e){ return null; }
-}
 function llmErrorMessage(err,t){
   const msg=(err && err.message)||'';
   if(msg==='timeout')return t.errTimeout;
@@ -660,6 +764,10 @@ function llmErrorMessage(err,t){
   return t.errNetwork;
 }
 const INSIGHTS_MAX_ENTRIES=20;
+const CHAT_MAX_TURNS=12;
+function buildChatSystemPrompt(lang){
+  return `You are a warm, supportive journaling companion helping someone reflect on how they're feeling right now. You are not a therapist, counselor, or medical professional, and you must never diagnose, label a condition, or suggest treatment. Your role is to help the person notice and name what they're feeling, gently explore what's underneath it, and feel a little clearer by the end of the conversation.\n\n- Ask short, open, curious questions - one at a time, not a list.\n- Reflect back what you hear in plain language before asking the next question.\n- Never rush to reassure, fix, or minimize. Sit with what they share first.\n- If they mention self-harm, crisis, or being in danger, gently and clearly encourage them to reach out to a crisis line or someone they trust right now, and do not continue with reflective questions in that moment.\n- Keep responses brief - 2-4 sentences. This is a conversation, not an essay.\n- Write in ${lang==='zh'?'Chinese':'English'}.`;
+}
 
 // ── Info keyword formatter ──────────────────────────────────────
 function infoHtml(axis, lang) {
@@ -709,23 +817,6 @@ function infoHtml(axis, lang) {
       </div>`;
   }
   return '';
-}
-function buildEmotionPrompt(note,v,a,d,bank){
-  const list=bank.map((w,i)=>`${i}: ${w.en} (${w.zh}) [v=${w.tv}, a=${w.ta}, d=${w.td}]`).join('\n');
-  const system='You are a precise classifier. You only choose from a fixed list of options by index number. You never invent new words. You always answer with a single fenced JSON code block and nothing else.';
-  const user=`A person is tracking their mood using the Valence-Arousal-Dominance (PAD) model.\nTheir current slider values are: valence=${v.toFixed(2)}, arousal=${a.toFixed(2)}, dominance=${d.toFixed(2)} (each ranges -1 to 1).\nThey wrote this note about how they feel: "${note}"\n\nHere is a fixed list of emotion words, each with its own reference V/A/D coordinates:\n${list}\n\nTask: pick the 5 indices from the list above that best match BOTH the note's meaning AND the numeric V/A/D values, ranked best first. Do not invent new words or indices outside this list.\n\nRespond with ONLY a fenced code block containing a JSON array of exactly 5 integers (the indices), like:\n\`\`\`json\n[3, 17, 0, 22, 9]\n\`\`\`\nNo other text.`;
-  return [{role:'system',content:system},{role:'user',content:user}];
-}
-function parseEmotionIndices(raw,bankLen){
-  const parsed=extractJsonBlock(raw);
-  if(!Array.isArray(parsed))return null;
-  const seen=new Set();
-  const idxs=[];
-  for(const v of parsed){
-    const n=typeof v==='number'?v:(typeof v==='string'?parseInt(v,10):NaN);
-    if(Number.isInteger(n) && n>=0 && n<bankLen && !seen.has(n)){ seen.add(n); idxs.push(n); }
-  }
-  return idxs.length?idxs:null;
 }
 function buildInsightsPrompt(entries,lang){
   const recent=[...entries].sort((a,b)=>a.ts-b.ts).slice(-INSIGHTS_MAX_ENTRIES);
@@ -797,18 +888,24 @@ const TEXT={
     settings:'Settings',llmEnable:'Use local AI (Ollama)',baseUrl:'Base URL',modelName:'Model name',llmOriginsHint:'Requires Ollama running with OLLAMA_ORIGINS allowing this page\'s address (see README).',
     desktopOnly:'🖥 Desktop only today — see README',
     testConnection:'Test connection',testing:'Testing…',testOk:'Connected successfully.',
-    askAi:'Ask AI',askAiThinking:'Asking…',
     getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',insightsClose:'Dismiss',hintDrag:'Drag to rotate',hintPan:'Swipe to pan',
     errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.',
-    recordFirst:'Record your first entry',saved:'Saved ✓',infoDismiss:'Got it'},
+    recordFirst:'Record your first entry',saved:'Saved ✓',infoDismiss:'Got it',
+    talkItThrough:'Talk it through',chatPlaceholder:'Say what\'s on your mind...',send:'Send',chatThinking:'Thinking…',wrapUp:'Wrap up',retry:'Retry',
+    discardConfirm:'Discard this conversation?',discardYes:'Discard',discardCancel:'Cancel',
+    chatCapReached:'Long enough for now — tap Wrap up to check in.',
+    afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
     desktopOnly:'🖥 仅限桌面端 — 详见 README',
     testConnection:'测试连接',testing:'测试中…',testOk:'连接成功。',
-    askAi:'问问AI',askAiThinking:'询问中…',
     getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',insightsClose:'关闭',hintDrag:'拖动旋转',hintPan:'滑动查看',
     errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。',
-    recordFirst:'记录你的第一条',saved:'已保存 ✓',infoDismiss:'知道了'},
+    recordFirst:'记录你的第一条',saved:'已保存 ✓',infoDismiss:'知道了',
+    talkItThrough:'聊一聊',chatPlaceholder:'说说你在想什么...',send:'发送',chatThinking:'思考中…',wrapUp:'结束对话',retry:'重试',
+    discardConfirm:'放弃这段对话？',discardYes:'放弃',discardCancel:'取消',
+    chatCapReached:'先聊到这里 — 点击"结束对话"来记录当下的心情。',
+    afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话'},
 };
 
 const EMOTION_BANK=[
@@ -869,10 +966,12 @@ class Component extends DCLogic {
     hasFirstCubeDrag:false, hasFirstChartPan:false,
     wordsExpanded:false,
     llm: LlmSettings.load(),
-    aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
     insightsStatus:'idle', insightsText:'', insightsErrorMsg:'',
     testConnStatus:'idle', testConnErrorMsg:'', infoAxis:null,
-    showSavedToast:false
+    showSavedToast:false,
+    chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+    chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+    entryChatExpanded:false
   };
 
   constructor(props){
@@ -1007,24 +1106,89 @@ class Component extends DCLogic {
     this.setState(s=>({record:{...s.record,score:val}}));
   }
 
-  selectEntry(e){this.setState({selectedEntry:e,view:'entryDetail'});}
+  selectEntry(e){this.setState({selectedEntry:e,view:'entryDetail',entryChatExpanded:false});}
+  toggleEntryChat(){this.setState(s=>({entryChatExpanded:!s.entryChatExpanded}));}
   backToJournal(){this.setState({view:'journal'});}
   selectWord(w){this.setState(s=>({record:{...s.record,title:w.en}}));}
   onNoteChange(e){const val=e.target.value;this.setState(s=>({record:{...s.record,note:val}}));}
-  askAi(){
-    if(this.state.aiSuggestStatus==='loading')return;
+  startChat(){
     const rec=this.state.record;
-    if(!this.state.llm.enabled || !rec.note || !rec.note.trim())return;
-    this.setState({aiSuggestStatus:'loading'});
-    const t=TEXT[this.state.lang];
-    const messages=buildEmotionPrompt(rec.note, rec.v, rec.a, rec.d, EMOTION_BANK);
-    llmChat(this.state.llm, messages).then(raw=>{
-      const idxs=parseEmotionIndices(raw, EMOTION_BANK.length);
-      this.setState({aiSuggestStatus:'idle', aiOrderIdxs: idxs || null});
-    }).catch(err=>{
-      console.error('PAD Tracker: askAi failed',err);
-      this.setState({aiSuggestStatus:'error', aiSuggestErrorMsg: llmErrorMessage(err,t)});
+    this.setState({
+      chatBeforeReading:{v:rec.v,a:rec.a,d:rec.d,score:rec.score},
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatPhase:'talking', chatConfirmDiscard:false,
+      view:'chat'
     });
+  }
+  onChatInputChange(e){const val=e.target.value; this.setState({chatInput:val});}
+  sendChatMessage(){
+    const text=(this.state.chatInput||'').trim();
+    if(!text || this.state.chatStatus==='sending')return;
+    if(this.state.chatMessages.filter(m=>m.role==='user').length>=CHAT_MAX_TURNS)return;
+    const prevMessages=this.state.chatMessages;
+    const pendingUserMsg={role:'user',content:text};
+    this.setState({chatMessages:[...prevMessages, pendingUserMsg], chatInput:'', chatStatus:'sending', chatErrorMsg:''});
+    const lang=this.state.lang;
+    const system={role:'system',content:buildChatSystemPrompt(lang)};
+    llmChat(this.state.llm, [system, ...prevMessages, pendingUserMsg]).then(reply=>{
+      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
+    }).catch(err=>{
+      console.error('PAD Tracker: sendChatMessage failed',err);
+      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
+  retryLastMessage(){
+    if(this.state.chatStatus==='sending')return;
+    const msgs=this.state.chatMessages;
+    if(!msgs.length)return;
+    this.setState({chatStatus:'sending', chatErrorMsg:''});
+    const lang=this.state.lang;
+    const system={role:'system',content:buildChatSystemPrompt(lang)};
+    llmChat(this.state.llm, [system, ...msgs]).then(reply=>{
+      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
+    }).catch(err=>{
+      console.error('PAD Tracker: retryLastMessage failed',err);
+      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
+  wrapUpChat(){this.setState({chatPhase:'afterReading'});}
+  backFromChat(){
+    if(this.state.chatMessages.length>0 && !this.state.chatConfirmDiscard){
+      this.setState({chatConfirmDiscard:true});
+      return;
+    }
+    this.setState({
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+      view:'record'
+    });
+  }
+  cancelDiscardChat(){this.setState({chatConfirmDiscard:false});}
+  saveChatEntry(){
+    const rec=this.state.record;
+    const entry={
+      id: (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('e'+Date.now()+Math.random().toString(36).slice(2)),
+      ts: Date.now(),
+      v: rec.v, a: rec.a, d: rec.d,
+      score: rec.score,
+      emotion: rec.title || '',
+      note: rec.note,
+      before: this.state.chatBeforeReading,
+      chat: this.state.chatMessages
+    };
+    const entries=[...this.state.entries, entry];
+    Storage.save(entries);
+    this.setState({
+      entries,
+      record:{v:0,a:0,d:0,title:null,score:6,note:''},
+      wordsExpanded:false,
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+      view:'journal',
+      showSavedToast:true
+    });
+    if(this._toastTimer)clearTimeout(this._toastTimer);
+    this._toastTimer=setTimeout(()=>this.setState({showSavedToast:false}),2000);
   }
   getInsights(){
     if(this.state.insightsStatus==='loading')return;
@@ -1054,7 +1218,6 @@ class Component extends DCLogic {
       entries,
       record:{v:0,a:0,d:0,title:null,score:6,note:''},
       wordsExpanded:false,
-      aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
       view:'journal',
       showSavedToast:true
     });
@@ -1063,13 +1226,15 @@ class Component extends DCLogic {
   }
   toggleWords(){this.setState(s=>({wordsExpanded:!s.wordsExpanded}));}
   exportCsv(){
-    const rows=[['date','time','valence','arousal','dominance','score','emotion','note']];
+    const rows=[['date','time','valence','arousal','dominance','score','emotion','note','beforeValence','beforeArousal','beforeDominance','beforeScore']];
     [...this.state.entries].sort((a,b)=>a.ts-b.ts).forEach(e=>{
       const d=new Date(e.ts);
+      const b=e.before;
       rows.push([
         d.toISOString().slice(0,10), fmtTime(e.ts),
         e.v.toFixed(2), e.a.toFixed(2), e.d.toFixed(2),
-        e.score, e.emotion||'', e.note||''
+        e.score, e.emotion||'', e.note||'',
+        b?b.v.toFixed(2):'', b?b.a.toFixed(2):'', b?b.d.toFixed(2):'', b?b.score:''
       ]);
     });
     const csv=rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');
@@ -1103,16 +1268,7 @@ class Component extends DCLogic {
       const sim=clamp(1-dist/3.46,0,1);
       return {...w,pct:Math.round(sim*100)};
     });
-    const aiOrderIdxs=this.state.aiOrderIdxs;
-    let scored;
-    if(aiOrderIdxs && aiOrderIdxs.length){
-      const picked=aiOrderIdxs.map(i=>scoredAll[i]).filter(Boolean);
-      const pickedSet=new Set(aiOrderIdxs);
-      const rest=scoredAll.filter((w,i)=>!pickedSet.has(i)).sort((x,y)=>y.pct-x.pct);
-      scored=[...picked,...rest].slice(0,8);
-    }else{
-      scored=[...scoredAll].sort((x,y)=>y.pct-x.pct).slice(0,8);
-    }
+    const scored=[...scoredAll].sort((x,y)=>y.pct-x.pct).slice(0,8);
 
     const emotionWords=scored.map(w=>({
       key:w.en, en:w.en, zh:w.zh, poetic:w.poetic, poeticZh:w.poeticZh, pct:w.pct,
@@ -1165,6 +1321,16 @@ class Component extends DCLogic {
     const trailData2=trailPts.length?buildTrailSegments(trailPts,size,this.state.rx2,this.state.ry2):{segs:[],headDot:{style:''}};
     const sel=this.state.selectedEntry;
     const selVals=sel?{v:parseFloat(sel.v),a:parseFloat(sel.a),d:parseFloat(sel.d)}:{v:0,a:0,d:0};
+    const selHasBefore=!!(sel && sel.before);
+    const selBeforeSummary=selHasBefore?`V${fmtSigned(sel.before.v)} A${fmtSigned(sel.before.a)} D${fmtSigned(sel.before.d)} · ${sel.before.score}/10`:'';
+    const selAfterSummary=sel?`V${fmtSigned(sel.v)} A${fmtSigned(sel.a)} D${fmtSigned(sel.d)} · ${sel.score}/10`:'';
+    const selHasChat=!!(sel && sel.chat && sel.chat.length);
+    const selChatMessages=selHasChat?sel.chat.map((m,i)=>({
+      key:i, content:m.content, justify: m.role==='user'?'flex-end':'flex-start',
+      bg: m.role==='user'?'rgba(217,190,122,.08)':'rgba(255,255,255,.03)',
+      textAlign: m.role==='user'?'right':'left',
+      color: m.role==='user'?'#EDE7F6':'rgba(232,224,255,.8)'
+    })):[];
 
     return {
       lang, knob: lang==='en'?2:32, t, dateStr,
@@ -1221,6 +1387,11 @@ class Component extends DCLogic {
       selEntry:sel, selRings:buildRings(size*1.35), selAxes:buildAxes(size),
       selHighlightStyle: sel?buildHighlightDot(selVals.v,selVals.a,selVals.d,size,this.state.rx2,this.state.ry2):'',
       selScorePct: sel?sel.score*10:0,
+      selHasBefore, selBeforeSummary, selAfterSummary,
+      selHasChat, selChatMessages,
+      entryChatExpanded: this.state.entryChatExpanded,
+      entryChatToggleLabel: this.state.entryChatExpanded?t.showLess:t.viewConversation,
+      toggleEntryChat:()=>this.toggleEntryChat(),
       cubeTransform2:`rotateX(${this.state.rx2}deg) rotateY(${this.state.ry2}deg)`,
       zoom2:this.state.zoom2,
       cubeDown2:(e)=>this.cubeDown2(e), cubeMove2:(e)=>this.cubeMove2(e), cubeUp2:()=>this.cubeUp2(),
@@ -1268,15 +1439,37 @@ class Component extends DCLogic {
         : '',
 
       sliders, visibleWords, wordsToggleLabel, toggleWords:()=>this.toggleWords(), score:rec.score, scoreTicks, scoreFillPct,
-      showAskAi: this.state.llm.enabled && !!rec.note && !!rec.note.trim(),
-      askAiLabel: this.state.aiSuggestStatus==='loading'?t.askAiThinking:t.askAi,
-      askAi:()=>this.askAi(),
-      hasAiError: this.state.aiSuggestStatus==='error',
-      aiSuggestErrorMsg: this.state.aiSuggestErrorMsg,
       scoreTrackRef:this.scoreTrackRef,
       scoreDown:(e)=>this.scoreDown(e), scoreMove:(e)=>this.scoreMove(e), scoreUp:()=>this.scoreUp(),
       noteVal:rec.note, onNoteChange:(e)=>this.onNoteChange(e),
       saveEntry:()=>this.saveEntry(),
+      talkItThrough:()=>this.startChat(),
+
+      viewIsChat: view==='chat',
+      chatIsTalking: this.state.chatPhase==='talking',
+      chatIsAfterReading: this.state.chatPhase==='afterReading',
+      chatMessages: this.state.chatMessages.map((m,i)=>({
+        key:i, content:m.content, justify: m.role==='user'?'flex-end':'flex-start',
+        bg: m.role==='user'?'rgba(217,190,122,.08)':'rgba(255,255,255,.03)',
+        textAlign: m.role==='user'?'right':'left',
+        color: m.role==='user'?'#EDE7F6':'rgba(232,224,255,.8)'
+      })),
+      chatSending: this.state.chatStatus==='sending',
+      hasChatError: this.state.chatStatus==='error',
+      chatErrorMsg: this.state.chatErrorMsg,
+      chatInput: this.state.chatInput,
+      onChatInputChange:(e)=>this.onChatInputChange(e),
+      sendChatMessage:()=>this.sendChatMessage(),
+      retryLastMessage:()=>this.retryLastMessage(),
+      chatCapReached: this.state.chatMessages.filter(m=>m.role==='user').length>=CHAT_MAX_TURNS,
+      chatCanSend: this.state.chatStatus!=='sending' && !!this.state.chatInput.trim() && this.state.chatMessages.filter(m=>m.role==='user').length<CHAT_MAX_TURNS,
+      sendButtonOpacity: (this.state.chatStatus!=='sending' && !!this.state.chatInput.trim() && this.state.chatMessages.filter(m=>m.role==='user').length<CHAT_MAX_TURNS) ? 1 : 0.4,
+      wrapUpChat:()=>this.wrapUpChat(),
+      backFromChat:()=>this.backFromChat(),
+      chatConfirmDiscard: this.state.chatConfirmDiscard,
+      cancelDiscardChat:()=>this.cancelDiscardChat(),
+      saveChatEntry:()=>this.saveChatEntry(),
+      chatBeforeSummary: this.state.chatBeforeReading ? `V${fmtSigned(this.state.chatBeforeReading.v)} A${fmtSigned(this.state.chatBeforeReading.a)} D${fmtSigned(this.state.chatBeforeReading.d)} · ${this.state.chatBeforeReading.score}/10` : '',
 
       journalGroups
     };
