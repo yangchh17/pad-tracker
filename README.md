@@ -43,14 +43,27 @@ $env:OLLAMA_ORIGINS="*"; ollama serve
 network".) Without this, every AI feature will fail immediately with a
 connection error, regardless of whether Ollama is actually running.
 
-**Reachability today is desktop-only.** The deployed app is served over
-HTTPS (GitHub Pages), and browsers block HTTPS pages from calling a plain
-HTTP local endpoint — this applies even on the same Wi-Fi, it's not a network
-issue. So the AI features currently only work when using the app from a
-browser on the same machine as Ollama (e.g. `http://localhost:8000`, see
-"Local testing" below), not from the installed phone PWA. Using it from a
-phone would need something like Tailscale Serve to give Ollama a real HTTPS
-address — not set up yet.
+**Reachability from your phone (Tailscale).** By default the AI features
+only work from a browser on the same machine as Ollama, since the deployed
+app is HTTPS and browsers block HTTPS pages from calling a plain HTTP local
+endpoint. On this setup, that's solved: Ollama is reachable at
+`https://my-brain-1.tail28b58f.ts.net:8443` for any device on the same
+Tailscale tailnet (phone included) — set that as the Base URL in Settings
+on your phone, same model name, and it works exactly like localhost does
+on the desktop, including from the installed PWA.
+
+This isn't just `tailscale serve` pointed at Ollama directly — Ollama
+rejects any request whose `Host` header isn't `localhost`/`127.0.0.1` (an
+anti-DNS-rebinding check with no env var to turn off), and a reverse proxy
+like `tailscale serve` forwards the original Host header unchanged. A
+small local Python proxy (`host-rewrite-proxy.py`, project root, outside
+this repo) sits in between and rewrites the Host header back to
+`localhost:11435` before forwarding to a second Ollama instance dedicated
+to this path (port 11435, separate from the normal one on 11434, since the
+running instance couldn't be restarted with `OLLAMA_ORIGINS` set — locked
+process). Run `start-tailscale-ollama.ps1` (also project root) after every
+reboot to bring this back up; nothing here is installed as a Windows
+service. Your phone also needs Tailscale connected to the same tailnet.
 
 The app calls Ollama's **native** `/api/chat` endpoint (not the generic
 OpenAI-compatible `/v1/chat/completions`) with an explicit `num_predict`/
