@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Storage } from './lib/storage';
 import { TEXT } from './lib/text';
-import { fmtDate } from './lib/format';
+import Home from './views/Home';
 
 export default function App() {
   const [lang, setLang] = useState('en');
@@ -9,7 +9,6 @@ export default function App() {
   const [entries] = useState(() => Storage.load());
 
   const t = TEXT[lang];
-  const dateStr = fmtDate(Date.now(), lang);
   const toggleLang = () => setLang((l) => (l === 'en' ? 'zh' : 'en'));
   const knob = lang === 'en' ? 2 : 32;
   const enLabelColor = lang === 'en' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
@@ -39,22 +38,7 @@ export default function App() {
       </div>
 
       <div className="scroll">
-        {view === 'home' && (
-          <div>
-            <div className="hdr">
-              <div>
-                <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6', letterSpacing: '.02em' }}>{t.home}</div>
-                <div style={{ font: "400 10px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.35)', marginTop: 4, letterSpacing: '.06em' }}>{dateStr}</div>
-              </div>
-              <div style={{ font: "italic 400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)' }}>{t.now}</div>
-            </div>
-            <div className="panel">
-              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
-                Phase 2 placeholder — {entries.length} entries loaded from storage. Home view (cube + chart) comes in Phase 3.
-              </div>
-            </div>
-          </div>
-        )}
+        {view === 'home' && <Home t={t} lang={lang} entries={entries} />}
 
         {view === 'record' && (
           <div>
@@ -97,6 +81,10 @@ export default function App() {
           </div>
         )}
       </div>
+
+      {view === 'home' && (
+        <div className="chip log-now-fab" onClick={() => setView('record')}>{t.log}</div>
+      )}
 
       <div className="tabbar">
         <div className="tabitem" onClick={() => setView('home')}>
