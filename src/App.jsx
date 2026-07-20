@@ -1,12 +1,19 @@
-import { useState } from 'react';
-import { Storage } from './lib/storage';
+import { useState, useRef } from 'react';
+import { Storage, LlmSettings } from './lib/storage';
 import { TEXT } from './lib/text';
 import Home from './views/Home';
+import Record from './views/Record';
+
+const EMPTY_RECORD = { v: 0, a: 0, d: 0, title: null, score: 6, note: '' };
 
 export default function App() {
   const [lang, setLang] = useState('en');
   const [view, setView] = useState('home');
-  const [entries] = useState(() => Storage.load());
+  const [entries, setEntries] = useState(() => Storage.load());
+  const [record, setRecord] = useState(EMPTY_RECORD);
+  const [showSavedToast, setShowSavedToast] = useState(false);
+  const [llm] = useState(() => LlmSettings.load());
+  const toastTimer = useRef(null);
 
   const t = TEXT[lang];
   const toggleLang = () => setLang((l) => (l === 'en' ? 'zh' : 'en'));
@@ -14,6 +21,29 @@ export default function App() {
   const enLabelColor = lang === 'en' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
   const zhLabelColor = lang === 'zh' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
   const navColor = (v) => (view === v ? '#D9BE7A' : 'rgba(232,224,255,.35)');
+
+  const saveEntry = () => {
+    const entry = {
+      id: window.crypto && crypto.randomUUID ? crypto.randomUUID() : 'e' + Date.now() + Math.random().toString(36).slice(2),
+      ts: Date.now(),
+      v: record.v, a: record.a, d: record.d,
+      score: record.score,
+      emotion: record.title || '',
+      note: record.note,
+    };
+    const nextEntries = [...entries, entry];
+    Storage.save(nextEntries);
+    setEntries(nextEntries);
+    setRecord(EMPTY_RECORD);
+    setView('journal');
+    setShowSavedToast(true);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setShowSavedToast(false), 2000);
+  };
+
+  // Talk it through (Phase 7) isn't built yet - placeholder so Record's
+  // chip has something to call without crashing.
+  const talkItThrough = () => console.log('Talk it through: Phase 7, not built yet');
 
   return (
     <div className="frame">
@@ -41,16 +71,7 @@ export default function App() {
         {view === 'home' && <Home t={t} lang={lang} entries={entries} />}
 
         {view === 'record' && (
-          <div>
-            <div className="hdr">
-              <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6' }}>{t.record}</div>
-            </div>
-            <div className="panel">
-              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
-                Phase 2 placeholder — sliders + emotion words come in Phase 4.
-              </div>
-            </div>
-          </div>
+          <Record t={t} lang={lang} llmEnabled={llm.enabled} record={record} setRecord={setRecord} onSave={saveEntry} onTalkItThrough={talkItThrough} />
         )}
 
         {view === 'journal' && (
@@ -85,6 +106,8 @@ export default function App() {
       {view === 'home' && (
         <div className="chip log-now-fab" onClick={() => setView('record')}>{t.log}</div>
       )}
+
+      {showSavedToast && <div className="toast">{t.saved}</div>}
 
       <div className="tabbar">
         <div className="tabitem" onClick={() => setView('home')}>
