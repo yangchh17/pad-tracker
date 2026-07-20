@@ -357,14 +357,10 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
 <sc-if value="{{ viewIsChat }}" hint-placeholder-val="{{ false }}">
 <div>
   <div class="hdr">
-    <sc-if value="{{ chatConfirmDiscard }}" hint-placeholder-val="{{ false }}">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <span style="font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.6)">{{ t.discardConfirm }}</span>
-        <div class="chip" onClick="{{ backFromChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:#E0645C">{{ t.discardYes }}</div>
-        <div class="chip" onClick="{{ cancelDiscardChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5)">{{ t.discardCancel }}</div>
-      </div>
+    <sc-if value="{{ chatBuildingNote }}" hint-placeholder-val="{{ false }}">
+      <span style="font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.6);animation:pulseGlow 1.6s ease-in-out infinite">{{ t.addingToNote }}</span>
     </sc-if>
-    <sc-if value="{{ !chatConfirmDiscard }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ !chatBuildingNote }}" hint-placeholder-val="{{ true }}">
       <div class="chip" onClick="{{ backFromChat }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.record }}</div>
       <sc-if value="{{ chatIsTalking }}" hint-placeholder-val="{{ true }}">
         <div class="chip" onClick="{{ wrapUpChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.wrapUp }}</div>
@@ -567,9 +563,14 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
   <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
       <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.note }}</span>
-      <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
-        <span class="chip" onClick="{{ talkItThrough }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.talkItThrough }}</span>
-      </sc-if>
+      <div style="display:flex;gap:12px">
+        <sc-if value="{{ hasNoteText }}" hint-placeholder-val="{{ false }}">
+          <span class="chip" onClick="{{ clearNote }}" style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4)">{{ t.clear }}</span>
+        </sc-if>
+        <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+          <span class="chip" onClick="{{ talkItThrough }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.talkItThrough }}</span>
+        </sc-if>
+      </div>
     </div>
     <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
   </div>
@@ -923,7 +924,7 @@ const TEXT={
     errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.',
     recordFirst:'Record your first entry',saved:'Saved ✓',infoDismiss:'Got it',
     talkItThrough:'Talk it through',chatPlaceholder:'Say what\'s on your mind...',send:'Send',chatThinking:'Thinking…',wrapUp:'Wrap up',retry:'Retry',
-    discardConfirm:'Discard this conversation?',discardYes:'Discard',discardCancel:'Cancel',
+    addingToNote:'Adding to note…',clear:'Clear',
     chatCapReached:'Long enough for now — tap Wrap up to check in.',
     afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation',
     includeConversation:'Save this conversation with the entry',conversationTitle:'— Talk it through conversation —',
@@ -937,7 +938,7 @@ const TEXT={
     errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。',
     recordFirst:'记录你的第一条',saved:'已保存 ✓',infoDismiss:'知道了',
     talkItThrough:'聊一聊',chatPlaceholder:'说说你在想什么...',send:'发送',chatThinking:'思考中…',wrapUp:'结束对话',retry:'重试',
-    discardConfirm:'放弃这段对话？',discardYes:'放弃',discardCancel:'取消',
+    addingToNote:'正在添加到备注…',clear:'清空',
     chatCapReached:'先聊到这里 — 点击"结束对话"来记录当下的心情。',
     afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话',
     includeConversation:'将这段对话保存到记录中',conversationTitle:'— 聊一聊对话记录 —',
@@ -1007,7 +1008,7 @@ class Component extends DCLogic {
     testConnStatus:'idle', testConnErrorMsg:'', infoAxis:null,
     showSavedToast:false,
     chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
-    chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+    chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
     chatIncludeConversation:true, chatSaving:false,
     entryChatExpanded:false
   };
@@ -1156,7 +1157,7 @@ class Component extends DCLogic {
     this.setState({
       chatBeforeReading:{v:rec.v,a:rec.a,d:rec.d,score:rec.score},
       chatMessages:[{role:'assistant',content:opening}], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
-      chatPhase:'talking', chatConfirmDiscard:false, chatIncludeConversation:true,
+      chatPhase:'talking', chatBuildingNote:false, chatIncludeConversation:true,
       view:'chat'
     });
   }
@@ -1194,22 +1195,45 @@ class Component extends DCLogic {
     });
   }
   wrapUpChat(){this.setState({chatPhase:'afterReading'});}
+  clearNote(){this.setState(s=>({record:{...s.record,note:''}}));}
   backFromChat(){
-    if(this.state.chatMessages.length>0 && !this.state.chatConfirmDiscard){
-      this.setState({chatConfirmDiscard:true});
+    if(this.state.chatBuildingNote)return;
+    const resetChatState={
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
+      chatIncludeConversation:true, view:'record'
+    };
+    const hasRealConversation=this.state.chatMessages.some(m=>m.role==='user');
+    if(!hasRealConversation){
+      this.setState(resetChatState);
       return;
     }
-    // Exiting the chat discards the conversation itself, but the mood reading
-    // (and note) the user already set is still real and shouldn't be lost -
-    // save it as a normal entry, same as tapping Save Entry from Record directly.
-    this.saveEntry();
-    this.setState({
-      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
-      chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
-      chatIncludeConversation:true
+    // Exiting mid-conversation no longer discards it outright - the
+    // conversation becomes editable note text instead, same material the
+    // user would get from finishing normally, so nothing is silently lost
+    // and nothing is silently saved either. "Clear" on the Note field is
+    // how the user actually discards it if they don't want to keep it.
+    const lang=this.state.lang;
+    const userNote=(this.state.record.note||'').trim();
+    const transcriptText=formatChatTranscript(lang, this.state.chatMessages);
+    const finish=(noteText)=>{
+      this.setState(s=>({record:{...s.record, note:noteText}, ...resetChatState}));
+    };
+    if(userNote){
+      finish(userNote+'\n\n'+transcriptText);
+      return;
+    }
+    this.setState({chatBuildingNote:true});
+    const t=TEXT[lang];
+    const system={role:'system',content:buildChatSummaryPrompt(lang)};
+    const history=this.state.chatMessages.map(m=>({role:m.role,content:m.content}));
+    llmChat(this.state.llm, [system, ...history]).then(summary=>{
+      finish(t.aiSummaryPrefix+' '+summary.trim()+'\n\n'+transcriptText);
+    }).catch(err=>{
+      console.error('PAD Tracker: exit note generation failed, using transcript only',err);
+      finish(transcriptText);
     });
   }
-  cancelDiscardChat(){this.setState({chatConfirmDiscard:false});}
   toggleIncludeConversation(){this.setState(s=>({chatIncludeConversation:!s.chatIncludeConversation}));}
   finishSaveChatEntry(note, chatData){
     const rec=this.state.record;
@@ -1230,7 +1254,7 @@ class Component extends DCLogic {
       record:{v:0,a:0,d:0,title:null,score:6,note:''},
       wordsExpanded:false,
       chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
-      chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+      chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
       chatIncludeConversation:true, chatSaving:false,
       view:'journal',
       showSavedToast:true
@@ -1515,6 +1539,7 @@ class Component extends DCLogic {
       scoreTrackRef:this.scoreTrackRef,
       scoreDown:(e)=>this.scoreDown(e), scoreMove:(e)=>this.scoreMove(e), scoreUp:()=>this.scoreUp(),
       noteVal:rec.note, onNoteChange:(e)=>this.onNoteChange(e),
+      hasNoteText: !!(rec.note||'').trim(), clearNote:()=>this.clearNote(),
       saveEntry:()=>this.saveEntry(),
       talkItThrough:()=>this.startChat(),
 
@@ -1539,8 +1564,7 @@ class Component extends DCLogic {
       sendButtonOpacity: (this.state.chatStatus!=='sending' && !!this.state.chatInput.trim() && this.state.chatMessages.filter(m=>m.role==='user').length<CHAT_MAX_TURNS) ? 1 : 0.4,
       wrapUpChat:()=>this.wrapUpChat(),
       backFromChat:()=>this.backFromChat(),
-      chatConfirmDiscard: this.state.chatConfirmDiscard,
-      cancelDiscardChat:()=>this.cancelDiscardChat(),
+      chatBuildingNote: this.state.chatBuildingNote,
       saveChatEntry:()=>this.saveChatEntry(),
       chatBeforeSummary: this.state.chatBeforeReading ? `V${fmtSigned(this.state.chatBeforeReading.v)} A${fmtSigned(this.state.chatBeforeReading.a)} D${fmtSigned(this.state.chatBeforeReading.d)} · ${this.state.chatBeforeReading.score}/10` : '',
       toggleIncludeConversation:()=>this.toggleIncludeConversation(),
