@@ -488,6 +488,10 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       </sc-if>
     </sc-if>
   </div>
+
+  <div class="panel">
+    <span class="chip" onClick="{{ reopenOnboarding }}" style="font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ t.onboardAgain }}</span>
+  </div>
 </div>
 </sc-if>
 
@@ -597,6 +601,29 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <div style="font:italic 17px 'EB Garamond',serif;color:#D9BE7A;margin-bottom:14px">{{ infoAxisLabel }}</div>
       <div ref="{{ infoTextRef }}" style="font:italic 400 15.5px 'EB Garamond',serif;line-height:1.8;color:rgba(232,224,255,.72)"></div>
       <div onClick="{{ closeInfo }}" style="margin-top:22px;width:100%;text-align:center;font:italic 14px 'EB Garamond',serif;color:#D9BE7A;cursor:pointer;padding:10px;border-radius:10px;background:rgba(217,190,122,.06);border:1px solid rgba(217,190,122,.3);transition:background .15s;user-select:none">{{ t.infoDismiss }}</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ onboardingVisible }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;left:0;right:0;top:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(5,6,12,.9);backdrop-filter:blur(8px)">
+    <div style="width:calc(100% - 32px);max-width:340px;background:linear-gradient(170deg,rgba(217,190,122,.06) 0%,rgba(10,8,6,.97) 40%),rgba(10,8,6,.95);border:1px solid rgba(217,190,122,.35);border-top-color:rgba(217,190,122,.5);border-radius:18px;padding:32px 32px 28px;box-shadow:0 24px 64px rgba(0,0,0,.35)">
+      <div style="font:italic 17px 'EB Garamond',serif;color:#D9BE7A;margin-bottom:14px">{{ onboardingTitle }}</div>
+      <div style="font:400 14px/1.7 Inter,sans-serif;color:rgba(232,224,255,.75);white-space:pre-line">{{ onboardingBody }}</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin:22px 0 20px">
+        <sc-for list="{{ onboardingDots }}" as="dot" hint-placeholder-count="3">
+          <div style="width:6px;height:6px;border-radius:50%;background:{{ dot.color }}"></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <sc-if value="{{ onboardingIsLast }}" hint-placeholder-val="{{ false }}">
+          <span></span>
+        </sc-if>
+        <sc-if value="{{ !onboardingIsLast }}" hint-placeholder-val="{{ true }}">
+          <span onClick="{{ skipOnboarding }}" style="font:italic 13px 'EB Garamond',serif;color:rgba(232,224,255,.4);cursor:pointer">{{ t.onboardSkip }}</span>
+        </sc-if>
+        <span onClick="{{ nextOnboarding }}" style="font:italic 14px 'EB Garamond',serif;color:#D9BE7A;cursor:pointer;padding:10px 20px;border-radius:10px;background:rgba(217,190,122,.08);border:1px solid rgba(217,190,122,.3);transition:background .15s;user-select:none">{{ onboardingNextLabel }}</span>
+      </div>
     </div>
   </div>
 </sc-if>
@@ -727,6 +754,12 @@ const LlmSettings={
     }
   }
 };
+const ONBOARD_KEY='pad-tracker:onboarded';
+const Onboarding={
+  isDone(){ try{ return !!localStorage.getItem(ONBOARD_KEY); }catch(e){ return false; } },
+  markDone(){ try{ localStorage.setItem(ONBOARD_KEY,'1'); }catch(e){} }
+};
+const ONBOARDING_PAGES=3;
 const LLM_TIMEOUT_MS=120000;
 function llmChat(settings, messages, opts){
   const timeoutMs=(opts&&opts.timeoutMs)||LLM_TIMEOUT_MS;
@@ -799,6 +832,16 @@ function formatChatTranscript(lang, messages){
   const t=TEXT[lang];
   const who=(role)=> role==='user' ? t.chatMe : t.chatCompanion;
   return t.conversationTitle+'\n'+messages.map(m=>who(m.role)+': '+m.content).join('\n');
+}
+function buildOnboardInstallBody(lang, isIOS, isAndroid){
+  if(lang==='zh'){
+    if(isIOS) return '点击分享图标，然后选择"添加到主屏幕"。这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+    if(isAndroid) return '点击菜单（⋮），然后选择"安装应用"（或"添加到主屏幕"）。这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+    return 'iPhone：点击分享图标 → "添加到主屏幕"。\nAndroid：点击菜单（⋮）→ "安装应用"。\n这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+  }
+  if(isIOS) return 'Tap the Share icon, then "Add to Home Screen." This keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
+  if(isAndroid) return 'Tap the menu (⋮), then "Install app" (or "Add to Home Screen"). This keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
+  return 'On iPhone: tap the Share icon, then "Add to Home Screen."\nOn Android: tap the menu (⋮), then "Install app."\nThis keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
 }
 
 // ── Info keyword formatter ──────────────────────────────────────
@@ -929,7 +972,13 @@ const TEXT={
     afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation',
     includeConversation:'Save this conversation with the entry',conversationTitle:'— Talk it through conversation —',
     chatMe:'Me',chatCompanion:'Companion',aiSummaryPrefix:'(AI Summary)',savingEntry:'Saving…',
-    chatOpeningLine:'What\'s on your mind right now?'},
+    chatOpeningLine:'What\'s on your mind right now?',
+    onboardTitle1:'Install it like an app',
+    onboardTitle2:'Rate how you feel',
+    onboardBody2:'Drag the three sliders by feel — no rules, just notice what feels true right now. Watch the emotion words shift as you go; they\'re a mirror for what you\'re already dialing in, not something to get right.',
+    onboardTitle3:'Talk it through (optional)',
+    onboardBody3:'Turn on "Use local AI" in Settings to talk through your day with an AI companion before logging your mood. It helps you notice and name what you\'re feeling, then compares how you felt before and after.',
+    onboardSkip:'Skip',onboardNext:'Next',onboardDone:'Got it',onboardAgain:'View tutorial again'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
     desktopOnly:'🖥 仅限桌面端 — 详见 README',
@@ -943,7 +992,13 @@ const TEXT={
     afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话',
     includeConversation:'将这段对话保存到记录中',conversationTitle:'— 聊一聊对话记录 —',
     chatMe:'我',chatCompanion:'伙伴',aiSummaryPrefix:'（AI 摘要）',savingEntry:'保存中…',
-    chatOpeningLine:'现在你在想什么？'},
+    chatOpeningLine:'现在你在想什么？',
+    onboardTitle1:'把它安装成 App',
+    onboardTitle2:'拖动滑块，感受你的情绪',
+    onboardBody2:'凭感觉拖动三个滑块——没有对错，只是留意当下真实的感受。情绪词会随之变化，它们只是一面镜子，不是需要"答对"的题目。',
+    onboardTitle3:'聊一聊（可选）',
+    onboardBody3:'在设置中开启"使用本地 AI"，即可在记录心情前先和 AI 伙伴聊聊你的一天。它能帮你留意并说出你的感受，并对比聊天前后的状态变化。',
+    onboardSkip:'跳过',onboardNext:'下一步',onboardDone:'知道了',onboardAgain:'重新查看教程'},
 };
 
 const EMOTION_BANK=[
@@ -1010,7 +1065,8 @@ class Component extends DCLogic {
     chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
     chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
     chatIncludeConversation:true, chatSaving:false,
-    entryChatExpanded:false
+    entryChatExpanded:false,
+    onboardingStep: Onboarding.isDone() ? 0 : 1
   };
 
   constructor(props){
@@ -1026,6 +1082,9 @@ class Component extends DCLogic {
       if(node){ this.scrollChartToEnd(); }
     };
     this.infoTextRef=(node)=>{ this.infoTextNode=node; };
+    const ua=(typeof navigator!=='undefined'&&navigator.userAgent)||'';
+    this.isIOS=/iPhone|iPad|iPod/.test(ua);
+    this.isAndroid=/Android/.test(ua);
   }
 
   scrollChartToEnd(){
@@ -1062,6 +1121,15 @@ class Component extends DCLogic {
   closeInsights(){this.setState({showInsightsPanel:false});}
 
   toggleLang(){this.setState(s=>({lang:s.lang==='en'?'zh':'en'}));}
+  nextOnboarding(){
+    this.setState(s=>{
+      const step=s.onboardingStep+1;
+      if(step>ONBOARDING_PAGES){ Onboarding.markDone(); return {onboardingStep:0}; }
+      return {onboardingStep:step};
+    });
+  }
+  skipOnboarding(){ Onboarding.markDone(); this.setState({onboardingStep:0}); }
+  reopenOnboarding(){ this.setState({onboardingStep:1, view:'home'}); }
   setInfoAxis(axis){
     this.setState(s=>({infoAxis: s.infoAxis===axis?null:axis}));
   }
@@ -1571,6 +1639,16 @@ class Component extends DCLogic {
       includeConvoKnob: this.state.chatIncludeConversation?24:2,
       saveChatButtonLabel: this.state.chatSaving ? t.savingEntry : t.save,
       saveChatButtonOpacity: this.state.chatSaving ? 0.5 : 1,
+
+      onboardingVisible: this.state.onboardingStep>0,
+      onboardingIsLast: this.state.onboardingStep>=ONBOARDING_PAGES,
+      onboardingTitle: this.state.onboardingStep===1 ? t.onboardTitle1 : this.state.onboardingStep===2 ? t.onboardTitle2 : t.onboardTitle3,
+      onboardingBody: this.state.onboardingStep===1 ? buildOnboardInstallBody(lang,this.isIOS,this.isAndroid) : this.state.onboardingStep===2 ? t.onboardBody2 : t.onboardBody3,
+      onboardingNextLabel: this.state.onboardingStep>=ONBOARDING_PAGES ? t.onboardDone : t.onboardNext,
+      onboardingDots: Array.from({length:ONBOARDING_PAGES},(_,i)=>({key:i,color:(i+1)===this.state.onboardingStep?'#D9BE7A':'rgba(232,224,255,.2)'})),
+      nextOnboarding:()=>this.nextOnboarding(),
+      skipOnboarding:()=>this.skipOnboarding(),
+      reopenOnboarding:()=>this.reopenOnboarding(),
 
       journalGroups
     };
