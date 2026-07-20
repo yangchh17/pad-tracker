@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#05060C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PAD">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<script>
+  window.__resources = {
+    "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "./vendor/react.production.min.js",
+    "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "./vendor/react-dom.production.min.js",
+    "https://unpkg.com/@babel/standalone@7.29.0/babel.min.js": "./vendor/babel.min.js"
+  };
+</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail" data-bg-color="#05060C">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#05060C"/><circle cx="50" cy="50" r="20" fill="none" stroke="#D9BE7A" stroke-width="1.5"/><circle cx="50" cy="50" r="4" fill="#F5EFE0"/></svg>
+</template>
+<helmet data-dc-atomics="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&amp;family=JetBrains+Mono:wght@300;400;500&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
+*{box-sizing:border-box}
+::-webkit-scrollbar{display:none}
+.frame{width:390px;height:844px;background:#05060C;position:relative;overflow:hidden;border-radius:44px;box-shadow:0 30px 80px rgba(0,0,0,.35);margin:24px auto;font-family:Inter,sans-serif}
+@media (max-width:480px){.frame{width:100vw;height:100dvh;margin:0;border-radius:0;box-shadow:none}}
+.stars{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1px 1px at 24px 60px, rgba(255,255,255,.4) 50%, transparent),radial-gradient(1px 1px at 100px 140px, rgba(255,255,255,.3) 50%, transparent),radial-gradient(1px 1px at 180px 40px, rgba(255,255,255,.35) 50%, transparent),radial-gradient(1px 1px at 280px 110px, rgba(255,255,255,.3) 50%, transparent),radial-gradient(1px 1px at 340px 220px, rgba(255,255,255,.3) 50%, transparent),radial-gradient(1px 1px at 60px 280px, rgba(255,255,255,.25) 50%, transparent),radial-gradient(1px 1px at 220px 360px, rgba(255,255,255,.3) 50%, transparent),radial-gradient(1px 1px at 340px 480px, rgba(255,255,255,.25) 50%, transparent),radial-gradient(1px 1px at 40px 560px, rgba(255,255,255,.3) 50%, transparent),radial-gradient(1px 1px at 300px 640px, rgba(255,255,255,.25) 50%, transparent)}
+.scroll{position:absolute;left:0;right:0;top:44px;bottom:82px;overflow-y:auto}
+.pv{width:44px;height:22px;border-radius:11px;position:relative;cursor:pointer;flex:none;background:rgba(255,255,255,.1)}
+.pv-knob{position:absolute;top:2px;width:18px;height:18px;border-radius:50%;background:#D9BE7A;transition:left .2s}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:82px;display:flex;align-items:flex-start;padding-top:12px;background:rgba(5,6,12,.9);backdrop-filter:blur(10px);border-top:1px solid rgba(217,190,122,.15)}
+.tabitem{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.panel{position:relative;margin:16px 20px 0;padding:18px 16px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(217,190,122,.2);border-radius:8px;overflow:hidden}
+.hdr{position:relative;padding:22px 20px 4px;display:flex;justify-content:space-between;align-items:baseline}
+.chip{cursor:pointer;user-select:none;transition:background .15s}
+.chip:hover{background:rgba(217,190,122,.08)}
+.slider-track{position:relative;height:20px;background:transparent;border-radius:10px;touch-action:none}
+.slider-track::before{content:'';position:absolute;left:0;right:0;top:9px;height:3px;background:rgba(255,255,255,.16);border-radius:3px}
+.slider-handle{position:absolute;top:50%;width:34px;height:34px;transform:translate(-50%,-50%);cursor:grab}
+.range-labels{display:flex;justify-content:space-between;margin-top:8px;font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.36)}
+.primary-action{width:calc(100% - 40px);min-height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(217,190,122,.24),rgba(217,190,122,.12));border:1px solid rgba(217,190,122,.65);border-radius:7px;font:600 14px Inter,sans-serif;color:#F5EFE0;box-shadow:0 12px 30px rgba(0,0,0,.32)}
+.cube-drag{touch-action:none;cursor:grab}
+.log-now-fab{position:absolute;left:20px;right:20px;bottom:98px;z-index:8;min-height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(217,190,122,.24),rgba(217,190,122,.12));border:1px solid rgba(217,190,122,.65);border-radius:7px;font:600 14px Inter,sans-serif;color:#F5EFE0;box-shadow:0 12px 30px rgba(0,0,0,.38);backdrop-filter:blur(6px)}
+.toast{position:absolute;left:50%;top:56px;transform:translateX(-50%);z-index:9;padding:10px 20px;background:rgba(10,8,6,.92);border:1px solid rgba(217,190,122,.5);border-radius:20px;font:400 12px 'EB Garamond',serif;font-style:italic;color:#D9BE7A;box-shadow:0 8px 24px rgba(0,0,0,.4);backdrop-filter:blur(6px);pointer-events:none}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px #F5EFE0,0 0 3px #D9BE7A}50%{box-shadow:0 0 20px #F5EFE0,0 0 12px #D9BE7A}}
+.kw-amber{font-weight:700;font-style:normal;color:#E8C35A;display:inline}
+.kw-crimson{font-weight:700;font-style:normal;color:#C4706A;display:inline}
+.kw-olive{font-weight:700;font-style:normal;color:#9BAF7A;display:inline}
+.kw-tobacco{font-weight:400;font-style:normal;color:#8A8078;opacity:.85;display:inline}
+.kw-rock{font-weight:400;font-style:normal;color:#8C7D6E;opacity:.75;display:inline}
+.kw-indigo{font-weight:700;font-style:normal;color:#7A8FA6;display:inline}
+</style>
+</helmet>
+
+<div class="frame">
+<div class="stars"></div>
+
+<div style="position:absolute;left:0;right:0;top:0;height:44px;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:env(safe-area-inset-top,0px) 20px 0;font:400 12px 'JetBrains Mono',monospace;color:rgba(232,224,255,.5);z-index:5;box-sizing:border-box">
+  <div class="chip" onClick="{{ openSettings }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center">
+    <div style="width:22px;height:22px;border-radius:50%;border:1px solid rgba(217,190,122,.4);display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 12px 'JetBrains Mono',monospace;pointer-events:none">⚙</div>
+  </div>
+  <div class="pv" onClick="{{ toggleLang }}" style="width:52px">
+    <span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ enLabelColor }};pointer-events:none">EN</span>
+    <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ zhLabelColor }};pointer-events:none">中</span>
+    <div class="pv-knob" style="left:{{ knob }}px"></div>
+  </div>
+</div>
+
+<div class="scroll">
+
+<sc-if value="{{ viewIsHome }}" hint-placeholder-val="{{ true }}">
+<div>
+  <div class="hdr">
+    <div>
+      <div style="font:400 24px/1.1 'EB Garamond',serif;color:#EDE7F6;letter-spacing:.02em">{{ t.home }}</div>
+      <div style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.35);margin-top:4px;letter-spacing:.06em">{{ dateStr }}</div>
+    </div>
+    <div style="font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.now }}</div>
+  </div>
+
+  <div class="panel" style="overflow:visible">
+    <div style="font:400 11px 'EB Garamond',serif;font-style:italic;letter-spacing:.06em;color:rgba(217,190,122,.75);margin-bottom:4px">{{ t.phase }}</div>
+    <div class="cube-drag" onPointerDown="{{ cubeDown }}" onPointerMove="{{ cubeMove }}" onPointerUp="{{ cubeUp }}" onPointerCancel="{{ cubeUp }}" onWheel="{{ cubeWheel }}" style="position:relative;height:210px;display:flex;align-items:center;justify-content:center;perspective:650px;overflow:visible">
+      <div style="transform:scale({{ zoom }})">
+        <div style="position:relative;width:0;height:0;transform-style:preserve-3d;transform:{{ cubeTransform }}">
+          <sc-for list="{{ rings }}" as="r" hint-placeholder-count="3"></sc-for>
+          <sc-for list="{{ axes }}" as="ax" hint-placeholder-count="3">
+            <div style="{{ ax.lineStyle }}"></div>
+            <div style="{{ ax.labelStyle }}">{{ ax.label }}</div>
+          </sc-for>
+          <sc-for list="{{ trailSegs }}" as="sg" hint-placeholder-count="20"><div style="{{ sg.style }}"></div></sc-for>
+          <div style="{{ trailHead.style }}"></div>
+          <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}"><div style="{{ hoverHighlightStyle }}"></div></sc-if>
+        </div>
+      </div>
+      <div style="position:absolute;right:6px;bottom:6px;display:flex;flex-direction:column;gap:4px">
+        <div class="chip" onClick="{{ zoomIn }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">+</div>
+        <div class="chip" onClick="{{ zoomOut }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">–</div>
+      </div>
+      <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:0;right:0;bottom:8px;text-align:center;font:italic 400 11px 'EB Garamond',serif;color:rgba(232,224,255,.4);pointer-events:none">{{ t.emptyTrail }}</div>
+      </sc-if>
+    <div style="left: 51px; top: 40px; position: absolute"></div></div>
+    <div style="display:flex;gap:14px;margin-top:8px;padding-top:14px;border-top:1px solid rgba(217,190,122,.12)">
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#E8B54D;letter-spacing:.08em">{{ t.v }}</div><div style="font:300 17px 'JetBrains Mono',monospace;color:#EDE7F6">{{ latestV }}</div></div>
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#E0645C;letter-spacing:.08em">{{ t.a }}</div><div style="font:300 17px 'JetBrains Mono',monospace;color:#EDE7F6">{{ latestA }}</div></div>
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#6D9BD1;letter-spacing:.08em">{{ t.d }}</div><div style="font:300 17px 'JetBrains Mono',monospace;color:#EDE7F6">{{ latestD }}</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <sc-if value="{{ hasEntries }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:18px;margin-bottom:12px">
+      <div class="chip" onClick="{{ setChartPad }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorPad }};border-bottom:1px solid {{ chartUnderlinePad }};padding-bottom:6px">{{ t.pad }}</div>
+      <div class="chip" onClick="{{ setChartScore }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorScore }};border-bottom:1px solid {{ chartUnderlineScore }};padding-bottom:6px">{{ t.score }}</div>
+      <div style="flex:1"></div>
+      <div class="chip" onClick="{{ chartZoomOut }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+      <div class="chip" onClick="{{ chartZoomIn }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
+    </div>
+    <div style="position:relative">
+      <div style="display:flex;gap:6px">
+        <div style="flex:none;width:26px;height:78px;margin-top:10px;display:flex;flex-direction:column;justify-content:space-between">
+          <sc-for list="{{ yLabels }}" as="yl" hint-placeholder-count="3">
+            <div style="font:300 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.35);text-align:right">{{ yl }}</div>
+          </sc-for>
+        </div>
+        <div ref="{{ chartScrollRef }}" onPointerDown="{{ chartDown }}" onPointerMove="{{ chartMove }}" onPointerUp="{{ chartUp }}" onPointerLeave="{{ chartUp }}" onWheel="{{ chartWheel }}" style="overflow-x:auto;flex:1;cursor:grab;touch-action:none">
+          <svg width="{{ chartTotalWidth }}" height="110" viewBox="0 0 {{ chartTotalWidth }} 110" style="display:block">
+            <sc-for list="{{ gridLines }}" as="gl" hint-placeholder-count="3">
+              <line x1="0" y1="{{ gl.y }}" x2="{{ chartTotalWidth }}" y2="{{ gl.y }}" stroke="rgba(255,255,255,.06)" stroke-width="1"></line>
+            </sc-for>
+            <sc-if value="{{ chartIsPad }}" hint-placeholder-val="{{ true }}">
+              <polyline points="{{ padPolyV }}" fill="none" stroke="#E8B54D" stroke-width="1.3"></polyline>
+              <polyline points="{{ padPolyA }}" fill="none" stroke="#E0645C" stroke-width="1.3"></polyline>
+              <polyline points="{{ padPolyD }}" fill="none" stroke="#6D9BD1" stroke-width="1.3"></polyline>
+            </sc-if>
+            <sc-if value="{{ chartIsScore }}" hint-placeholder-val="{{ false }}">
+              <polyline points="{{ scorePoly }}" fill="none" stroke="#D9BE7A" stroke-width="1.6"></polyline>
+            </sc-if>
+            <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}">
+              <line x1="{{ hoverX }}" y1="0" x2="{{ hoverX }}" y2="88" stroke="rgba(217,190,122,.4)" stroke-width="1"></line>
+            </sc-if>
+            <sc-for list="{{ xTicks }}" as="xt" hint-placeholder-count="10">
+              <text x="{{ xt.x }}" y="104" font-size="8" fill="rgba(232,224,255,.35)" text-anchor="middle" font-family="JetBrains Mono, monospace">{{ xt.label }}</text>
+            </sc-for>
+          </svg>
+        </div>
+      </div>
+      <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:{{ hoverTooltipLeft }}px;top:-4px;transform:translate(-50%,-100%);background:rgba(10,8,6,.95);border:1px solid rgba(217,190,122,.4);border-radius:6px;padding:8px 10px;font:400 10px 'JetBrains Mono',monospace;color:#EDE7F6;white-space:nowrap;pointer-events:none;z-index:10">
+          <div style="color:#D9BE7A;margin-bottom:3px">{{ hoverDate }}</div>
+          <div>{{ hoverSummary }}</div>
+          <sc-if value="{{ hasHoverNote }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:3px;font:italic 400 10px 'EB Garamond',serif;color:rgba(232,224,255,.55);white-space:normal;max-width:180px">{{ hoverNote }}</div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(217,190,122,.1);font:400 11px 'JetBrains Mono',monospace;color:rgba(232,224,255,.55)">
+      <span style="color:#D9BE7A">{{ hoverDate }}</span> · {{ hoverSummary }}
+      <sc-if value="{{ hasHoverNote }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:4px;font:italic 400 11px 'EB Garamond',serif;color:rgba(232,224,255,.45)">{{ hoverNote }}</div>
+      </sc-if>
+    </div>
+    </sc-if>
+    <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:24px 4px;text-align:center;font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.emptyChart }}</div>
+    </sc-if>
+  </div>
+
+  <div style="height:100px"></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsJournal }}" hint-placeholder-val="{{ false }}">
+<div style="padding-bottom:20px">
+  <div class="hdr">
+    <div style="font:400 24px/1.1 'EB Garamond',serif;color:#EDE7F6">{{ t.journal }}</div>
+    <sc-if value="{{ hasEntries }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:14px">
+        <div class="chip" onClick="{{ exportCsv }}" style="font:italic 400 11px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ t.export }}</div>
+        <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+          <div class="chip" onClick="{{ getInsights }}" style="font:italic 400 11px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ insightsLabel }}</div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ !hasEntries }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:32px 20px 0;text-align:center;font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.emptyJournal }}</div>
+    <div style="display:flex;justify-content:center;margin-top:18px">
+      <div class="chip" onClick="{{ goRecord }}" style="padding:11px 26px;background:rgba(217,190,122,.12);border:1px solid rgba(217,190,122,.5);border-radius:2px;font:400 13px 'EB Garamond',serif;font-style:italic;color:#D9BE7A">{{ t.recordFirst }}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showInsightsPanel }}" hint-placeholder-val="{{ false }}">
+    <div class="panel">
+      <sc-if value="{{ insightsLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="font:italic 400 12px 'EB Garamond',serif;color:rgba(232,224,255,.5)">{{ t.insightsLoading }}</div>
+      </sc-if>
+      <sc-if value="{{ insightsError }}" hint-placeholder-val="{{ false }}">
+        <div style="font:400 12px 'JetBrains Mono',monospace;color:#E0645C">{{ insightsErrorMsg }}</div>
+      </sc-if>
+      <sc-if value="{{ insightsResult }}" hint-placeholder-val="{{ false }}">
+        <div style="font:400 13px/1.6 Inter,sans-serif;color:rgba(232,224,255,.75)">{{ insightsText }}</div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-for list="{{ journalGroups }}" as="grp" hint-placeholder-count="3">
+    <div style="margin:20px 20px 0">
+      <div style="font:400 11px 'EB Garamond',serif;font-style:italic;letter-spacing:.06em;color:rgba(217,190,122,.6);margin-bottom:10px">{{ grp.label }}</div>
+      <sc-for list="{{ grp.entries }}" as="e" hint-placeholder-count="2">
+        <div class="chip" onClick="{{ e.onSelect }}" style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="width:8px;display:flex;flex-direction:column;align-items:center;padding-top:4px">
+            <div style="width:6px;height:6px;border-radius:50%;background:#D9BE7A"></div>
+            <div style="width:1px;flex:1;background:rgba(217,190,122,.2);margin-top:4px"></div>
+          </div>
+          <div style="flex:1;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(217,190,122,.15);border-radius:6px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+              <span style="font:500 14px Inter,sans-serif;color:#EDE7F6">{{ e.title }}</span>
+              <span style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4)">{{ e.time }}</span>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:8px">
+              <span style="font:400 10px 'JetBrains Mono',monospace;color:#E8B54D">V{{ e.v }}</span>
+              <span style="font:400 10px 'JetBrains Mono',monospace;color:#E0645C">A{{ e.a }}</span>
+              <span style="font:400 10px 'JetBrains Mono',monospace;color:#6D9BD1">D{{ e.d }}</span>
+            </div>
+            <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.08);margin-bottom:8px">
+              <div style="height:100%;border-radius:2px;background:#D9BE7A;width:{{ e.scorePct }}%"></div>
+            </div>
+            <div style="font:400 12px/1.5 Inter,sans-serif;color:rgba(232,224,255,.55)">{{ e.note }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsEntryDetail }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr">
+    <div class="chip" onClick="{{ backToJournal }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.journal }}</div>
+  </div>
+  <div class="panel" style="overflow:visible">
+    <div style="font:400 11px 'EB Garamond',serif;font-style:italic;letter-spacing:.06em;color:rgba(217,190,122,.75);margin-bottom:4px">{{ t.phase }}</div>
+    <div class="cube-drag" onPointerDown="{{ cubeDown2 }}" onPointerMove="{{ cubeMove2 }}" onPointerUp="{{ cubeUp2 }}" onPointerCancel="{{ cubeUp2 }}" onWheel="{{ cubeWheel2 }}" style="position:relative;height:210px;display:flex;align-items:center;justify-content:center;perspective:650px;overflow:hidden">
+      <div style="transform:scale({{ zoom2 }})">
+        <div style="position:relative;width:0;height:0;transform-style:preserve-3d;transform:{{ cubeTransform2 }}">
+          <sc-for list="{{ selRings }}" as="r" hint-placeholder-count="3"><div style="{{ r.style }}"></div></sc-for>
+          <sc-for list="{{ selAxes }}" as="ax" hint-placeholder-count="3">
+            <div style="{{ ax.lineStyle }}"></div>
+            <div style="{{ ax.labelStyle }}">{{ ax.label }}</div>
+          </sc-for>
+          <sc-for list="{{ trailSegs2 }}" as="sg" hint-placeholder-count="20"><div style="{{ sg.style }}"></div></sc-for>
+          <div style="{{ trailHead2.style }}"></div>
+          <div style="{{ selHighlightStyle }}"></div>
+        </div>
+      </div>
+      <div style="position:absolute;right:6px;bottom:6px;display:flex;flex-direction:column;gap:4px">
+        <div class="chip" onClick="{{ zoomIn2 }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">+</div>
+        <div class="chip" onClick="{{ zoomOut2 }}" style="width:32px;height:32px;border:1px solid rgba(217,190,122,.4);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 16px 'JetBrains Mono',monospace">–</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;gap:18px;margin-bottom:12px">
+      <div class="chip" onClick="{{ setChartPad }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorPad }};border-bottom:1px solid {{ chartUnderlinePad }};padding-bottom:6px">{{ t.pad }}</div>
+      <div class="chip" onClick="{{ setChartScore }}" style="font:400 12px 'EB Garamond',serif;font-style:italic;color:{{ chartColorScore }};border-bottom:1px solid {{ chartUnderlineScore }};padding-bottom:6px">{{ t.score }}</div>
+      <div style="flex:1"></div>
+      <div class="chip" onClick="{{ chartZoomOut }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">–</div>
+      <div class="chip" onClick="{{ chartZoomIn }}" style="width:30px;height:30px;border:1px solid rgba(217,190,122,.4);border-radius:5px;display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:400 14px 'JetBrains Mono',monospace">+</div>
+    </div>
+    <div style="position:relative">
+      <div style="display:flex;gap:6px">
+        <div style="flex:none;width:26px;height:78px;margin-top:10px;display:flex;flex-direction:column;justify-content:space-between">
+          <sc-for list="{{ yLabels }}" as="yl" hint-placeholder-count="3">
+            <div style="font:300 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.35);text-align:right">{{ yl }}</div>
+          </sc-for>
+        </div>
+        <div ref="{{ chartScrollRef }}" onPointerDown="{{ chartDown }}" onPointerMove="{{ chartMove }}" onPointerUp="{{ chartUp }}" onPointerLeave="{{ chartUp }}" onWheel="{{ chartWheel }}" style="overflow-x:auto;flex:1;cursor:grab;touch-action:none">
+          <svg width="{{ chartTotalWidth }}" height="110" viewBox="0 0 {{ chartTotalWidth }} 110" style="display:block">
+            <sc-for list="{{ gridLines }}" as="gl" hint-placeholder-count="3">
+              <line x1="0" y1="{{ gl.y }}" x2="{{ chartTotalWidth }}" y2="{{ gl.y }}" stroke="rgba(255,255,255,.06)" stroke-width="1"></line>
+            </sc-for>
+            <sc-if value="{{ chartIsPad }}" hint-placeholder-val="{{ true }}">
+              <polyline points="{{ padPolyV }}" fill="none" stroke="#E8B54D" stroke-width="1.3"></polyline>
+              <polyline points="{{ padPolyA }}" fill="none" stroke="#E0645C" stroke-width="1.3"></polyline>
+              <polyline points="{{ padPolyD }}" fill="none" stroke="#6D9BD1" stroke-width="1.3"></polyline>
+            </sc-if>
+            <sc-if value="{{ chartIsScore }}" hint-placeholder-val="{{ false }}">
+              <polyline points="{{ scorePoly }}" fill="none" stroke="#D9BE7A" stroke-width="1.6"></polyline>
+            </sc-if>
+            <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}">
+              <line x1="{{ hoverX }}" y1="0" x2="{{ hoverX }}" y2="88" stroke="rgba(217,190,122,.4)" stroke-width="1"></line>
+            </sc-if>
+            <sc-for list="{{ xTicks }}" as="xt" hint-placeholder-count="10">
+              <text x="{{ xt.x }}" y="104" font-size="8" fill="rgba(232,224,255,.35)" text-anchor="middle" font-family="JetBrains Mono, monospace">{{ xt.label }}</text>
+            </sc-for>
+          </svg>
+        </div>
+      </div>
+      <sc-if value="{{ hasHover }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:{{ hoverTooltipLeft }}px;top:-4px;transform:translate(-50%,-100%);background:rgba(10,8,6,.95);border:1px solid rgba(217,190,122,.4);border-radius:6px;padding:8px 10px;font:400 10px 'JetBrains Mono',monospace;color:#EDE7F6;white-space:nowrap;pointer-events:none;z-index:10">
+          <div style="color:#D9BE7A;margin-bottom:3px">{{ hoverDate }}</div>
+          <div>{{ hoverSummary }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+      <span style="font:500 16px Inter,sans-serif;color:#EDE7F6">{{ selEntry.title }}</span>
+      <span style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4)">{{ selEntry.time }}</span>
+    </div>
+    <div style="display:flex;gap:14px;margin-bottom:12px">
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#E8B54D;letter-spacing:.08em">{{ t.v }}</div><div style="font:300 16px 'JetBrains Mono',monospace;color:#EDE7F6">{{ selEntry.v }}</div></div>
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#E0645C;letter-spacing:.08em">{{ t.a }}</div><div style="font:300 16px 'JetBrains Mono',monospace;color:#EDE7F6">{{ selEntry.a }}</div></div>
+      <div style="flex:1"><div style="font:400 9px 'JetBrains Mono',monospace;color:#6D9BD1;letter-spacing:.08em">{{ t.d }}</div><div style="font:300 16px 'JetBrains Mono',monospace;color:#EDE7F6">{{ selEntry.d }}</div></div>
+    </div>
+    <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.08);margin-bottom:12px">
+      <div style="height:100%;border-radius:2px;background:#D9BE7A;width:{{ selScorePct }}%"></div>
+    </div>
+    <div style="font:400 13px/1.6 Inter,sans-serif;color:rgba(232,224,255,.6)">{{ selEntry.note }}</div>
+    <sc-if value="{{ selHasBefore }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(217,190,122,.12);font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.45)">{{ t.before }}: {{ selBeforeSummary }} · {{ t.after }}: {{ selAfterSummary }}</div>
+    </sc-if>
+    <sc-if value="{{ selHasChat }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:10px">
+        <span class="chip" onClick="{{ toggleEntryChat }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ entryChatToggleLabel }}</span>
+        <sc-if value="{{ entryChatExpanded }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ selChatMessages }}" as="m" hint-placeholder-count="2">
+              <div style="display:flex;justify-content:{{ m.justify }}">
+                <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 12px/1.5 Inter,sans-serif;color:{{ m.color }};white-space:pre-line">{{ m.content }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsChat }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr">
+    <sc-if value="{{ chatBuildingNote }}" hint-placeholder-val="{{ false }}">
+      <span style="font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.6);animation:pulseGlow 1.6s ease-in-out infinite">{{ t.addingToNote }}</span>
+    </sc-if>
+    <sc-if value="{{ !chatBuildingNote }}" hint-placeholder-val="{{ true }}">
+      <div class="chip" onClick="{{ backFromChat }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.record }}</div>
+      <sc-if value="{{ chatIsTalking }}" hint-placeholder-val="{{ true }}">
+        <div class="chip" onClick="{{ wrapUpChat }}" style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.wrapUp }}</div>
+      </sc-if>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ chatIsTalking }}" hint-placeholder-val="{{ true }}">
+    <div class="panel" style="max-height:46vh;overflow-y:auto">
+      <sc-for list="{{ chatMessages }}" as="m" hint-placeholder-count="2">
+        <div style="display:flex;justify-content:{{ m.justify }};margin-bottom:8px">
+          <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 13px/1.5 Inter,sans-serif;color:{{ m.color }};white-space:pre-line">{{ m.content }}</div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ chatSending }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:flex-start">
+          <div style="padding:9px 12px;font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.6);animation:pulseGlow 1.6s ease-in-out infinite">{{ t.chatThinking }}</div>
+        </div>
+      </sc-if>
+    </div>
+    <sc-if value="{{ hasChatError }}" hint-placeholder-val="{{ false }}">
+      <div style="margin:0 20px 14px;display:flex;align-items:center;gap:10px">
+        <span style="font:400 11px 'JetBrains Mono',monospace;color:#E0645C;flex:1">{{ chatErrorMsg }}</span>
+        <div class="chip" onClick="{{ retryLastMessage }}" style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.retry }}</div>
+      </div>
+    </sc-if>
+    <div class="panel">
+      <textarea value="{{ chatInput }}" onChange="{{ onChatInputChange }}" placeholder="{{ t.chatPlaceholder }}" style="width:100%;min-height:70px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
+      <sc-if value="{{ chatCapReached }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px;font:italic 400 11px 'EB Garamond',serif;color:rgba(232,224,255,.4)">{{ t.chatCapReached }}</div>
+      </sc-if>
+      <div style="display:flex;justify-content:flex-end;margin-top:10px">
+        <div class="chip primary-action" onClick="{{ sendChatMessage }}" style="opacity:{{ sendButtonOpacity }}">{{ t.send }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ chatIsAfterReading }}" hint-placeholder-val="{{ false }}">
+    <div class="panel" style="overflow:visible">
+      <div style="font:400 12px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:4px">{{ t.afterReadingTitle }}</div>
+      <div style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4);margin-bottom:14px">{{ t.before }}: {{ chatBeforeSummary }}</div>
+      <sc-for list="{{ sliders }}" as="s" hint-placeholder-count="3">
+        <div style="margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+            <span style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:{{ s.color }}">{{ s.label }}</span>
+            <span style="font:300 15px 'JetBrains Mono',monospace;color:#EDE7F6">{{ s.valStr }}</span>
+          </div>
+          <div class="slider-track" ref="{{ s.trackRef }}" onPointerDown="{{ s.onDown }}" onPointerMove="{{ s.onMove }}" onPointerUp="{{ s.onUp }}" onPointerCancel="{{ s.onUp }}">
+            <div style="position:absolute;left:50%;top:5px;width:1px;height:10px;background:rgba(255,255,255,.2)"></div>
+            <div class="slider-handle" style="left:{{ s.pct }}%">
+              <div style="position:absolute;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%);border:1px solid {{ s.color }};border-radius:50%;background:rgba(5,6,12,.8);box-shadow:0 0 10px {{ s.color }}"></div>
+              <div style="position:absolute;left:50%;top:50%;width:9px;height:1px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+              <div style="position:absolute;left:50%;top:50%;width:1px;height:9px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+            </div>
+          </div>
+          <div class="range-labels"><span>{{ s.low }}</span><span>{{ s.high }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.overallScore }}</span>
+        <span style="font:300 22px 'JetBrains Mono',monospace;color:#EDE7F6">{{ score }}</span>
+      </div>
+      <div ref="{{ scoreTrackRef }}" onPointerDown="{{ scoreDown }}" onPointerMove="{{ scoreMove }}" onPointerUp="{{ scoreUp }}" onPointerCancel="{{ scoreUp }}" style="position:relative;height:24px;background:transparent;border-radius:12px;margin:8px 0 4px;touch-action:none">
+        <div style="position:absolute;left:0;right:0;top:10px;height:6px;background:rgba(255,255,255,.1);border-radius:3px"></div>
+        <div style="position:absolute;left:0;top:10px;height:6px;border-radius:3px;background:linear-gradient(90deg,#8a6b2f,#D9BE7A);width:{{ scoreFillPct }}%;pointer-events:none"></div>
+        <sc-for list="{{ scoreTicks }}" as="tk" hint-placeholder-count="10">
+          <div style="position:absolute;top:7px;left:{{ tk.pct }}%;width:1px;height:12px;background:rgba(255,255,255,.15);transform:translateX(-50%);pointer-events:none"></div>
+        </sc-for>
+        <div style="position:absolute;top:50%;left:{{ scoreFillPct }}%;width:24px;height:24px;border-radius:50%;background:#F5EFE0;box-shadow:0 0 12px #D9BE7A;transform:translate(-50%,-50%);cursor:grab;pointer-events:none"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">1</span>
+        <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">10</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75);margin-bottom:10px">{{ t.note }}</div>
+      <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.includeConversation }}</span>
+        <div class="pv" onClick="{{ toggleIncludeConversation }}"><div class="pv-knob" style="left:{{ includeConvoKnob }}px"></div></div>
+      </div>
+    </div>
+
+    <div style="position:relative;height:90px;display:flex;align-items:center;justify-content:center">
+      <div class="chip primary-action" onClick="{{ saveChatEntry }}" style="opacity:{{ saveChatButtonOpacity }}">{{ saveChatButtonLabel }}</div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsSettings }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr">
+    <div class="chip" onClick="{{ closeSettings }}" style="font:italic 400 13px 'EB Garamond',serif;color:rgba(217,190,122,.75)">‹ {{ t.settings }}</div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.llmEnable }}</span>
+      <div class="pv" onClick="{{ toggleLlmEnabled }}"><div class="pv-knob" style="left:{{ llmKnob }}px"></div></div>
+    </div>
+
+    <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+      <div style="font:italic 400 10px 'EB Garamond',serif;color:#E8C35A;margin-bottom:10px">🖥 {{ t.desktopOnly }}</div>
+      <div style="margin-bottom:6px">
+        <div style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:rgba(232,224,255,.5);margin-bottom:6px">{{ t.baseUrl }}</div>
+        <input value="{{ llmBaseUrlVal }}" onChange="{{ onBaseUrlChange }}" placeholder="http://localhost:11434" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.02);border:1px solid rgba(217,190,122,.15);border-radius:4px;padding:9px 10px;font:400 12px 'JetBrains Mono',monospace;color:#EDE7F6"/>
+      </div>
+      <div style="font:italic 400 10px 'EB Garamond',serif;color:rgba(232,224,255,.35);margin-bottom:14px">{{ t.llmOriginsHint }}</div>
+      <div style="margin-bottom:14px">
+        <div style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:rgba(232,224,255,.5);margin-bottom:6px">{{ t.modelName }}</div>
+        <input value="{{ llmModelVal }}" onChange="{{ onModelChange }}" placeholder="llama3.1" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.02);border:1px solid rgba(217,190,122,.15);border-radius:4px;padding:9px 10px;font:400 12px 'JetBrains Mono',monospace;color:#EDE7F6"/>
+      </div>
+      <div class="chip" onClick="{{ testConnection }}" style="display:inline-block;padding:9px 18px;border:1px solid rgba(217,190,122,.5);border-radius:2px;font:400 12px 'EB Garamond',serif;font-style:italic;color:#D9BE7A">{{ testConnLabel }}</div>
+      <sc-if value="{{ hasTestResult }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:10px;font:400 11px 'JetBrains Mono',monospace;color:{{ testResultColor }}">{{ testResultMsg }}</div>
+      </sc-if>
+    </sc-if>
+  </div>
+
+  <div class="panel">
+    <span class="chip" onClick="{{ reopenOnboarding }}" style="font:italic 400 12px 'EB Garamond',serif;color:rgba(217,190,122,.75)">{{ t.onboardAgain }}</span>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ viewIsRecord }}" hint-placeholder-val="{{ false }}">
+<div>
+  <div class="hdr" style="align-items:flex-start">
+    <div>
+      <div style="font:400 24px/1.1 'EB Garamond',serif;color:#EDE7F6">{{ t.record }}</div>
+      <div style="font:400 11px/1.4 Inter,sans-serif;color:rgba(232,224,255,.48);margin-top:6px">{{ recordHint }}</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <sc-for list="{{ sliders }}" as="s" hint-placeholder-count="3">
+      <div style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:{{ s.color }}">{{ s.label }}</span>
+            <div class="chip" onClick="{{ s.onInfo }}" style="width:16px;height:16px;border-radius:50%;border:1px solid rgba(217,190,122,.4);display:flex;align-items:center;justify-content:center;color:#D9BE7A;font:500 9px 'JetBrains Mono',monospace;line-height:1">i</div>
+          </div>
+          <span style="font:300 15px 'JetBrains Mono',monospace;color:#EDE7F6">{{ s.valStr }}</span>
+        </div>
+        <div class="slider-track" ref="{{ s.trackRef }}" onPointerDown="{{ s.onDown }}" onPointerMove="{{ s.onMove }}" onPointerUp="{{ s.onUp }}" onPointerCancel="{{ s.onUp }}">
+          <div style="position:absolute;left:50%;top:5px;width:1px;height:10px;background:rgba(255,255,255,.2)"></div>
+          <div class="slider-handle" style="left:{{ s.pct }}%">
+            <div style="position:absolute;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%);border:1px solid {{ s.color }};border-radius:50%;background:rgba(5,6,12,.8);box-shadow:0 0 10px {{ s.color }}"></div>
+            <div style="position:absolute;left:50%;top:50%;width:9px;height:1px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+            <div style="position:absolute;left:50%;top:50%;width:1px;height:9px;background:{{ s.color }};transform:translate(-50%,-50%)"></div>
+          </div>
+        </div>
+        <div class="range-labels"><span>{{ s.low }}</span><span>{{ s.high }}</span></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.overallScore }}</span>
+      <span style="font:300 22px 'JetBrains Mono',monospace;color:#EDE7F6">{{ score }}</span>
+    </div>
+    <div ref="{{ scoreTrackRef }}" onPointerDown="{{ scoreDown }}" onPointerMove="{{ scoreMove }}" onPointerUp="{{ scoreUp }}" onPointerCancel="{{ scoreUp }}" style="position:relative;height:24px;background:transparent;border-radius:12px;margin:8px 0 4px;touch-action:none">
+      <div style="position:absolute;left:0;right:0;top:10px;height:6px;background:rgba(255,255,255,.1);border-radius:3px"></div>
+      <div style="position:absolute;left:0;top:10px;height:6px;border-radius:3px;background:linear-gradient(90deg,#8a6b2f,#D9BE7A);width:{{ scoreFillPct }}%;pointer-events:none"></div>
+      <sc-for list="{{ scoreTicks }}" as="tk" hint-placeholder-count="10">
+        <div style="position:absolute;top:7px;left:{{ tk.pct }}%;width:1px;height:12px;background:rgba(255,255,255,.15);transform:translateX(-50%);pointer-events:none"></div>
+      </sc-for>
+      <div style="position:absolute;top:50%;left:{{ scoreFillPct }}%;width:24px;height:24px;border-radius:50%;background:#F5EFE0;box-shadow:0 0 12px #D9BE7A;transform:translate(-50%,-50%);cursor:grab;pointer-events:none"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">1</span>
+      <span style="font:400 9px 'JetBrains Mono',monospace;color:rgba(232,224,255,.3)">10</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.suggested }}</span>
+      <span class="chip" onClick="{{ toggleWords }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ wordsToggleLabel }}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;overflow-x:hidden">
+      <sc-for list="{{ visibleWords }}" as="w" hint-placeholder-count="3">
+        <div class="chip" onClick="{{ w.onSelect }}" style="display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:54px;padding:9px 10px;border:1px solid {{ w.border }};border-radius:6px;background:{{ w.bg }}">
+          <div style="min-width:0">
+            <div style="font:500 12px Inter,sans-serif;color:#EDE7F6">{{ w.en }} · {{ w.zh }}</div>
+            <div style="font:italic 400 10px 'EB Garamond',serif;color:rgba(232,224,255,.4);margin-top:1px">{{ w.poetic }} · {{ w.poeticZh }}</div>
+          </div>
+          <div style="font:400 11px 'JetBrains Mono',monospace;color:#D9BE7A">{{ w.pct }}%</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+      <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.note }}</span>
+      <div style="display:flex;gap:12px">
+        <sc-if value="{{ hasNoteText }}" hint-placeholder-val="{{ false }}">
+          <span class="chip" onClick="{{ clearNote }}" style="font:400 10px 'JetBrains Mono',monospace;color:rgba(232,224,255,.4)">{{ t.clear }}</span>
+        </sc-if>
+        <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+          <span class="chip" onClick="{{ talkItThrough }}" style="font:400 10px 'JetBrains Mono',monospace;color:#D9BE7A">{{ t.talkItThrough }}</span>
+        </sc-if>
+      </div>
+    </div>
+    <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
+  </div>
+
+  <div style="position:relative;height:90px;display:flex;align-items:center;justify-content:center">
+    <div class="chip primary-action" onClick="{{ saveEntry }}">{{ t.save }}</div>
+  </div>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{ viewIsHome }}" hint-placeholder-val="{{ true }}">
+  <div class="chip log-now-fab" onClick="{{ goRecord }}">{{ t.log }}</div>
+</sc-if>
+
+<sc-if value="{{ showSavedToast }}" hint-placeholder-val="{{ false }}">
+  <div class="toast">{{ t.saved }}</div>
+</sc-if>
+
+<sc-if value="{{ infoAxis }}" hint-placeholder-val="{{ null }}">
+  <div onClick="{{ closeInfo }}" style="position:absolute;left:0;right:0;top:0;bottom:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(5,6,12,.75);backdrop-filter:blur(8px)">
+    <div onClick="{{ event => event.stopPropagation() }}" style="width:calc(100% - 32px);max-width:340px;background:linear-gradient(170deg,rgba(217,190,122,.06) 0%,rgba(10,8,6,.97) 40%),rgba(10,8,6,.95);border:1px solid rgba(217,190,122,.35);border-top-color:rgba(217,190,122,.5);border-radius:18px;padding:32px 36px;box-shadow:0 24px 64px rgba(0,0,0,.35);position:relative">
+      <div style="font:italic 17px 'EB Garamond',serif;color:#D9BE7A;margin-bottom:14px">{{ infoAxisLabel }}</div>
+      <div ref="{{ infoTextRef }}" style="font:italic 400 15.5px 'EB Garamond',serif;line-height:1.8;color:rgba(232,224,255,.72)"></div>
+      <div onClick="{{ closeInfo }}" style="margin-top:22px;width:100%;text-align:center;font:italic 14px 'EB Garamond',serif;color:#D9BE7A;cursor:pointer;padding:10px;border-radius:10px;background:rgba(217,190,122,.06);border:1px solid rgba(217,190,122,.3);transition:background .15s;user-select:none">{{ t.infoDismiss }}</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ onboardingVisible }}" hint-placeholder-val="{{ false }}">
+  <div style="position:absolute;left:0;right:0;top:0;bottom:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(5,6,12,.9);backdrop-filter:blur(8px)">
+    <div style="width:calc(100% - 32px);max-width:340px;background:linear-gradient(170deg,rgba(217,190,122,.06) 0%,rgba(10,8,6,.97) 40%),rgba(10,8,6,.95);border:1px solid rgba(217,190,122,.35);border-top-color:rgba(217,190,122,.5);border-radius:18px;padding:32px 32px 28px;box-shadow:0 24px 64px rgba(0,0,0,.35)">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <div class="pv" onClick="{{ toggleLang }}" style="width:52px">
+          <span style="position:absolute;left:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ enLabelColor }};pointer-events:none">EN</span>
+          <span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font:600 8px 'JetBrains Mono',monospace;color:{{ zhLabelColor }};pointer-events:none">中</span>
+          <div class="pv-knob" style="left:{{ knob }}px"></div>
+        </div>
+      </div>
+      <div style="font:italic 17px 'EB Garamond',serif;color:#D9BE7A;margin-bottom:14px">{{ onboardingTitle }}</div>
+      <div style="font:400 14px/1.7 Inter,sans-serif;color:rgba(232,224,255,.75);white-space:pre-line">{{ onboardingBody }}</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin:22px 0 20px">
+        <sc-for list="{{ onboardingDots }}" as="dot" hint-placeholder-count="3">
+          <div style="width:6px;height:6px;border-radius:50%;background:{{ dot.color }}"></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <sc-if value="{{ onboardingIsLast }}" hint-placeholder-val="{{ false }}">
+          <span></span>
+        </sc-if>
+        <sc-if value="{{ !onboardingIsLast }}" hint-placeholder-val="{{ true }}">
+          <span onClick="{{ skipOnboarding }}" style="font:italic 13px 'EB Garamond',serif;color:rgba(232,224,255,.4);cursor:pointer">{{ t.onboardSkip }}</span>
+        </sc-if>
+        <span onClick="{{ nextOnboarding }}" style="font:italic 14px 'EB Garamond',serif;color:#D9BE7A;cursor:pointer;padding:10px 20px;border-radius:10px;background:rgba(217,190,122,.08);border:1px solid rgba(217,190,122,.3);transition:background .15s;user-select:none">{{ onboardingNextLabel }}</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<div class="tabbar">
+  <div class="tabitem" onClick="{{ navHome }}">
+    <div style="width:16px;height:16px;border-radius:50%;border:1.5px solid {{ navColorHome }}"></div>
+    <span style="font:400 9px 'JetBrains Mono',monospace;letter-spacing:.05em;color:{{ navColorHome }}">{{ t.home }}</span>
+  </div>
+  <div class="tabitem" onClick="{{ navRecord }}">
+    <div style="width:16px;height:16px;border-radius:50%;border:1.5px solid {{ navColorRecord }};display:flex;align-items:center;justify-content:center"><div style="width:7px;height:7px;border-radius:50%;background:{{ navColorRecord }}"></div></div>
+    <span style="font:400 9px 'JetBrains Mono',monospace;letter-spacing:.05em;color:{{ navColorRecord }}">{{ t.record }}</span>
+  </div>
+  <div class="tabitem" onClick="{{ navJournal }}">
+    <div style="width:16px;height:12px;display:flex;flex-direction:column;justify-content:space-between"><div style="height:1.5px;background:{{ navColorJournal }}"></div><div style="height:1.5px;background:{{ navColorJournal }}"></div><div style="height:1.5px;background:{{ navColorJournal }}"></div></div>
+    <span style="font:400 9px 'JetBrains Mono',monospace;letter-spacing:.05em;color:{{ navColorJournal }}">{{ t.journal }}</span>
+  </div>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+function proj(v,a,d,size){return {x:v*size,y:-a*size,z:d*size};}
+function catmullRom(p0,p1,p2,p3,t){return 0.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);}
+function buildSmoothTrail(pts,steps){
+  const n=pts.length;
+  const get=(i)=>pts[Math.max(0,Math.min(n-1,i))];
+  const out=[];
+  for(let i=0;i<n-1;i++){
+    const p0=get(i-1),p1=get(i),p2=get(i+1),p3=get(i+2);
+    for(let s=0;s<steps;s++){
+      const t=s/steps;
+      out.push({
+        v:catmullRom(p0.v,p1.v,p2.v,p3.v,t),
+        a:catmullRom(p0.a,p1.a,p2.a,p3.a,t),
+        d:catmullRom(p0.d,p1.d,p2.d,p3.d,t)
+      });
+    }
+  }
+  out.push(pts[n-1]);
+  return out;
+}
+function buildTrailSegments(pts,size,rx,ry){
+  const smooth=buildSmoothTrail(pts,6);
+  const proj_pts=smooth.map(p=>proj(p.v,p.a,p.d,size));
+  const n=proj_pts.length;
+  const segs=[];
+  for(let i=0;i<n-1;i++){
+    const p0=proj_pts[i], p1=proj_pts[i+1];
+    const dx=p1.x-p0.x, dy=p1.y-p0.y, dz=p1.z-p0.z;
+    const r=Math.sqrt(dx*dx+dy*dy+dz*dz)||0.001;
+    const rxz=Math.sqrt(dx*dx+dz*dz)||0.001;
+    const phi=Math.atan2(dy,rxz);
+    const theta=Math.atan2(-dz,dx);
+    const t=i/(n-2);
+    const op=(0.12+0.8*t).toFixed(2);
+    const thick=(1+2.4*t).toFixed(2);
+    segs.push({key:'s'+i, style:`position:absolute;left:0;top:0;width:${r.toFixed(2)}px;height:${thick}px;border-radius:${thick}px;background:linear-gradient(90deg, rgba(142,159,217,${op*0.7}), rgba(245,239,224,${op}));transform-origin:0% 50%;transform:translate3d(${p0.x.toFixed(2)}px,${p0.y.toFixed(2)}px,${p0.z.toFixed(2)}px) rotateY(${theta.toFixed(4)}rad) rotateZ(${phi.toFixed(4)}rad);box-shadow:0 0 ${(6+10*t).toFixed(1)}px rgba(245,239,224,${(op*0.6).toFixed(2)})`});
+  }
+  const head=proj_pts[n-1];
+  const headDot={style:`position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50%;transform:translate3d(${head.x}px,${head.y}px,${head.z}px) rotateY(${-ry}deg) rotateX(${-rx}deg) translate(-50%,-50%);background:radial-gradient(circle at 32% 30%, #ffffff 0%, #F5EFE0 45%, #cbb98c 100%);box-shadow:inset -1px -1px 2px rgba(0,0,0,.5),0 0 10px #F5EFE0,0 0 20px rgba(217,190,122,.7)`};
+  return {segs,headDot};
+}
+function buildHighlightDot(v,a,d,size,rx,ry){
+  const p=proj(v,a,d,size);
+  return `position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;transform:translate3d(${p.x}px,${p.y}px,${p.z}px) rotateY(${-ry}deg) rotateX(${-rx}deg) translate(-50%,-50%);background:radial-gradient(circle at 32% 30%, #ffffff 0%, #F5EFE0 45%, #cbb98c 100%);animation:pulseGlow 1.6s ease-in-out infinite`;
+}
+const CHART_SPACING=56, CHART_PADL=8, CHART_PADR=40, CHART_PADTOP=10, CHART_PADBOTTOM=22, CHART_H=110;
+const CHART_MS_PER_UNIT=86400000;
+function chartXTime(ts,originTs,zoom){return CHART_PADL+((ts-originTs)/CHART_MS_PER_UNIT)*CHART_SPACING*zoom;}
+function computeChartXs(sortedEntries,originTs,zoom){
+  // Pure time-proportional spacing collapses entries logged close together
+  // (e.g. several in one sitting) into a fraction of a pixel, making the
+  // line invisible even though the data is there. Enforce a minimum gap
+  // between adjacent points so multi-day spans still read as real gaps,
+  // but same-day/close-together entries stay visually spread out.
+  const xs=sortedEntries.map(e=>chartXTime(e.ts,originTs,zoom));
+  const minGap=CHART_SPACING*zoom;
+  for(let i=1;i<xs.length;i++){
+    if(xs[i]-xs[i-1]<minGap) xs[i]=xs[i-1]+minGap;
+  }
+  return xs;
+}
+function chartYPad(v){const plotH=CHART_H-CHART_PADTOP-CHART_PADBOTTOM;return CHART_PADTOP+(1-(v+1)/2)*plotH;}
+function chartYScore(v){const plotH=CHART_H-CHART_PADTOP-CHART_PADBOTTOM;return CHART_PADTOP+(1-v/10)*plotH;}
+function fmtSigned(v){return (v>=0?'+':'')+v.toFixed(2);}
+const STORAGE_KEY='pad-tracker:data';
+const Storage={
+  load(){
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(!raw)return[];
+      const parsed=JSON.parse(raw);
+      if(!parsed||!Array.isArray(parsed.entries))return[];
+      return parsed.entries;
+    }catch(e){return[];}
+  },
+  save(entries){
+    try{
+      localStorage.setItem(STORAGE_KEY,JSON.stringify({schemaVersion:1,entries}));
+    }catch(e){
+      console.error('PAD Tracker: failed to save entries',e);
+    }
+  }
+};
+const LLM_SETTINGS_KEY='pad-tracker:llm-settings';
+const DEFAULT_LLM_BASE_URL='https://my-brain-1.tail28b58f.ts.net:8443';
+const DEFAULT_LLM_MODEL='gemma4:12b';
+const LlmSettings={
+  load(){
+    try{
+      const raw=localStorage.getItem(LLM_SETTINGS_KEY);
+      if(!raw)return{enabled:false,baseUrl:DEFAULT_LLM_BASE_URL,model:DEFAULT_LLM_MODEL};
+      const parsed=JSON.parse(raw);
+      return{
+        enabled: !!parsed.enabled,
+        baseUrl: typeof parsed.baseUrl==='string'&&parsed.baseUrl?parsed.baseUrl:DEFAULT_LLM_BASE_URL,
+        model: typeof parsed.model==='string'&&parsed.model?parsed.model:DEFAULT_LLM_MODEL
+      };
+    }catch(e){return{enabled:false,baseUrl:DEFAULT_LLM_BASE_URL,model:DEFAULT_LLM_MODEL};}
+  },
+  save(settings){
+    try{
+      localStorage.setItem(LLM_SETTINGS_KEY,JSON.stringify({
+        enabled:!!settings.enabled, baseUrl:settings.baseUrl||'', model:settings.model||''
+      }));
+    }catch(e){
+      console.error('PAD Tracker: failed to save LLM settings',e);
+    }
+  }
+};
+const ONBOARD_KEY='pad-tracker:onboarded';
+const Onboarding={
+  isDone(){ try{ return !!localStorage.getItem(ONBOARD_KEY); }catch(e){ return false; } },
+  markDone(){ try{ localStorage.setItem(ONBOARD_KEY,'1'); }catch(e){} }
+};
+const ONBOARDING_PAGES=3;
+const LLM_TIMEOUT_MS=120000;
+function llmChat(settings, messages, opts){
+  const timeoutMs=(opts&&opts.timeoutMs)||LLM_TIMEOUT_MS;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  const base=(settings.baseUrl||'').replace(/\/+$/,'');
+  // Ollama's native /api/chat (not the OpenAI-compatible /v1/chat/completions) is used
+  // deliberately: local "thinking"/reasoning models can spend their entire token budget
+  // on chain-of-thought before ever emitting the answer, and only the native endpoint's
+  // options.num_predict reliably raises that budget on every Ollama version/install we
+  // tested — the OpenAI-compat endpoint silently ignored max_tokens and any options
+  // passthrough attempt, always capping at a small default and returning an empty
+  // response. This does trade away portability to non-Ollama OpenAI-compatible servers
+  // (LM Studio etc.) for actually working with real local reasoning models.
+  // think:false skips that chain-of-thought pass entirely for models that support it
+  // (confirmed via Ollama's own "thinking" response field disappearing, and eval_count
+  // dropping from ~50 to ~7 tokens on a trivial prompt) — cuts real end-to-end latency
+  // from 60-90s+ to a few seconds without changing the underlying model or its answers.
+  return fetch(base+'/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:settings.model, messages, stream:false, think:false, options:{temperature:0.2, num_predict:1024, num_ctx:8192}}),
+    signal:controller.signal
+  }).then(res=>{
+    if(!res.ok){
+      return res.text().catch(()=>'').then(bodyText=>{
+        throw new Error('http_'+res.status+(bodyText?': '+bodyText.slice(0,200):''));
+      });
+    }
+    return res.json();
+  }).then(data=>{
+    const content=data && data.message && data.message.content;
+    if(typeof content!=='string' || !content.length) throw new Error('empty_response');
+    return content;
+  }).catch(err=>{
+    if(err && err.name==='AbortError') throw new Error('timeout');
+    throw err;
+  }).finally(()=>{
+    clearTimeout(timer);
+  });
+}
+function llmErrorMessage(err,t){
+  const msg=(err && err.message)||'';
+  if(msg==='timeout')return t.errTimeout;
+  if(msg.startsWith('http_404'))return t.errModel;
+  if(msg.startsWith('http_'))return t.errServer;
+  return t.errNetwork;
+}
+const INSIGHTS_MAX_ENTRIES=20;
+const CHAT_MAX_TURNS=12;
+function buildChatSystemPrompt(lang, turnsUsed){
+  const langLine = lang==='zh' ? 'Chinese' : 'English';
+  const n = typeof turnsUsed==='number' ? turnsUsed : 0;
+  let turnLine;
+  if(n>=CHAT_MAX_TURNS){
+    turnLine = `This is turn ${n} of a hard ${CHAT_MAX_TURNS}-turn limit - it is the LAST reply you will get to give. Do NOT ask another question. Briefly summarize what came up in this conversation and warmly invite them to check in on their mood now that you're wrapping up.`;
+  } else if(n>=CHAT_MAX_TURNS-2){
+    turnLine = `This is turn ${n} of a hard ${CHAT_MAX_TURNS}-turn limit - only ${CHAT_MAX_TURNS-n} exchange(s) left. Start moving toward a summary now rather than opening a new thread, and let them know in this reply that you're nearly at the end so it doesn't cut off abruptly.`;
+  } else {
+    turnLine = `This is turn ${n} of a hard ${CHAT_MAX_TURNS}-turn limit. Use the early turns to explore openly; start naming what you're noticing in PAD terms by the middle of the budget.`;
+  }
+  return `You are a warm, supportive journaling companion helping someone reflect on how they're feeling right now, using the Valence/Arousal/Dominance (PAD) model this app is built on: pleasant vs. unpleasant, energized vs. calm, in control vs. overwhelmed. You are not a therapist, counselor, or medical professional, and you must never diagnose, label a clinical condition, or suggest treatment.\n\n- Naming feelings in plain PAD language (e.g. "that sounds like it has an unsettled, keyed-up quality" or "more like a stuck, powerless feeling") is exactly what you're here for - it is not a clinical act, and you should do it, not refuse to.\n- Ask short, open, curious questions - one at a time, not a list. Reflect back what you hear before asking the next one.\n- Never rush to reassure, fix, or minimize. Sit with what they share first.\n- If the user asks a direct question about you, this tool, or how it works (e.g. "what model are you," "how many turns do we get," "what's your goal") - answer it plainly and honestly in one sentence, then continue. Do not deflect a direct question back as another reflective question.\n- If the user signals they want to wrap up (e.g. "one more round," "let's stop," "I'm okay now") - treat that as final. Your next reply should briefly summarize what came up and invite them to check in on how they feel now, not open a new thread or ask "anything else?"\n- ${turnLine}\n- If they mention self-harm, crisis, or being in danger, gently and clearly encourage them to reach out to a crisis line or someone they trust right now, and do not continue with reflective questions in that moment.\n- Keep responses brief - 2-4 sentences. This is a conversation, not an essay.\n- Write in ${langLine}.`;
+}
+function buildChatSummaryPrompt(lang){
+  return lang==='zh'
+    ? '请用不超过3句非临床、温暖的话，总结以下对话中用户分享的内容和情绪走向，不要下诊断或使用临床术语，也不要提及你自己。'
+    : 'In 2-3 warm, non-clinical sentences, summarize what the user shared in this conversation and how their feelings seemed to shift. Do not diagnose, use clinical language, or refer to yourself.';
+}
+function formatChatTranscript(lang, messages){
+  const t=TEXT[lang];
+  const who=(role)=> role==='user' ? t.chatMe : t.chatCompanion;
+  return t.conversationTitle+'\n'+messages.map(m=>who(m.role)+': '+m.content).join('\n');
+}
+function buildOnboardInstallBody(lang, isIOS, isAndroid){
+  if(lang==='zh'){
+    if(isIOS) return '点击分享图标，然后选择"添加到主屏幕"。这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+    if(isAndroid) return '点击菜单（⋮），然后选择"安装应用"（或"添加到主屏幕"）。这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+    return 'iPhone：点击分享图标 → "添加到主屏幕"。\nAndroid：点击菜单（⋮）→ "安装应用"。\n这样可以保护你的记录，并把 PAD Tracker 像真正的 App 一样放在主屏幕上。';
+  }
+  if(isIOS) return 'Tap the Share icon, then "Add to Home Screen." This keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
+  if(isAndroid) return 'Tap the menu (⋮), then "Install app" (or "Add to Home Screen"). This keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
+  return 'On iPhone: tap the Share icon, then "Add to Home Screen."\nOn Android: tap the menu (⋮), then "Install app."\nThis keeps your entries safe and puts PAD Tracker on your home screen like a real app.';
+}
+
+// ── Info keyword formatter ──────────────────────────────────────
+function infoHtml(axis, lang) {
+  const kw = (text, cls) => `<span class="${cls}">${text}</span>`;
+  const italic = 'EB Garamond, serif';
+  const baseStyle = `font:italic 15.5px '${italic}';line-height:1.8;color:rgba(232,224,255,.72)`;
+  if (axis === 'v') {
+    if (lang === 'zh') return `
+      <div style="${baseStyle}">
+        衡量你情感的<span style="font-weight:400;font-style:normal">整体好坏</span>。<br>
+        代表你内心的舒适度。<br>
+        你现在是感到 ${kw('积极、愉悦、快乐','kw-amber')}，还是 ${kw('消极、痛苦、难受','kw-tobacco')}？
+      </div>`;
+    return `
+      <div style="${baseStyle}">
+        The overall quality of your emotion.<br>
+        It measures your inner comfort.<br>
+        Is your current mood ${kw('Positive, pleasant, and joyful','kw-amber')}, or is it ${kw('negative, distressing, and uncomfortable','kw-tobacco')}?
+      </div>`;
+  }
+  if (axis === 'a') {
+    if (lang === 'zh') return `
+      <div style="${baseStyle}">
+        衡量你身体和<span style="font-weight:400;font-style:normal">精神的能量水平</span>。<br>
+        你现在是处于 ${kw('高度警觉、兴奋、紧张','kw-crimson')} 的状态，<br>
+        还是感到 ${kw('放松、平静、甚至疲倦','kw-indigo')}？
+      </div>`;
+    return `
+      <div style="${baseStyle}">
+        Your physical and mental energy level.<br>
+        Are you ${kw('highly alert, excited, or tense','kw-crimson')},<br>
+        or do you feel ${kw('deeply relaxed, calm, sluggish, or sleepy','kw-indigo')} right now?
+      </div>`;
+  }
+  if (axis === 'd') {
+    if (lang === 'zh') return `
+      <div style="${baseStyle}">
+        衡量你对当下环境的<span style="font-weight:400;font-style:normal">掌控感</span>。<br>
+        你是觉得自己 ${kw('充满自信、能说了算','kw-olive')}，<br>
+        还是感到 ${kw('无能为力','kw-rock')}、被环境压得喘不过气？
+      </div>`;
+    return `
+      <div style="${baseStyle}">
+        Your sense of influence and control.<br>
+        Do you feel ${kw('confident, empowered, and in charge','kw-olive')},<br>
+        or do you feel ${kw('restricted, helpless, overwhelmed','kw-rock')}?
+      </div>`;
+  }
+  return '';
+}
+function buildInsightsPrompt(entries,lang){
+  const recent=[...entries].sort((a,b)=>a.ts-b.ts).slice(-INSIGHTS_MAX_ENTRIES);
+  const rows=recent.map(e=>{
+    const d=new Date(e.ts);
+    return `${d.toISOString().slice(0,10)} ${fmtTime(e.ts)} | V=${e.v.toFixed(2)} A=${e.a.toFixed(2)} D=${e.d.toFixed(2)} score=${e.score} | ${e.emotion||'(untitled)'} | note: ${(e.note||'').replace(/\n/g,' ')}`;
+  }).join('\n');
+  const system='You are a supportive, non-clinical mood-journal assistant. You are not a therapist and must not diagnose. Respond in plain prose only, no JSON, no markdown headers, 3-5 short sentences maximum.';
+  const user=`Here are the ${recent.length} most recent mood-tracking entries (Valence/Arousal/Dominance model, each axis from -1 to 1, plus a 1-10 overall score):\n\n${rows}\n\nIn 3-5 short sentences, describe any noticeable patterns: recurring emotional themes, time-of-day or day-of-week trends, or notable shifts. Be gentle and observational, not diagnostic. Write in ${lang==='zh'?'Chinese':'English'}.`;
+  return [{role:'system',content:system},{role:'user',content:user}];
+}
+function classifyDate(ts,now){
+  const startOfDay=(ms)=>{const d=new Date(ms);return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();};
+  const dayDiff=Math.round((startOfDay(now)-startOfDay(ts))/CHART_MS_PER_UNIT);
+  if(dayDiff<=0)return'today';
+  if(dayDiff===1)return'yesterday';
+  if(dayDiff<=7)return'thisweek';
+  return'earlier';
+}
+function fmtTime(ts){const d=new Date(ts);return`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+function fmtDate(ts,lang){
+  return lang==='en'
+    ? new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric'}).format(ts)
+    : new Intl.DateTimeFormat('zh-CN',{year:'numeric',month:'long',day:'numeric'}).format(ts);
+}
+function fmtDateTime(ts,lang){
+  return lang==='en'
+    ? new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'}).format(ts)+', '+fmtTime(ts)
+    : new Intl.DateTimeFormat('zh-CN',{month:'long',day:'numeric'}).format(ts)+' '+fmtTime(ts);
+}
+function csvEscape(s){
+  const str=String(s??'');
+  return/[",\n]/.test(str)?'"'+str.replace(/"/g,'""')+'"':str;
+}
+function buildRings(size){
+  const defs=[
+    {t:'', color:'109,155,209'},
+    {t:'rotateY(90deg)', color:'232,181,77'},
+    {t:'rotateX(90deg)', color:'224,100,92'}
+  ];
+  return defs.map((r,i)=>({key:'r'+i, style:`position:absolute;left:${-size}px;top:${-size}px;width:${size*2}px;height:${size*2}px;border-radius:50%;border:1px solid rgba(${r.color},.4);transform:${r.t};opacity:0.75`}));
+}
+function buildAxes(size){
+  const defs=[{axis:'v',color:'#E8B54D',label:'V'},{axis:'a',color:'#E0645C',label:'A'},{axis:'d',color:'#6D9BD1',label:'D'}];
+  return defs.map(ax=>{
+    let lineT,labelPr;
+    if(ax.axis==='v'){lineT=`width:${size}px;height:1px`;labelPr=proj(1.15,0,0,size);}
+    if(ax.axis==='a'){lineT=`width:1px;height:${size}px;transform:translate3d(0,${-size}px,0)`;labelPr=proj(0,1.2,0,size);}
+    if(ax.axis==='d'){lineT=`width:${size}px;height:1px;transform:rotateY(-90deg);transform-origin:0% 50%`;labelPr=proj(0,0,1.15,size);}
+    return {
+      lineStyle:`position:absolute;left:0;top:0;background:${ax.color};opacity:.4;${lineT}`,
+      labelStyle:`position:absolute;left:0;top:0;font:400 9px 'JetBrains Mono',monospace;color:${ax.color};transform:translate3d(${labelPr.x}px,${labelPr.y}px,${labelPr.z}px) translate(-50%,-50%);white-space:nowrap`,
+      label:ax.label
+    };
+  });
+}
+function mapLine(vals,w,h,pad){
+  const n=vals.length;
+  return vals.map((v,i)=>{const x=pad+(i/(n-1))*(w-pad*2);const y=h-pad-((v+1)/2)*(h-pad*2);return `${x.toFixed(1)},${y.toFixed(1)}`;}).join(' ');
+}
+function mapScore(vals,w,h,pad){
+  const n=vals.length;
+  return vals.map((v,i)=>{const x=pad+(i/(n-1))*(w-pad*2);const y=h-pad-(v/10)*(h-pad*2);return `${x.toFixed(1)},${y.toFixed(1)}`;}).join(' ');
+}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+
+const TEXT={
+  en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled',showMore:'Show more',showLess:'Show less',
+    settings:'Settings',llmEnable:'Use local AI (Ollama)',baseUrl:'Base URL',modelName:'Model name',llmOriginsHint:'Requires Ollama running with OLLAMA_ORIGINS allowing this page\'s address (see README).',
+    desktopOnly:'🖥 Desktop only today — see README',
+    testConnection:'Test connection',testing:'Testing…',testOk:'Connected successfully.',
+    getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',insightsClose:'Dismiss',hintDrag:'Drag to rotate',hintPan:'Swipe to pan',
+    errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.',
+    recordFirst:'Record your first entry',saved:'Saved ✓',infoDismiss:'Got it',
+    talkItThrough:'Talk it through',chatPlaceholder:'Say what\'s on your mind...',send:'Send',chatThinking:'Thinking…',wrapUp:'Wrap up',retry:'Retry',
+    addingToNote:'Adding to note…',clear:'Clear',
+    chatCapReached:'Long enough for now — tap Wrap up to check in.',
+    afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation',
+    includeConversation:'Save this conversation with the entry',conversationTitle:'— Talk it through conversation —',
+    chatMe:'Me',chatCompanion:'Companion',aiSummaryPrefix:'(AI Summary)',savingEntry:'Saving…',
+    chatOpeningFraming:'There\'s no right or wrong here — just say whatever comes to mind, however small. We\'ll check back on how you feel once we\'re done.',
+    chatOpeningQuestions:['What\'s on your mind right now?','What\'s present for you today?','Is there something sitting with you right now?','What\'s been on your mind lately?','How are things, really?'],
+    onboardTitle1:'Install it like an app',
+    onboardTitle2:'Rate how you feel',
+    onboardBody2:'Drag the three sliders by feel — no rules, just notice what feels true right now. Watch the emotion words shift as you go; they\'re a mirror for what you\'re already dialing in, not something to get right.',
+    onboardTitle3:'Talk it through (optional)',
+    onboardBody3:'Turn on "Use local AI" in Settings to talk through your day with an AI companion before logging your mood. It helps you notice and name what you\'re feeling, then compares how you felt before and after.',
+    onboardSkip:'Skip',onboardNext:'Next',onboardDone:'Got it',onboardAgain:'View tutorial again'},
+  zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
+    settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
+    desktopOnly:'🖥 仅限桌面端 — 详见 README',
+    testConnection:'测试连接',testing:'测试中…',testOk:'连接成功。',
+    getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',insightsClose:'关闭',hintDrag:'拖动旋转',hintPan:'滑动查看',
+    errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。',
+    recordFirst:'记录你的第一条',saved:'已保存 ✓',infoDismiss:'知道了',
+    talkItThrough:'聊一聊',chatPlaceholder:'说说你在想什么...',send:'发送',chatThinking:'思考中…',wrapUp:'结束对话',retry:'重试',
+    addingToNote:'正在添加到备注…',clear:'清空',
+    chatCapReached:'先聊到这里 — 点击"结束对话"来记录当下的心情。',
+    afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话',
+    includeConversation:'将这段对话保存到记录中',conversationTitle:'— 聊一聊对话记录 —',
+    chatMe:'我',chatCompanion:'伙伴',aiSummaryPrefix:'（AI 摘要）',savingEntry:'保存中…',
+    chatOpeningFraming:'这里没有对错，想到什么就说什么，不需要想好了再说。聊完之后，我们会再看看你的感受有没有变化。',
+    chatOpeningQuestions:['现在你在想什么？','今天有什么一直放在心里吗？','此刻，你在意的是什么？','最近有什么事一直萦绕着你？','老实说，最近怎么样？'],
+    onboardTitle1:'把它安装成 App',
+    onboardTitle2:'拖动滑块，感受你的情绪',
+    onboardBody2:'凭感觉拖动三个滑块——没有对错，只是留意当下真实的感受。情绪词会随之变化，它们只是一面镜子，不是需要"答对"的题目。',
+    onboardTitle3:'聊一聊（可选）',
+    onboardBody3:'在设置中开启"使用本地 AI"，即可在记录心情前先和 AI 伙伴聊聊你的一天。它能帮你留意并说出你的感受，并对比聊天前后的状态变化。',
+    onboardSkip:'跳过',onboardNext:'下一步',onboardDone:'知道了',onboardAgain:'重新查看教程'},
+};
+
+const EMOTION_BANK=[
+  {en:'Content',zh:'满足',poetic:'a held breath, released',poeticZh:'一口气，终于放下',tv:0.5,ta:-0.35,td:0.25},
+  {en:'Happy',zh:'开心',poetic:'sunlight through the window',poeticZh:'洒进来的阳光',tv:0.65,ta:0.1,td:0.35},
+  {en:'Elated',zh:'欣喜',poetic:'light spilling over',poeticZh:'溢出的光',tv:0.8,ta:0.5,td:0.5},
+  {en:'Euphoric',zh:'狂喜',poetic:'sky wide open',poeticZh:'豁然开朗的天空',tv:0.9,ta:0.75,td:0.6},
+  {en:'Relaxed',zh:'放松',poetic:'shoulders finally down',poeticZh:'肩膀终于放下',tv:0.45,ta:-0.5,td:0.2},
+  {en:'Calm',zh:'平静',poetic:'still water, no ripple',poeticZh:'静水无波',tv:0.5,ta:-0.6,td:0.35},
+  {en:'Serene',zh:'宁静',poetic:'a held silence',poeticZh:'一片安然的寂静',tv:0.55,ta:-0.7,td:0.5},
+  {en:'Uneasy',zh:'不安',poetic:'grey static under the skin',poeticZh:'皮下的灰色静电',tv:-0.25,ta:0.3,td:-0.35},
+  {en:'Anxious',zh:'焦虑',poetic:'a tightening chest',poeticZh:'收紧的胸口',tv:-0.35,ta:0.55,td:-0.4},
+  {en:'Apprehensive',zh:'忧虑',poetic:'static behind the ribs',poeticZh:'肋骨后的静电',tv:-0.4,ta:0.5,td:-0.5},
+  {en:'Fearful',zh:'恐惧',poetic:'the floor tilting',poeticZh:'地板在倾斜',tv:-0.55,ta:0.7,td:-0.65},
+  {en:'Irritated',zh:'恼怒',poetic:'sand in the gears',poeticZh:'齿轮里的沙',tv:-0.4,ta:0.4,td:0.15},
+  {en:'Frustrated',zh:'挫败',poetic:'a locked door, no key',poeticZh:'锁住的门，没有钥匙',tv:-0.45,ta:0.45,td:-0.15},
+  {en:'Angry',zh:'愤怒',poetic:'heat rising in the throat',poeticZh:'喉咙里升起的热',tv:-0.6,ta:0.65,td:0.3},
+  {en:'Resentful',zh:'怨恨',poetic:'a slow burn, banked',poeticZh:'压住的余烬',tv:-0.6,ta:0.15,td:0.35},
+  {en:'Wistful',zh:'惆怅',poetic:'a door left ajar',poeticZh:'半掩的门',tv:-0.15,ta:-0.2,td:-0.3},
+  {en:'Drained',zh:'疲惫',poetic:'the tide gone out',poeticZh:'退潮之后',tv:-0.3,ta:-0.6,td:-0.5},
+  {en:'Numb',zh:'麻木',poetic:'static on an empty channel',poeticZh:'空频道里的雪花',tv:-0.1,ta:-0.7,td:-0.6},
+  {en:'Confident',zh:'自信',poetic:'a steady hand',poeticZh:'稳住的手',tv:0.4,ta:0.2,td:0.7},
+  {en:'Proud',zh:'自豪',poetic:'standing a little taller',poeticZh:'挺直的脊背',tv:0.55,ta:0.35,td:0.75},
+  {en:'Grateful',zh:'感激',poetic:'warmth passed forward',poeticZh:'传递的暖意',tv:0.6,ta:-0.1,td:0.3},
+  {en:'Satisfied',zh:'满意',poetic:'the click of a finished puzzle',poeticZh:'拼图归位的一声轻响',tv:0.5,ta:-0.1,td:0.4},
+  {en:'Capable',zh:'得心应手',poetic:'hands that know the motion',poeticZh:'熟悉的手感',tv:0.35,ta:0.15,td:0.6},
+  {en:'Energetic',zh:'充满活力',poetic:'current running through the limbs',poeticZh:'四肢里流动的电流',tv:0.5,ta:0.7,td:0.4},
+  {en:'Loved',zh:'被爱着',poetic:'a name held gently',poeticZh:'被轻轻记住的名字',tv:0.6,ta:-0.1,td:-0.1},
+  {en:'Tender',zh:'温柔',poetic:'a hand cupped around a flame',poeticZh:'手掌护着的火苗',tv:0.5,ta:-0.2,td:0.1},
+  {en:'Accomplished',zh:'成就感',poetic:'the last box checked',poeticZh:'划掉的最后一项',tv:0.55,ta:0.15,td:0.55},
+  {en:'Inspired',zh:'振奋',poetic:'a spark catching',poeticZh:'火星点燃',tv:0.6,ta:0.5,td:0.35},
+  {en:'Determined',zh:'坚定',poetic:'teeth set, eyes forward',poeticZh:'咬紧牙关向前看',tv:0.2,ta:0.4,td:0.65},
+  {en:'Surprised',zh:'惊讶',poetic:'the ground shifting slightly',poeticZh:'地面微微一晃',tv:0.05,ta:0.6,td:-0.1},
+  {en:'Overwhelmed',zh:'不堪重负',poetic:'too many hands, not enough arms',poeticZh:'手不够用了',tv:-0.4,ta:0.5,td:-0.7},
+  {en:'Disgusted',zh:'厌恶',poetic:'a taste that won\u2019t leave',poeticZh:'挥之不去的味道',tv:-0.65,ta:0.3,td:0.1},
+  {en:'Bothered',zh:'心烦',poetic:'a pebble in the shoe',poeticZh:'鞋里的石子',tv:-0.3,ta:0.25,td:-0.1},
+  {en:'Contemptuous',zh:'轻蔑',poetic:'looking down a long nose',poeticZh:'眼角的一瞥',tv:-0.35,ta:0.2,td:0.6},
+  {en:'Helpless',zh:'无助',poetic:'hands tied behind the back',poeticZh:'被反绑的双手',tv:-0.55,ta:0.2,td:-0.75},
+  {en:'Ashamed',zh:'羞愧',poetic:'wanting to fold inward',poeticZh:'想把自己折起来',tv:-0.5,ta:0.1,td:-0.55},
+  {en:'Guilty',zh:'内疚',poetic:'a weight under the sternum',poeticZh:'压在胸骨下方的重量',tv:-0.45,ta:0.15,td:-0.3},
+  {en:'Inadequate',zh:'不够好',poetic:'always one step short',poeticZh:'总是差一步',tv:-0.5,ta:0.05,td:-0.6},
+  {en:'Apathetic',zh:'提不起劲',poetic:'a low hum, nothing more',poeticZh:'只剩微弱的嗡鸣',tv:-0.2,ta:-0.55,td:-0.2},
+  {en:'Confused',zh:'困惑',poetic:'a map with no north',poeticZh:'没有指北的地图',tv:-0.1,ta:0.35,td:-0.3},
+  {en:'Ambivalent',zh:'矛盾',poetic:'a fork in the road, both paths fading',poeticZh:'岔路口，两条路都在变淡',tv:-0.05,ta:0.1,td:-0.15},
+  {en:'Lonely',zh:'孤独',poetic:'a room too large for one',poeticZh:'空得过大的房间',tv:-0.45,ta:-0.3,td:-0.4},
+  {en:'Jealous',zh:'嫉妒',poetic:'a green thread pulling tight',poeticZh:'一根收紧的绿线',tv:-0.35,ta:0.4,td:0.1},
+  {en:'Mistrustful',zh:'多疑',poetic:'checking the lock twice',poeticZh:'反复检查的门锁',tv:-0.25,ta:0.3,td:0.15}
+];
+
+class Component extends DCLogic {
+  state={
+    lang:'en', view:'home', chartTab:'pad',
+    rx:-12, ry:24,
+    record:{v:0,a:0,d:0,title:null,score:6,note:''},
+    selectedEntry:null, zoom:1, hoverIndex:null, hoverScreenX:0, chartZoom:1,
+    entries: Storage.load(),
+    rx2:-12, ry2:24, zoom2:1,
+    hasFirstCubeDrag:false, hasFirstChartPan:false,
+    wordsExpanded:false,
+    llm: LlmSettings.load(),
+    insightsStatus:'idle', insightsText:'', insightsErrorMsg:'',
+    testConnStatus:'idle', testConnErrorMsg:'', infoAxis:null,
+    showSavedToast:false,
+    chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+    chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
+    chatIncludeConversation:true, chatSaving:false,
+    entryChatExpanded:false,
+    onboardingStep: Onboarding.isDone() ? 0 : 1
+  };
+
+  constructor(props){
+    super(props);
+    this.vTrackRef=React.createRef();
+    this.aTrackRef=React.createRef();
+    this.dTrackRef=React.createRef();
+    this.scoreTrackRef=React.createRef();
+    this.chartScrollNode=null;
+    this.infoTextNode=null;
+    this.chartScrollRef=(node)=>{
+      this.chartScrollNode=node;
+      if(node){ this.scrollChartToEnd(); }
+    };
+    this.infoTextRef=(node)=>{ this.infoTextNode=node; };
+    const ua=(typeof navigator!=='undefined'&&navigator.userAgent)||'';
+    this.isIOS=/iPhone|iPad|iPod/.test(ua);
+    this.isAndroid=/Android/.test(ua);
+  }
+
+  scrollChartToEnd(){
+    if(this.chartScrollNode) this.chartScrollNode.scrollLeft=this.chartScrollNode.scrollWidth;
+  }
+
+  zoomIn(){this.setState(s=>({zoom:clamp(s.zoom+0.15,0.6,2)}));}
+  zoomOut(){this.setState(s=>({zoom:clamp(s.zoom-0.15,0.6,2)}));}
+  cubeWheel(e){e.preventDefault();const delta=e.deltaY>0?-0.08:0.08;this.setState(s=>({zoom:clamp(s.zoom+delta,0.6,2)}));}
+  chartZoomIn(){this.setState(s=>({chartZoom:clamp(s.chartZoom+0.25,0.6,2.5)}),()=>this.scrollChartToEnd());}
+  chartZoomOut(){this.setState(s=>({chartZoom:clamp(s.chartZoom-0.25,0.6,2.5)}),()=>this.scrollChartToEnd());}
+  chartWheel(e){e.preventDefault();const delta=e.deltaY>0?-0.15:0.15;this.setState(s=>({chartZoom:clamp(s.chartZoom+delta,0.6,2.5)}),()=>this.scrollChartToEnd());}
+
+  chartHoverAt(clientX){
+    if(!this.chartScrollNode)return;
+    const pts=this._sortedEntries;
+    const xs=this._chartXs;
+    if(!pts||!pts.length)return;
+    const rect=this.chartScrollNode.getBoundingClientRect();
+    const scrollLeft=this.chartScrollNode.scrollLeft;
+    const localX=clientX-rect.left+scrollLeft;
+    let best=0,bestDist=Infinity;
+    for(let i=0;i<pts.length;i++){
+      const dist=Math.abs(xs[i]-localX);
+      if(dist<bestDist){bestDist=dist;best=i;}
+    }
+    const screenX=clamp(clientX-rect.left,0,rect.width);
+    this.setState({hoverIndex:best, hoverScreenX:screenX});
+  }
+  chartDown(e){if(!this.chartScrollNode)return;this._chartDrag=true;this._chartStartX=e.clientX;this._chartStartScroll=this.chartScrollNode.scrollLeft;this.chartHoverAt(e.clientX);
+    if(!this.state.hasFirstChartPan)this.setState({hasFirstChartPan:true});}
+  chartMove(e){if(this._chartDrag){const dx=e.clientX-this._chartStartX;this.chartScrollNode.scrollLeft=this._chartStartScroll-dx;}this.chartHoverAt(e.clientX);}
+  chartUp(){this._chartDrag=false;this.setState({hoverIndex:null});}
+  closeInsights(){this.setState({showInsightsPanel:false});}
+
+  toggleLang(){this.setState(s=>({lang:s.lang==='en'?'zh':'en'}));}
+  nextOnboarding(){
+    this.setState(s=>{
+      const step=s.onboardingStep+1;
+      if(step>ONBOARDING_PAGES){ Onboarding.markDone(); return {onboardingStep:0}; }
+      return {onboardingStep:step};
+    });
+  }
+  skipOnboarding(){ Onboarding.markDone(); this.setState({onboardingStep:0}); }
+  reopenOnboarding(){ this.setState({onboardingStep:1, view:'home'}); }
+  setInfoAxis(axis){
+    this.setState(s=>({infoAxis: s.infoAxis===axis?null:axis}));
+  }
+  closeInfo(){
+    this.setState({infoAxis:null});
+  }
+  componentDidUpdate(){
+    if(this.infoTextNode){
+      this.infoTextNode.innerHTML = this.state.infoAxis ? infoHtml(this.state.infoAxis, this.state.lang) : '';
+    }
+  }
+  setView(v){this.setState({view:v});}
+  setChart(v){this.setState({chartTab:v});}
+
+  openSettings(){this.setState({view:'settings'});}
+  closeSettings(){this.setState({view:'home'});}
+  toggleLlmEnabled(){
+    this.setState(s=>{
+      const llm={...s.llm, enabled:!s.llm.enabled};
+      LlmSettings.save(llm);
+      return {llm};
+    });
+  }
+  onBaseUrlChange(e){
+    const val=e.target.value;
+    this.setState(s=>{ const llm={...s.llm, baseUrl:val}; LlmSettings.save(llm); return {llm}; });
+  }
+  onModelChange(e){
+    const val=e.target.value;
+    this.setState(s=>{ const llm={...s.llm, model:val}; LlmSettings.save(llm); return {llm}; });
+  }
+  testConnection(){
+    if(this.state.testConnStatus==='testing')return;
+    this.setState({testConnStatus:'testing', testConnErrorMsg:''});
+    const t=TEXT[this.state.lang];
+    llmChat(this.state.llm, [{role:'user',content:'Say OK.'}], {timeoutMs:30000}).then(()=>{
+      this.setState({testConnStatus:'ok'});
+    }).catch(err=>{
+      console.error('PAD Tracker: test connection failed',err);
+      this.setState({testConnStatus:'fail', testConnErrorMsg: llmErrorMessage(err,t)});
+    });
+  }
+
+  cubeDown(e){e.target.setPointerCapture(e.pointerId);this._dragCube=true;this._lx=e.clientX;this._ly=e.clientY;}
+  cubeMove(e){if(!this._dragCube)return;const dx=e.clientX-this._lx,dy=e.clientY-this._ly;
+    if((Math.abs(dx)+Math.abs(dy))>5&&!this.state.hasFirstCubeDrag)this.setState({hasFirstCubeDrag:true});
+    this._lx=e.clientX;this._ly=e.clientY;this.setState(s=>({rx:clamp(s.rx-dy*0.4,-85,10),ry:s.ry+dx*0.4}));}
+  cubeUp(){this._dragCube=false;}
+
+  cubeDown2(e){e.target.setPointerCapture(e.pointerId);this._dragCube2=true;this._lx2=e.clientX;this._ly2=e.clientY;}
+  cubeMove2(e){if(!this._dragCube2)return;const dx=e.clientX-this._lx2,dy=e.clientY-this._ly2;
+    if((Math.abs(dx)+Math.abs(dy))>5&&!this.state.hasFirstCubeDrag)this.setState({hasFirstCubeDrag:true});
+    this._lx2=e.clientX;this._ly2=e.clientY;this.setState(s=>({rx2:clamp(s.rx2-dy*0.4,-85,10),ry2:s.ry2+dx*0.4}));}
+  cubeUp2(){this._dragCube2=false;}
+  zoomIn2(){this.setState(s=>({zoom2:clamp(s.zoom2+0.15,0.6,2)}));}
+  zoomOut2(){this.setState(s=>({zoom2:clamp(s.zoom2-0.15,0.6,2)}));}
+  cubeWheel2(e){e.preventDefault();const delta=e.deltaY>0?-0.08:0.08;this.setState(s=>({zoom2:clamp(s.zoom2+delta,0.6,2)}));}
+
+  sliderDown(axis,e){e.target.setPointerCapture(e.pointerId);this['_drag'+axis]=true;this.updateSlider(axis,e.clientX);}
+  sliderMove(axis,e){if(this['_drag'+axis])this.updateSlider(axis,e.clientX);}
+  sliderUp(axis){this['_drag'+axis]=false;}
+  updateSlider(axis,clientX){
+    const ref=this[axis+'TrackRef'];
+    if(!ref.current)return;
+    const rect=ref.current.getBoundingClientRect();
+    let t=(clientX-rect.left)/rect.width;
+    t=clamp(t,0,1);
+    const val=Math.round((t*2-1)*100)/100;
+    this.setState(s=>({record:{...s.record,[axis]:val}}));
+  }
+
+  scoreDown(e){e.target.setPointerCapture&&e.target.setPointerCapture(e.pointerId);this._dragScore=true;this.updateScore(e.clientX);}
+  scoreMove(e){if(this._dragScore)this.updateScore(e.clientX);}
+  scoreUp(){this._dragScore=false;}
+  updateScore(clientX){
+    if(!this.scoreTrackRef.current)return;
+    const rect=this.scoreTrackRef.current.getBoundingClientRect();
+    let t=(clientX-rect.left)/rect.width;
+    t=clamp(t,0,1);
+    const val=Math.round(t*9)+1;
+    this.setState(s=>({record:{...s.record,score:val}}));
+  }
+
+  selectEntry(e){this.setState({selectedEntry:e,view:'entryDetail',entryChatExpanded:false});}
+  toggleEntryChat(){this.setState(s=>({entryChatExpanded:!s.entryChatExpanded}));}
+  backToJournal(){this.setState({view:'journal'});}
+  selectWord(w){this.setState(s=>({record:{...s.record,title:w.en}}));}
+  onNoteChange(e){const val=e.target.value;this.setState(s=>({record:{...s.record,note:val}}));}
+  startChat(){
+    const rec=this.state.record;
+    const lang=this.state.lang;
+    const t=TEXT[lang];
+    const questions=t.chatOpeningQuestions;
+    const question=questions[Math.floor(Math.random()*questions.length)];
+    const opening=fmtDateTime(Date.now(),lang)+'\n'+t.chatOpeningFraming+'\n\n'+question;
+    this.setState({
+      chatBeforeReading:{v:rec.v,a:rec.a,d:rec.d,score:rec.score},
+      chatMessages:[{role:'assistant',content:opening}], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatPhase:'talking', chatBuildingNote:false, chatIncludeConversation:true,
+      view:'chat'
+    });
+  }
+  onChatInputChange(e){const val=e.target.value; this.setState({chatInput:val});}
+  sendChatMessage(){
+    const text=(this.state.chatInput||'').trim();
+    if(!text || this.state.chatStatus==='sending')return;
+    if(this.state.chatMessages.filter(m=>m.role==='user').length>=CHAT_MAX_TURNS)return;
+    const prevMessages=this.state.chatMessages;
+    const pendingUserMsg={role:'user',content:text};
+    this.setState({chatMessages:[...prevMessages, pendingUserMsg], chatInput:'', chatStatus:'sending', chatErrorMsg:''});
+    const lang=this.state.lang;
+    const turnsUsed=prevMessages.filter(m=>m.role==='user').length+1;
+    const system={role:'system',content:buildChatSystemPrompt(lang,turnsUsed)};
+    llmChat(this.state.llm, [system, ...prevMessages, pendingUserMsg]).then(reply=>{
+      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
+    }).catch(err=>{
+      console.error('PAD Tracker: sendChatMessage failed',err);
+      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
+  retryLastMessage(){
+    if(this.state.chatStatus==='sending')return;
+    const msgs=this.state.chatMessages;
+    if(!msgs.length)return;
+    this.setState({chatStatus:'sending', chatErrorMsg:''});
+    const lang=this.state.lang;
+    const turnsUsed=msgs.filter(m=>m.role==='user').length;
+    const system={role:'system',content:buildChatSystemPrompt(lang,turnsUsed)};
+    llmChat(this.state.llm, [system, ...msgs]).then(reply=>{
+      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
+    }).catch(err=>{
+      console.error('PAD Tracker: retryLastMessage failed',err);
+      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
+  wrapUpChat(){this.setState({chatPhase:'afterReading'});}
+  clearNote(){this.setState(s=>({record:{...s.record,note:''}}));}
+  backFromChat(){
+    if(this.state.chatBuildingNote)return;
+    const resetChatState={
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
+      chatIncludeConversation:true, view:'record'
+    };
+    const hasRealConversation=this.state.chatMessages.some(m=>m.role==='user');
+    if(!hasRealConversation){
+      this.setState(resetChatState);
+      return;
+    }
+    // Exiting mid-conversation no longer discards it outright - the
+    // conversation becomes editable note text instead, same material the
+    // user would get from finishing normally, so nothing is silently lost
+    // and nothing is silently saved either. "Clear" on the Note field is
+    // how the user actually discards it if they don't want to keep it.
+    const lang=this.state.lang;
+    const userNote=(this.state.record.note||'').trim();
+    const transcriptText=formatChatTranscript(lang, this.state.chatMessages);
+    const finish=(noteText)=>{
+      this.setState(s=>({record:{...s.record, note:noteText}, ...resetChatState}));
+    };
+    if(userNote){
+      finish(userNote+'\n\n'+transcriptText);
+      return;
+    }
+    this.setState({chatBuildingNote:true});
+    const t=TEXT[lang];
+    const system={role:'system',content:buildChatSummaryPrompt(lang)};
+    const history=this.state.chatMessages.map(m=>({role:m.role,content:m.content}));
+    llmChat(this.state.llm, [system, ...history]).then(summary=>{
+      finish(t.aiSummaryPrefix+' '+summary.trim()+'\n\n'+transcriptText);
+    }).catch(err=>{
+      console.error('PAD Tracker: exit note generation failed, using transcript only',err);
+      finish(transcriptText);
+    });
+  }
+  toggleIncludeConversation(){this.setState(s=>({chatIncludeConversation:!s.chatIncludeConversation}));}
+  finishSaveChatEntry(note, chatData){
+    const rec=this.state.record;
+    const entry={
+      id: (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('e'+Date.now()+Math.random().toString(36).slice(2)),
+      ts: Date.now(),
+      v: rec.v, a: rec.a, d: rec.d,
+      score: rec.score,
+      emotion: rec.title || '',
+      note: note,
+      before: this.state.chatBeforeReading,
+      ...(chatData ? {chat: chatData} : {})
+    };
+    const entries=[...this.state.entries, entry];
+    Storage.save(entries);
+    this.setState({
+      entries,
+      record:{v:0,a:0,d:0,title:null,score:6,note:''},
+      wordsExpanded:false,
+      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatBeforeReading:null, chatPhase:'talking', chatBuildingNote:false,
+      chatIncludeConversation:true, chatSaving:false,
+      view:'journal',
+      showSavedToast:true
+    });
+    if(this._toastTimer)clearTimeout(this._toastTimer);
+    this._toastTimer=setTimeout(()=>this.setState({showSavedToast:false}),2000);
+  }
+  saveChatEntry(){
+    if(this.state.chatSaving)return;
+    const rec=this.state.record;
+    const userNote=(rec.note||'').trim();
+    if(!this.state.chatIncludeConversation){
+      this.finishSaveChatEntry(rec.note, null);
+      return;
+    }
+    const lang=this.state.lang;
+    const transcriptText=formatChatTranscript(lang, this.state.chatMessages);
+    if(userNote){
+      this.finishSaveChatEntry(userNote+'\n\n'+transcriptText, this.state.chatMessages);
+      return;
+    }
+    this.setState({chatSaving:true});
+    const t=TEXT[lang];
+    const system={role:'system',content:buildChatSummaryPrompt(lang)};
+    const history=this.state.chatMessages.map(m=>({role:m.role,content:m.content}));
+    llmChat(this.state.llm, [system, ...history]).then(summary=>{
+      this.finishSaveChatEntry(t.aiSummaryPrefix+' '+summary.trim()+'\n\n'+transcriptText, this.state.chatMessages);
+    }).catch(err=>{
+      console.error('PAD Tracker: chat summary generation failed, saving without it',err);
+      this.finishSaveChatEntry(transcriptText, this.state.chatMessages);
+    });
+  }
+  getInsights(){
+    if(this.state.insightsStatus==='loading')return;
+    this.setState({insightsStatus:'loading', insightsErrorMsg:''});
+    const lang=this.state.lang;
+    const messages=buildInsightsPrompt(this.state.entries, lang);
+    llmChat(this.state.llm, messages).then(text=>{
+      this.setState({insightsStatus:'success', insightsText:text.trim()});
+    }).catch(err=>{
+      console.error('PAD Tracker: getInsights failed',err);
+      this.setState({insightsStatus:'error', insightsErrorMsg: llmErrorMessage(err,TEXT[lang])});
+    });
+  }
+  saveEntry(){
+    const rec=this.state.record;
+    const entry={
+      id: (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('e'+Date.now()+Math.random().toString(36).slice(2)),
+      ts: Date.now(),
+      v: rec.v, a: rec.a, d: rec.d,
+      score: rec.score,
+      emotion: rec.title || '',
+      note: rec.note
+    };
+    const entries=[...this.state.entries, entry];
+    Storage.save(entries);
+    this.setState({
+      entries,
+      record:{v:0,a:0,d:0,title:null,score:6,note:''},
+      wordsExpanded:false,
+      view:'journal',
+      showSavedToast:true
+    });
+    if(this._toastTimer)clearTimeout(this._toastTimer);
+    this._toastTimer=setTimeout(()=>this.setState({showSavedToast:false}),2000);
+  }
+  toggleWords(){this.setState(s=>({wordsExpanded:!s.wordsExpanded}));}
+  exportCsv(){
+    const rows=[['date','time','valence','arousal','dominance','score','emotion','note','beforeValence','beforeArousal','beforeDominance','beforeScore']];
+    [...this.state.entries].sort((a,b)=>a.ts-b.ts).forEach(e=>{
+      const d=new Date(e.ts);
+      const b=e.before;
+      rows.push([
+        d.toISOString().slice(0,10), fmtTime(e.ts),
+        e.v.toFixed(2), e.a.toFixed(2), e.d.toFixed(2),
+        e.score, e.emotion||'', e.note||'',
+        b?b.v.toFixed(2):'', b?b.a.toFixed(2):'', b?b.d.toFixed(2):'', b?b.score:''
+      ]);
+    });
+    const csv=rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download='pad-tracker-export.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+
+  renderVals(){
+    const size=70;
+    const lang=this.state.lang, t=TEXT[lang];
+    const now=Date.now();
+    const dateStr=fmtDate(now,lang);
+    const view=this.state.view;
+    const rec=this.state.record;
+
+    const sortedEntries=[...this.state.entries].sort((x,y)=>x.ts-y.ts);
+    const hasEntries=sortedEntries.length>0;
+    const latest=hasEntries?sortedEntries[sortedEntries.length-1]:null;
+    const chartOriginTs=hasEntries?sortedEntries[0].ts:now;
+    this._sortedEntries=sortedEntries;
+    this._chartOriginTs=chartOriginTs;
+    const chartXs=hasEntries?computeChartXs(sortedEntries,chartOriginTs,this.state.chartZoom):[];
+    this._chartXs=chartXs;
+
+    const scoredAll=EMOTION_BANK.map(w=>{
+      const dist=Math.sqrt((rec.v-w.tv)**2+(rec.a-w.ta)**2+(rec.d-w.td)**2);
+      const sim=clamp(1-dist/3.46,0,1);
+      return {...w,pct:Math.round(sim*100)};
+    });
+    const scored=[...scoredAll].sort((x,y)=>y.pct-x.pct).slice(0,8);
+
+    const emotionWords=scored.map(w=>({
+      key:w.en, en:w.en, zh:w.zh, poetic:w.poetic, poeticZh:w.poeticZh, pct:w.pct,
+      border: rec.title===w.en?'rgba(217,190,122,.6)':'rgba(217,190,122,.15)',
+      bg: rec.title===w.en?'rgba(217,190,122,.1)':'transparent',
+      onSelect:()=>this.selectWord(w)
+    }));
+    const wordsExpanded=this.state.wordsExpanded;
+    const visibleWords=wordsExpanded?emotionWords:emotionWords.slice(0,1);
+    const hiddenWordCount=Math.max(0, emotionWords.length-visibleWords.length);
+    const wordsToggleLabel=wordsExpanded?t.showLess:`${t.showMore}${hiddenWordCount?' (+'+hiddenWordCount+')':''}`;
+
+    const labelHints=lang==='zh'
+      ? {vLow:'\u4e0d\u6109\u5feb',vHigh:'\u6109\u5feb',aLow:'\u5e73\u9759',aHigh:'\u6709\u80fd\u91cf',dLow:'\u88ab\u538b\u5012',dHigh:'\u6709\u638c\u63a7\u611f'}
+      : {vLow:'unpleasant',vHigh:'pleasant',aLow:'calm',aHigh:'energized',dLow:'overwhelmed',dHigh:'in control'};
+    const sliderDefs=[
+      {axis:'v',label:t.v,color:'#E8B54D',ref:this.vTrackRef,val:rec.v,low:labelHints.vLow,high:labelHints.vHigh},
+      {axis:'a',label:t.a,color:'#E0645C',ref:this.aTrackRef,val:rec.a,low:labelHints.aLow,high:labelHints.aHigh},
+      {axis:'d',label:t.d,color:'#6D9BD1',ref:this.dTrackRef,val:rec.d,low:labelHints.dLow,high:labelHints.dHigh}
+    ];
+    const sliders=sliderDefs.map(s=>({
+      key:s.axis, label:s.label, color:s.color, trackRef:s.ref,
+      valStr:(s.val>=0?'+':'')+s.val.toFixed(2), low:s.low, high:s.high,
+      pct:((s.val+1)/2*100).toFixed(1),
+      onDown:(e)=>this.sliderDown(s.axis,e), onMove:(e)=>this.sliderMove(s.axis,e), onUp:()=>this.sliderUp(s.axis),
+      onInfo:()=>this.setInfoAxis(s.axis)
+    }));
+
+    const scoreTicks=Array.from({length:10},(_,i)=>{
+      const n=i+1;
+      return {key:n, pct:(i/9*100).toFixed(1), label:n, color:n===rec.score?'#D9BE7A':'rgba(232,224,255,.3)', weight:n===rec.score?'600':'400'};
+    });
+    const scoreFillPct=((rec.score-1)/9*100).toFixed(1);
+
+    const groupLabels={today:t.today,yesterday:t.yesterday,thisweek:t.thisweek,earlier:t.earlier};
+    const descEntries=[...sortedEntries].reverse();
+    const journalGroups=['today','yesterday','thisweek','earlier'].map(g=>({
+      key:g, label:groupLabels[g],
+      entries:descEntries.filter(e=>classifyDate(e.ts,now)===g).map(e=>({
+        key:e.id, time:fmtTime(e.ts),
+        title:e.emotion||t.untitled,
+        v:fmtSigned(e.v), a:fmtSigned(e.a), d:fmtSigned(e.d),
+        score:e.score, note:e.note, scorePct:e.score*10,
+        onSelect:()=>this.selectEntry(e)
+      }))
+    })).filter(g=>g.entries.length>0);
+
+    const trailPts=sortedEntries.slice(-40).map(e=>({v:e.v,a:e.a,d:e.d}));
+    const trailData=trailPts.length?buildTrailSegments(trailPts,size,this.state.rx,this.state.ry):{segs:[],headDot:{style:''}};
+    const trailData2=trailPts.length?buildTrailSegments(trailPts,size,this.state.rx2,this.state.ry2):{segs:[],headDot:{style:''}};
+    const sel=this.state.selectedEntry;
+    const selVals=sel?{v:parseFloat(sel.v),a:parseFloat(sel.a),d:parseFloat(sel.d)}:{v:0,a:0,d:0};
+    const selHasBefore=!!(sel && sel.before);
+    const selBeforeSummary=selHasBefore?`V${fmtSigned(sel.before.v)} A${fmtSigned(sel.before.a)} D${fmtSigned(sel.before.d)} · ${sel.before.score}/10`:'';
+    const selAfterSummary=sel?`V${fmtSigned(sel.v)} A${fmtSigned(sel.a)} D${fmtSigned(sel.d)} · ${sel.score}/10`:'';
+    const selHasChat=!!(sel && sel.chat && sel.chat.length);
+    const selChatMessages=selHasChat?sel.chat.map((m,i)=>({
+      key:i, content:m.content, justify: m.role==='user'?'flex-end':'flex-start',
+      bg: m.role==='user'?'rgba(217,190,122,.08)':'rgba(255,255,255,.03)',
+      textAlign: m.role==='user'?'right':'left',
+      color: m.role==='user'?'#EDE7F6':'rgba(232,224,255,.8)'
+    })):[];
+
+    return {
+      lang, knob: lang==='en'?2:32, t, dateStr,
+      recordHint: lang==='zh' ? '\u6309\u611f\u89c9\u79fb\u52a8\u6ed1\u5757\uff1b\u60c5\u7eea\u8bcd\u4f1a\u968f\u7740\u8c03\u6574\u3002' : 'Move each slider by feel; the emotion words will adjust as you go.',
+      showSavedToast: this.state.showSavedToast,
+      enLabelColor: lang==='en'?'#D9BE7A':'rgba(232,224,255,.35)',
+      zhLabelColor: lang==='zh'?'#D9BE7A':'rgba(232,224,255,.35)',
+      viewIsHome: view==='home', viewIsRecord: view==='record', viewIsJournal: view==='journal',
+      viewIsSettings: view==='settings',
+      toggleLang:()=>this.toggleLang(),
+      navHome:()=>this.setView('home'), navRecord:()=>this.setView('record'), navJournal:()=>this.setView('journal'),
+      goRecord:()=>this.setView('record'),
+      navColorHome: view==='home'?'#D9BE7A':'rgba(232,224,255,.35)',
+      navColorRecord: view==='record'?'#D9BE7A':'rgba(232,224,255,.35)',
+      navColorJournal: view==='journal'?'#D9BE7A':'rgba(232,224,255,.35)',
+
+      openSettings:()=>this.openSettings(), closeSettings:()=>this.closeSettings(),
+      llmEnabled: this.state.llm.enabled,
+      llmKnob: this.state.llm.enabled?24:2,
+      toggleLlmEnabled:()=>this.toggleLlmEnabled(),
+      llmBaseUrlVal: this.state.llm.baseUrl,
+      llmModelVal: this.state.llm.model,
+      onBaseUrlChange:(e)=>this.onBaseUrlChange(e), onModelChange:(e)=>this.onModelChange(e),
+      testConnection:()=>this.testConnection(),
+      testConnLabel: this.state.testConnStatus==='testing'?t.testing:t.testConnection,
+      hasTestResult: this.state.testConnStatus==='ok' || this.state.testConnStatus==='fail',
+      testResultMsg: this.state.testConnStatus==='ok'?t.testOk:this.state.testConnErrorMsg,
+      testResultColor: this.state.testConnStatus==='ok'?'#8FBF7F':'#E0645C',
+      infoAxis: this.state.infoAxis,
+      setInfoAxis:(axis)=>this.setInfoAxis(axis),
+      closeInfo:()=>this.closeInfo(),
+      infoAxisLabel: this.state.infoAxis==='v'?t.v:this.state.infoAxis==='a'?t.a:this.state.infoAxis==='d'?t.d:'',
+      infoAxisText: (()=>{ const t=TEXT[this.state.lang], a=this.state.infoAxis; return a==='v'?t.infoV:a==='a'?t.infoA:a==='d'?t.infoD:''; })(),
+
+      hasEntries,
+      latestV: latest?fmtSigned(latest.v):'—', latestA: latest?fmtSigned(latest.a):'—', latestD: latest?fmtSigned(latest.d):'—',
+      exportCsv:()=>this.exportCsv(),
+      getInsights:()=>this.getInsights(),
+      insightsLabel: t.getInsights,
+      showInsightsPanel: this.state.insightsStatus!=='idle',
+      insightsLoading: this.state.insightsStatus==='loading',
+      insightsError: this.state.insightsStatus==='error',
+      insightsErrorMsg: this.state.insightsErrorMsg,
+      insightsResult: this.state.insightsStatus==='success',
+      insightsText: this.state.insightsText,
+
+      cubeTransform:`rotateX(${this.state.rx}deg) rotateY(${this.state.ry}deg)`,
+      cubeDown:(e)=>this.cubeDown(e), cubeMove:(e)=>this.cubeMove(e), cubeUp:()=>this.cubeUp(),
+      rings:buildRings(size*1.35), axes:buildAxes(size),
+      trailSegs:trailData.segs, trailHead:trailData.headDot,
+
+      viewIsEntryDetail: view==='entryDetail',
+      backToJournal:()=>this.backToJournal(),
+      selEntry:sel, selRings:buildRings(size*1.35), selAxes:buildAxes(size),
+      selHighlightStyle: sel?buildHighlightDot(selVals.v,selVals.a,selVals.d,size,this.state.rx2,this.state.ry2):'',
+      selScorePct: sel?sel.score*10:0,
+      selHasBefore, selBeforeSummary, selAfterSummary,
+      selHasChat, selChatMessages,
+      entryChatExpanded: this.state.entryChatExpanded,
+      entryChatToggleLabel: this.state.entryChatExpanded?t.showLess:t.viewConversation,
+      toggleEntryChat:()=>this.toggleEntryChat(),
+      cubeTransform2:`rotateX(${this.state.rx2}deg) rotateY(${this.state.ry2}deg)`,
+      zoom2:this.state.zoom2,
+      cubeDown2:(e)=>this.cubeDown2(e), cubeMove2:(e)=>this.cubeMove2(e), cubeUp2:()=>this.cubeUp2(),
+      zoomIn2:()=>this.zoomIn2(), zoomOut2:()=>this.zoomOut2(), cubeWheel2:(e)=>this.cubeWheel2(e),
+      trailSegs2: trailData2.segs,
+      trailHead2: trailData2.headDot,
+
+      chartIsPad: this.state.chartTab==='pad', chartIsScore: this.state.chartTab==='score',
+      chartColorPad: this.state.chartTab==='pad'?'#D9BE7A':'rgba(255,255,255,.35)',
+      chartColorScore: this.state.chartTab==='score'?'#D9BE7A':'rgba(255,255,255,.35)',
+      chartUnderlinePad: this.state.chartTab==='pad'?'#D9BE7A':'transparent',
+      chartUnderlineScore: this.state.chartTab==='score'?'#D9BE7A':'transparent',
+      setChartPad:()=>this.setChart('pad'), setChartScore:()=>this.setChart('score'),
+
+      zoom:this.state.zoom, zoomIn:()=>this.zoomIn(), zoomOut:()=>this.zoomOut(), cubeWheel:(e)=>this.cubeWheel(e),
+
+      chartScrollRef:(node)=>this.chartScrollRef(node),
+      infoTextRef:(node)=>this.infoTextRef(node),
+      chartDown:(e)=>this.chartDown(e), chartMove:(e)=>this.chartMove(e), chartUp:()=>this.chartUp(),
+      chartWheel:(e)=>this.chartWheel(e), chartZoomIn:()=>this.chartZoomIn(), chartZoomOut:()=>this.chartZoomOut(),
+      chartTotalWidth: hasEntries ? Math.max(chartXs[chartXs.length-1]+CHART_PADR,300) : 300,
+      padPolyV: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.v).toFixed(1)}`).join(' '),
+      padPolyA: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.a).toFixed(1)}`).join(' '),
+      padPolyD: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYPad(e.d).toFixed(1)}`).join(' '),
+      scorePoly: sortedEntries.map((e,i)=>`${chartXs[i].toFixed(1)},${chartYScore(e.score).toFixed(1)}`).join(' '),
+      xTicks: sortedEntries.map((e,i)=>{
+        const prev=i>0?new Date(sortedEntries[i-1].ts):null;
+        const d=new Date(e.ts);
+        const isNewDay=!prev||prev.getFullYear()!==d.getFullYear()||prev.getMonth()!==d.getMonth()||prev.getDate()!==d.getDate();
+        return {key:e.id, x:chartXs[i], label: isNewDay?`${d.getMonth()+1}/${d.getDate()}`:''};
+      }),
+      gridLines: this.state.chartTab==='pad'
+        ? [{key:'g0',y:chartYPad(1)},{key:'g1',y:chartYPad(0)},{key:'g2',y:chartYPad(-1)}]
+        : [{key:'g0',y:chartYScore(10)},{key:'g1',y:chartYScore(5)},{key:'g2',y:chartYScore(0)}],
+      yLabels: this.state.chartTab==='pad' ? ['+1.0','0','\u22121.0'] : ['10','5','0'],
+      hasHover: this.state.hoverIndex!==null && hasEntries,
+      hoverX: (this.state.hoverIndex!==null && hasEntries) ? chartXs[this.state.hoverIndex] : 0,
+      hoverDate: hasEntries ? fmtDateTime(sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1].ts,lang) : '',
+      hoverSummary: hasEntries ? (()=>{const day=sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1];return this.state.chartTab==='pad'?`V ${fmtSigned(day.v)}  A ${fmtSigned(day.a)}  D ${fmtSigned(day.d)}`:`${t.score} ${day.score}`;})() : '',
+      hasHoverNote: hasEntries ? !!sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1].note : false,
+      hoverNote: hasEntries ? sortedEntries[this.state.hoverIndex!==null?this.state.hoverIndex:sortedEntries.length-1].note : '',
+      hoverTooltipLeft: 32+this.state.hoverScreenX,
+      hoverHighlightStyle: (this.state.hoverIndex!==null && hasEntries)
+        ? buildHighlightDot(sortedEntries[this.state.hoverIndex].v,sortedEntries[this.state.hoverIndex].a,sortedEntries[this.state.hoverIndex].d,size,this.state.rx,this.state.ry)
+        : '',
+
+      sliders, visibleWords, wordsToggleLabel, toggleWords:()=>this.toggleWords(), score:rec.score, scoreTicks, scoreFillPct,
+      scoreTrackRef:this.scoreTrackRef,
+      scoreDown:(e)=>this.scoreDown(e), scoreMove:(e)=>this.scoreMove(e), scoreUp:()=>this.scoreUp(),
+      noteVal:rec.note, onNoteChange:(e)=>this.onNoteChange(e),
+      hasNoteText: !!(rec.note||'').trim(), clearNote:()=>this.clearNote(),
+      saveEntry:()=>this.saveEntry(),
+      talkItThrough:()=>this.startChat(),
+
+      viewIsChat: view==='chat',
+      chatIsTalking: this.state.chatPhase==='talking',
+      chatIsAfterReading: this.state.chatPhase==='afterReading',
+      chatMessages: this.state.chatMessages.map((m,i)=>({
+        key:i, content:m.content, justify: m.role==='user'?'flex-end':'flex-start',
+        bg: m.role==='user'?'rgba(217,190,122,.08)':'rgba(255,255,255,.03)',
+        textAlign: m.role==='user'?'right':'left',
+        color: m.role==='user'?'#EDE7F6':'rgba(232,224,255,.8)'
+      })),
+      chatSending: this.state.chatStatus==='sending',
+      hasChatError: this.state.chatStatus==='error',
+      chatErrorMsg: this.state.chatErrorMsg,
+      chatInput: this.state.chatInput,
+      onChatInputChange:(e)=>this.onChatInputChange(e),
+      sendChatMessage:()=>this.sendChatMessage(),
+      retryLastMessage:()=>this.retryLastMessage(),
+      chatCapReached: this.state.chatMessages.filter(m=>m.role==='user').length>=CHAT_MAX_TURNS,
+      chatCanSend: this.state.chatStatus!=='sending' && !!this.state.chatInput.trim() && this.state.chatMessages.filter(m=>m.role==='user').length<CHAT_MAX_TURNS,
+      sendButtonOpacity: (this.state.chatStatus!=='sending' && !!this.state.chatInput.trim() && this.state.chatMessages.filter(m=>m.role==='user').length<CHAT_MAX_TURNS) ? 1 : 0.4,
+      wrapUpChat:()=>this.wrapUpChat(),
+      backFromChat:()=>this.backFromChat(),
+      chatBuildingNote: this.state.chatBuildingNote,
+      saveChatEntry:()=>this.saveChatEntry(),
+      chatBeforeSummary: this.state.chatBeforeReading ? `V${fmtSigned(this.state.chatBeforeReading.v)} A${fmtSigned(this.state.chatBeforeReading.a)} D${fmtSigned(this.state.chatBeforeReading.d)} · ${this.state.chatBeforeReading.score}/10` : '',
+      toggleIncludeConversation:()=>this.toggleIncludeConversation(),
+      includeConvoKnob: this.state.chatIncludeConversation?24:2,
+      saveChatButtonLabel: this.state.chatSaving ? t.savingEntry : t.save,
+      saveChatButtonOpacity: this.state.chatSaving ? 0.5 : 1,
+
+      onboardingVisible: this.state.onboardingStep>0,
+      onboardingIsLast: this.state.onboardingStep>=ONBOARDING_PAGES,
+      onboardingTitle: this.state.onboardingStep===1 ? t.onboardTitle1 : this.state.onboardingStep===2 ? t.onboardTitle2 : t.onboardTitle3,
+      onboardingBody: this.state.onboardingStep===1 ? buildOnboardInstallBody(lang,this.isIOS,this.isAndroid) : this.state.onboardingStep===2 ? t.onboardBody2 : t.onboardBody3,
+      onboardingNextLabel: this.state.onboardingStep>=ONBOARDING_PAGES ? t.onboardDone : t.onboardNext,
+      onboardingDots: Array.from({length:ONBOARDING_PAGES},(_,i)=>({key:i,color:(i+1)===this.state.onboardingStep?'#D9BE7A':'rgba(232,224,255,.2)'})),
+      nextOnboarding:()=>this.nextOnboarding(),
+      skipOnboarding:()=>this.skipOnboarding(),
+      reopenOnboarding:()=>this.reopenOnboarding(),
+
+      journalGroups
+    };
+  }
+}
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
