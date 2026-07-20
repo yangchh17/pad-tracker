@@ -350,6 +350,7 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
     </div>
 
     <sc-if value="{{ llmEnabled }}" hint-placeholder-val="{{ false }}">
+      <div style="font:italic 400 10px 'EB Garamond',serif;color:#E8C35A;margin-bottom:10px">🖥 {{ t.desktopOnly }}</div>
       <div style="margin-bottom:6px">
         <div style="font:400 10px 'JetBrains Mono',monospace;letter-spacing:.08em;color:rgba(232,224,255,.5);margin-bottom:6px">{{ t.baseUrl }}</div>
         <input value="{{ llmBaseUrlVal }}" onChange="{{ onBaseUrlChange }}" placeholder="http://localhost:11434" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.02);border:1px solid rgba(217,190,122,.15);border-radius:4px;padding:9px 10px;font:400 12px 'JetBrains Mono',monospace;color:#EDE7F6"/>
@@ -794,16 +795,18 @@ function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 const TEXT={
   en:{home:'Home',record:'Record',journal:'Journal',phase:'Phase Space',pad:'PAD',score:'Score',log:'Log Now',v:'Valence',a:'Arousal',d:'Dominance',now:'Now',suggested:'Emotion Words',overallScore:'Overall Score (1–10)',note:'Note (optional)',notePlaceholder:'What brought this on...',save:'Save Entry',today:'Today',yesterday:'Yesterday',thisweek:'This Week',earlier:'Earlier',emptyTrail:'No entries yet — Log Now to begin your trail',emptyChart:'Log your first entry to see trends',emptyJournal:'No entries yet.',export:'Export CSV',untitled:'Untitled',showMore:'Show more',showLess:'Show less',
     settings:'Settings',llmEnable:'Use local AI (Ollama)',baseUrl:'Base URL',modelName:'Model name',llmOriginsHint:'Requires Ollama running with OLLAMA_ORIGINS allowing this page\'s address (see README).',
+    desktopOnly:'🖥 Desktop only today — see README',
     testConnection:'Test connection',testing:'Testing…',testOk:'Connected successfully.',
     askAi:'Ask AI',askAiThinking:'Asking…',
-    getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',
+    getInsights:'Get Insights',insightsLoading:'Thinking about your recent entries…',insightsClose:'Dismiss',hintDrag:'Drag to rotate',hintPan:'Swipe to pan',
     errTimeout:'No response — is Ollama running?',errModel:'Model not found — check the model name.',errServer:'Server error — check the base URL.',errNetwork:'Can\'t reach the server — check the URL, or that Ollama\'s CORS (OLLAMA_ORIGINS) allows this page.',
     recordFirst:'Record your first entry',saved:'Saved ✓',infoDismiss:'Got it'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
+    desktopOnly:'🖥 仅限桌面端 — 详见 README',
     testConnection:'测试连接',testing:'测试中…',testOk:'连接成功。',
     askAi:'问问AI',askAiThinking:'询问中…',
-    getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',
+    getInsights:'获取洞察',insightsLoading:'正在分析你最近的记录…',insightsClose:'关闭',hintDrag:'拖动旋转',hintPan:'滑动查看',
     errTimeout:'没有响应 — Ollama 是否正在运行？',errModel:'找不到模型 — 请检查模型名称。',errServer:'服务器错误 — 请检查服务器地址。',errNetwork:'无法连接服务器 — 请检查地址，或确认 Ollama 的 OLLAMA_ORIGINS 允许此页面。',
     recordFirst:'记录你的第一条',saved:'已保存 ✓',infoDismiss:'知道了'},
 };
@@ -863,6 +866,7 @@ class Component extends DCLogic {
     selectedEntry:null, zoom:1, hoverIndex:null, hoverScreenX:0, chartZoom:1,
     entries: Storage.load(),
     rx2:-12, ry2:24, zoom2:1,
+    hasFirstCubeDrag:false, hasFirstChartPan:false,
     wordsExpanded:false,
     llm: LlmSettings.load(),
     aiSuggestStatus:'idle', aiSuggestErrorMsg:'', aiOrderIdxs:null,
@@ -913,9 +917,11 @@ class Component extends DCLogic {
     const screenX=clamp(clientX-rect.left,0,rect.width);
     this.setState({hoverIndex:best, hoverScreenX:screenX});
   }
-  chartDown(e){if(!this.chartScrollNode)return;this._chartDrag=true;this._chartStartX=e.clientX;this._chartStartScroll=this.chartScrollNode.scrollLeft;this.chartHoverAt(e.clientX);}
+  chartDown(e){if(!this.chartScrollNode)return;this._chartDrag=true;this._chartStartX=e.clientX;this._chartStartScroll=this.chartScrollNode.scrollLeft;this.chartHoverAt(e.clientX);
+    if(!this.state.hasFirstChartPan)this.setState({hasFirstChartPan:true});}
   chartMove(e){if(this._chartDrag){const dx=e.clientX-this._chartStartX;this.chartScrollNode.scrollLeft=this._chartStartScroll-dx;}this.chartHoverAt(e.clientX);}
   chartUp(){this._chartDrag=false;this.setState({hoverIndex:null});}
+  closeInsights(){this.setState({showInsightsPanel:false});}
 
   toggleLang(){this.setState(s=>({lang:s.lang==='en'?'zh':'en'}));}
   setInfoAxis(axis){
@@ -962,11 +968,15 @@ class Component extends DCLogic {
   }
 
   cubeDown(e){e.target.setPointerCapture(e.pointerId);this._dragCube=true;this._lx=e.clientX;this._ly=e.clientY;}
-  cubeMove(e){if(!this._dragCube)return;const dx=e.clientX-this._lx,dy=e.clientY-this._ly;this._lx=e.clientX;this._ly=e.clientY;this.setState(s=>({rx:clamp(s.rx-dy*0.4,-85,10),ry:s.ry+dx*0.4}));}
+  cubeMove(e){if(!this._dragCube)return;const dx=e.clientX-this._lx,dy=e.clientY-this._ly;
+    if((Math.abs(dx)+Math.abs(dy))>5&&!this.state.hasFirstCubeDrag)this.setState({hasFirstCubeDrag:true});
+    this._lx=e.clientX;this._ly=e.clientY;this.setState(s=>({rx:clamp(s.rx-dy*0.4,-85,10),ry:s.ry+dx*0.4}));}
   cubeUp(){this._dragCube=false;}
 
   cubeDown2(e){e.target.setPointerCapture(e.pointerId);this._dragCube2=true;this._lx2=e.clientX;this._ly2=e.clientY;}
-  cubeMove2(e){if(!this._dragCube2)return;const dx=e.clientX-this._lx2,dy=e.clientY-this._ly2;this._lx2=e.clientX;this._ly2=e.clientY;this.setState(s=>({rx2:clamp(s.rx2-dy*0.4,-85,10),ry2:s.ry2+dx*0.4}));}
+  cubeMove2(e){if(!this._dragCube2)return;const dx=e.clientX-this._lx2,dy=e.clientY-this._ly2;
+    if((Math.abs(dx)+Math.abs(dy))>5&&!this.state.hasFirstCubeDrag)this.setState({hasFirstCubeDrag:true});
+    this._lx2=e.clientX;this._ly2=e.clientY;this.setState(s=>({rx2:clamp(s.rx2-dy*0.4,-85,10),ry2:s.ry2+dx*0.4}));}
   cubeUp2(){this._dragCube2=false;}
   zoomIn2(){this.setState(s=>({zoom2:clamp(s.zoom2+0.15,0.6,2)}));}
   zoomOut2(){this.setState(s=>({zoom2:clamp(s.zoom2-0.15,0.6,2)}));}
