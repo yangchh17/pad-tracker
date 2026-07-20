@@ -1,63 +1,123 @@
-import { Storage, LlmSettings, Onboarding, DEFAULT_LLM_BASE_URL, DEFAULT_LLM_MODEL, ONBOARDING_PAGES } from './lib/storage';
-import { TEXT, EMOTION_BANK, infoHtml } from './lib/text';
-import { llmChat, llmErrorMessage, buildChatSystemPrompt, buildChatSummaryPrompt, formatChatTranscript, buildOnboardInstallBody, buildInsightsPrompt, CHAT_MAX_TURNS } from './lib/llm';
-import { fmtTime, fmtDate, fmtDateTime, fmtSigned, csvEscape, classifyDate } from './lib/format';
-import { clamp, proj, buildTrailSegments, buildHighlightDot, buildRings, buildAxes, mapLine, mapScore, chartXTime, computeChartXs, chartYPad, chartYScore } from './lib/pad';
-
-function smokeTest() {
-  const checks = [];
-  checks.push(['Storage.load() is array', Array.isArray(Storage.load())]);
-  checks.push(['LlmSettings.load() has default baseUrl', LlmSettings.load().baseUrl === DEFAULT_LLM_BASE_URL]);
-  checks.push(['LlmSettings.load() has default model', LlmSettings.load().model === DEFAULT_LLM_MODEL]);
-  checks.push(['Onboarding.isDone() is boolean', typeof Onboarding.isDone() === 'boolean']);
-  checks.push(['ONBOARDING_PAGES is 3', ONBOARDING_PAGES === 3]);
-  checks.push(['TEXT.en.home', TEXT.en.home === 'Home']);
-  checks.push(['TEXT.zh.home', TEXT.zh.home === '主页']);
-  checks.push(['EMOTION_BANK has 44 entries', EMOTION_BANK.length === 44]);
-  checks.push(['infoHtml(v,en) returns string', typeof infoHtml('v', 'en') === 'string' && infoHtml('v', 'en').length > 0]);
-  checks.push(['buildChatSystemPrompt returns string', typeof buildChatSystemPrompt('en', 0) === 'string']);
-  checks.push(['buildChatSummaryPrompt returns string', typeof buildChatSummaryPrompt('en') === 'string']);
-  checks.push(['formatChatTranscript works', formatChatTranscript('en', [{ role: 'user', content: 'hi' }]).includes('Me: hi')]);
-  checks.push(['buildOnboardInstallBody works', typeof buildOnboardInstallBody('en', false, false) === 'string']);
-  checks.push(['buildInsightsPrompt returns 2 messages', buildInsightsPrompt([], 'en').length === 2]);
-  checks.push(['CHAT_MAX_TURNS is 12', CHAT_MAX_TURNS === 12]);
-  checks.push(['llmErrorMessage works', llmErrorMessage(new Error('timeout'), TEXT.en) === TEXT.en.errTimeout]);
-  checks.push(['fmtTime works', /^\d{2}:\d{2}$/.test(fmtTime(Date.now()))]);
-  checks.push(['fmtDate works', typeof fmtDate(Date.now(), 'en') === 'string']);
-  checks.push(['fmtDateTime works', typeof fmtDateTime(Date.now(), 'en') === 'string']);
-  checks.push(['fmtSigned works', fmtSigned(0.5) === '+0.50']);
-  checks.push(['csvEscape escapes commas', csvEscape('a,b') === '"a,b"']);
-  checks.push(['classifyDate works', classifyDate(Date.now(), Date.now()) === 'today']);
-  checks.push(['clamp works', clamp(5, 0, 3) === 3]);
-  checks.push(['proj works', proj(1, 1, 1, 100).x === 100]);
-  checks.push(['buildTrailSegments works', buildTrailSegments([{ v: 0, a: 0, d: 0 }, { v: 1, a: 1, d: 1 }], 100, -12, 24).segs.length > 0]);
-  checks.push(['buildHighlightDot returns string', typeof buildHighlightDot(0, 0, 0, 100, -12, 24) === 'string']);
-  checks.push(['buildRings returns 3', buildRings(100).length === 3]);
-  checks.push(['buildAxes returns 3', buildAxes(100).length === 3]);
-  checks.push(['mapLine works', typeof mapLine([0, 0.5, 1], 100, 100, 10) === 'string']);
-  checks.push(['mapScore works', typeof mapScore([5, 6, 7], 100, 100, 10) === 'string']);
-  checks.push(['chartXTime works', typeof chartXTime(Date.now(), Date.now(), 1) === 'number']);
-  checks.push(['computeChartXs works', computeChartXs([{ ts: Date.now() }, { ts: Date.now() + 1000 }], Date.now(), 1).length === 2]);
-  checks.push(['chartYPad works', typeof chartYPad(0) === 'number']);
-  checks.push(['chartYScore works', typeof chartYScore(5) === 'number']);
-  return checks;
-}
+import { useState } from 'react';
+import { Storage } from './lib/storage';
+import { TEXT } from './lib/text';
+import { fmtDate } from './lib/format';
 
 export default function App() {
-  const checks = smokeTest();
-  const failed = checks.filter(([, ok]) => !ok);
+  const [lang, setLang] = useState('en');
+  const [view, setView] = useState('home');
+  const [entries] = useState(() => Storage.load());
+
+  const t = TEXT[lang];
+  const dateStr = fmtDate(Date.now(), lang);
+  const toggleLang = () => setLang((l) => (l === 'en' ? 'zh' : 'en'));
+  const knob = lang === 'en' ? 2 : 32;
+  const enLabelColor = lang === 'en' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
+  const zhLabelColor = lang === 'zh' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
+  const navColor = (v) => (view === v ? '#D9BE7A' : 'rgba(232,224,255,.35)');
+
   return (
-    <div className="min-h-dvh bg-[#05060C] text-[#EDE7F6] font-mono text-xs p-6">
-      <h1 className="font-serif italic text-lg text-[#D9BE7A] mb-4">
-        Phase 1 smoke test — {checks.length - failed.length}/{checks.length} passed
-      </h1>
-      <ul className="space-y-1">
-        {checks.map(([name, ok]) => (
-          <li key={name} className={ok ? 'text-green-400' : 'text-red-400'}>
-            {ok ? '✓' : '✗'} {name}
-          </li>
-        ))}
-      </ul>
+    <div className="frame">
+      <div className="stars" />
+
+      <div
+        style={{
+          position: 'absolute', left: 0, right: 0, top: 0, height: 44,
+          display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10,
+          padding: 'env(safe-area-inset-top,0px) 20px 0', font: "400 12px 'JetBrains Mono',monospace",
+          color: 'rgba(232,224,255,.5)', zIndex: 5, boxSizing: 'border-box',
+        }}
+      >
+        <div className="chip" onClick={() => setView('settings')} style={{ width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 22, height: 22, borderRadius: '50%', border: '1px solid rgba(217,190,122,.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D9BE7A', font: "400 12px 'JetBrains Mono',monospace", pointerEvents: 'none' }}>⚙</div>
+        </div>
+        <div className="pv" onClick={toggleLang} style={{ width: 52 }}>
+          <span style={{ position: 'absolute', left: 6, top: '50%', transform: 'translateY(-50%)', font: "600 8px 'JetBrains Mono',monospace", color: enLabelColor, pointerEvents: 'none' }}>EN</span>
+          <span style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', font: "600 8px 'JetBrains Mono',monospace", color: zhLabelColor, pointerEvents: 'none' }}>中</span>
+          <div className="pv-knob" style={{ left: knob }} />
+        </div>
+      </div>
+
+      <div className="scroll">
+        {view === 'home' && (
+          <div>
+            <div className="hdr">
+              <div>
+                <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6', letterSpacing: '.02em' }}>{t.home}</div>
+                <div style={{ font: "400 10px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.35)', marginTop: 4, letterSpacing: '.06em' }}>{dateStr}</div>
+              </div>
+              <div style={{ font: "italic 400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)' }}>{t.now}</div>
+            </div>
+            <div className="panel">
+              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
+                Phase 2 placeholder — {entries.length} entries loaded from storage. Home view (cube + chart) comes in Phase 3.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === 'record' && (
+          <div>
+            <div className="hdr">
+              <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6' }}>{t.record}</div>
+            </div>
+            <div className="panel">
+              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
+                Phase 2 placeholder — sliders + emotion words come in Phase 4.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === 'journal' && (
+          <div>
+            <div className="hdr">
+              <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6' }}>{t.journal}</div>
+            </div>
+            <div className="panel">
+              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
+                Phase 2 placeholder — entry list comes in Phase 5.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === 'settings' && (
+          <div>
+            <div className="hdr">
+              <div className="chip" onClick={() => setView('home')} style={{ font: "italic 400 13px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)' }}>
+                ‹ {t.settings}
+              </div>
+            </div>
+            <div className="panel">
+              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
+                Phase 2 placeholder — LLM settings come in Phase 8.
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="tabbar">
+        <div className="tabitem" onClick={() => setView('home')}>
+          <div style={{ width: 16, height: 16, borderRadius: '50%', border: `1.5px solid ${navColor('home')}` }} />
+          <span style={{ font: "400 9px 'JetBrains Mono',monospace", letterSpacing: '.05em', color: navColor('home') }}>{t.home}</span>
+        </div>
+        <div className="tabitem" onClick={() => setView('record')}>
+          <div style={{ width: 16, height: 16, borderRadius: '50%', border: `1.5px solid ${navColor('record')}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: navColor('record') }} />
+          </div>
+          <span style={{ font: "400 9px 'JetBrains Mono',monospace", letterSpacing: '.05em', color: navColor('record') }}>{t.record}</span>
+        </div>
+        <div className="tabitem" onClick={() => setView('journal')}>
+          <div style={{ width: 16, height: 12, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ height: 1.5, background: navColor('journal') }} />
+            <div style={{ height: 1.5, background: navColor('journal') }} />
+            <div style={{ height: 1.5, background: navColor('journal') }} />
+          </div>
+          <span style={{ font: "400 9px 'JetBrains Mono',monospace", letterSpacing: '.05em', color: navColor('journal') }}>{t.journal}</span>
+        </div>
+      </div>
     </div>
   );
 }
