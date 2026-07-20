@@ -1,8 +1,11 @@
 import { useState, useRef } from 'react';
-import { Storage, LlmSettings } from './lib/storage';
+import { Storage, LlmSettings, Onboarding as OnboardingStore, ONBOARDING_PAGES } from './lib/storage';
 import { TEXT } from './lib/text';
 import Home from './views/Home';
 import Record from './views/Record';
+import Journal from './views/Journal';
+import Settings from './views/Settings';
+import OnboardingOverlay from './components/Onboarding';
 
 const EMPTY_RECORD = { v: 0, a: 0, d: 0, title: null, score: 6, note: '' };
 
@@ -12,8 +15,13 @@ export default function App() {
   const [entries, setEntries] = useState(() => Storage.load());
   const [record, setRecord] = useState(EMPTY_RECORD);
   const [showSavedToast, setShowSavedToast] = useState(false);
-  const [llm] = useState(() => LlmSettings.load());
+  const [llm, setLlm] = useState(() => LlmSettings.load());
+  const [onboardingStep, setOnboardingStep] = useState(() => (OnboardingStore.isDone() ? 0 : 1));
   const toastTimer = useRef(null);
+  const [{ isIOS, isAndroid }] = useState(() => {
+    const ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+    return { isIOS: /iPhone|iPad|iPod/.test(ua), isAndroid: /Android/.test(ua) };
+  });
 
   const t = TEXT[lang];
   const toggleLang = () => setLang((l) => (l === 'en' ? 'zh' : 'en'));
@@ -45,6 +53,29 @@ export default function App() {
   // chip has something to call without crashing.
   const talkItThrough = () => console.log('Talk it through: Phase 7, not built yet');
 
+  // Entry Detail (Phase 6) isn't built yet - placeholder so Journal's
+  // rows have something to call without crashing.
+  const selectEntry = (entry) => console.log('Entry Detail: Phase 6, not built yet', entry);
+
+  const nextOnboarding = () => {
+    setOnboardingStep((step) => {
+      const next = step + 1;
+      if (next > ONBOARDING_PAGES) {
+        OnboardingStore.markDone();
+        return 0;
+      }
+      return next;
+    });
+  };
+  const skipOnboarding = () => {
+    OnboardingStore.markDone();
+    setOnboardingStep(0);
+  };
+  const reopenOnboarding = () => {
+    setOnboardingStep(1);
+    setView('home');
+  };
+
   return (
     <div className="frame">
       <div className="stars" />
@@ -75,31 +106,11 @@ export default function App() {
         )}
 
         {view === 'journal' && (
-          <div>
-            <div className="hdr">
-              <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6' }}>{t.journal}</div>
-            </div>
-            <div className="panel">
-              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
-                Phase 2 placeholder — entry list comes in Phase 5.
-              </div>
-            </div>
-          </div>
+          <Journal t={t} lang={lang} entries={entries} llmEnabled={llm.enabled} llm={llm} onSelectEntry={selectEntry} onGoRecord={() => setView('record')} />
         )}
 
         {view === 'settings' && (
-          <div>
-            <div className="hdr">
-              <div className="chip" onClick={() => setView('home')} style={{ font: "italic 400 13px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)' }}>
-                ‹ {t.settings}
-              </div>
-            </div>
-            <div className="panel">
-              <div style={{ font: "400 13px 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>
-                Phase 2 placeholder — LLM settings come in Phase 8.
-              </div>
-            </div>
-          </div>
+          <Settings t={t} lang={lang} llm={llm} onLlmChange={setLlm} onReopenOnboarding={reopenOnboarding} onClose={() => setView('home')} />
         )}
       </div>
 
@@ -108,6 +119,21 @@ export default function App() {
       )}
 
       {showSavedToast && <div className="toast">{t.saved}</div>}
+
+      <OnboardingOverlay
+        visible={onboardingStep > 0}
+        step={onboardingStep}
+        t={t}
+        lang={lang}
+        isIOS={isIOS}
+        isAndroid={isAndroid}
+        enLabelColor={enLabelColor}
+        zhLabelColor={zhLabelColor}
+        knob={knob}
+        onToggleLang={toggleLang}
+        onNext={nextOnboarding}
+        onSkip={skipOnboarding}
+      />
 
       <div className="tabbar">
         <div className="tabitem" onClick={() => setView('home')}>
