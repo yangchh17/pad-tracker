@@ -19,8 +19,10 @@ through** — a short conversation that helps you process how you're
 feeling before logging your mood. It's entirely optional; the app works
 the same without it.
 
-If you were invited to try this feature, it should just work as soon as
-you turn the toggle on — no addresses or model names to type in.
+If you were invited to try this feature, turn the toggle on — no addresses
+or model names to type in. If it doesn't connect, the host computer is
+probably offline at the moment; check with the person who invited you and
+try again later.
 
 ## Installing
 
