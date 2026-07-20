@@ -449,8 +449,15 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
       <textarea value="{{ noteVal }}" onChange="{{ onNoteChange }}" placeholder="{{ t.notePlaceholder }}" style="width:100%;min-height:82px;background:rgba(255,255,255,.025);border:1px solid rgba(217,190,122,.2);border-radius:6px;padding:12px;font:400 14px/1.45 Inter,sans-serif;color:#EDE7F6;resize:none"></textarea>
     </div>
 
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:400 11px 'EB Garamond',serif;font-style:italic;color:rgba(217,190,122,.75)">{{ t.includeConversation }}</span>
+        <div class="pv" onClick="{{ toggleIncludeConversation }}"><div class="pv-knob" style="left:{{ includeConvoKnob }}px"></div></div>
+      </div>
+    </div>
+
     <div style="position:relative;height:90px;display:flex;align-items:center;justify-content:center">
-      <div class="chip primary-action" onClick="{{ saveChatEntry }}">{{ t.save }}</div>
+      <div class="chip primary-action" onClick="{{ saveChatEntry }}" style="opacity:{{ saveChatButtonOpacity }}">{{ saveChatButtonLabel }}</div>
     </div>
   </sc-if>
 </div>
@@ -770,7 +777,21 @@ function llmErrorMessage(err,t){
 const INSIGHTS_MAX_ENTRIES=20;
 const CHAT_MAX_TURNS=12;
 function buildChatSystemPrompt(lang){
-  return `You are a warm, supportive journaling companion helping someone reflect on how they're feeling right now. You are not a therapist, counselor, or medical professional, and you must never diagnose, label a condition, or suggest treatment. Your role is to help the person notice and name what they're feeling, gently explore what's underneath it, and feel a little clearer by the end of the conversation.\n\n- Ask short, open, curious questions - one at a time, not a list.\n- Reflect back what you hear in plain language before asking the next question.\n- Never rush to reassure, fix, or minimize. Sit with what they share first.\n- If they mention self-harm, crisis, or being in danger, gently and clearly encourage them to reach out to a crisis line or someone they trust right now, and do not continue with reflective questions in that moment.\n- Keep responses brief - 2-4 sentences. This is a conversation, not an essay.\n- Write in ${lang==='zh'?'Chinese':'English'}.`;
+  const langLine = lang==='zh' ? 'Chinese' : 'English';
+  return `You are a warm, supportive journaling companion helping someone reflect on how they're feeling right now, using the Valence/Arousal/Dominance (PAD) model this app is built on: pleasant vs. unpleasant, energized vs. calm, in control vs. overwhelmed. You are not a therapist, counselor, or medical professional, and you must never diagnose, label a clinical condition, or suggest treatment.\n\n- Naming feelings in plain PAD language (e.g. "that sounds like it has an unsettled, keyed-up quality" or "more like a stuck, powerless feeling") is exactly what you're here for - it is not a clinical act, and you should do it, not refuse to.\n- Ask short, open, curious questions - one at a time, not a list. Reflect back what you hear before asking the next one.\n- Never rush to reassure, fix, or minimize. Sit with what they share first.\n- If the user asks a direct question about you, this tool, or how it works (e.g. "what model are you," "how many turns do we get," "what's your goal") - answer it plainly and honestly in one sentence, then continue. Do not deflect a direct question back as another reflective question.\n- If the user signals they want to wrap up (e.g. "one more round," "let's stop," "I'm okay now") - treat that as final. Your next reply should briefly summarize what came up and invite them to check in on how they feel now, not open a new thread or ask "anything else?"\n- You have a soft budget of about ${CHAT_MAX_TURNS} exchanges. Use the first few to explore openly; by the middle of that budget, start naming what you're noticing in PAD terms; as you approach the end, move toward summarizing and inviting them to check in on their current mood rather than continuing to explore indefinitely.\n- If they mention self-harm, crisis, or being in danger, gently and clearly encourage them to reach out to a crisis line or someone they trust right now, and do not continue with reflective questions in that moment.\n- Keep responses brief - 2-4 sentences. This is a conversation, not an essay.\n- Write in ${langLine}.`;
+}
+function buildChatOpeningPrompt(lang){
+  return buildChatSystemPrompt(lang) + '\n\nThis is the very start of the conversation - the user has not said anything yet. Send a brief (1-2 sentence) warm greeting and invitation to share what\'s on their mind. Do not ask about any specific topic yet.';
+}
+function buildChatSummaryPrompt(lang){
+  return lang==='zh'
+    ? '请用不超过3句非临床、温暖的话，总结以下对话中用户分享的内容和情绪走向，不要下诊断或使用临床术语，也不要提及你自己。'
+    : 'In 2-3 warm, non-clinical sentences, summarize what the user shared in this conversation and how their feelings seemed to shift. Do not diagnose, use clinical language, or refer to yourself.';
+}
+function formatChatTranscript(lang, messages){
+  const t=TEXT[lang];
+  const who=(role)=> role==='user' ? t.chatMe : t.chatCompanion;
+  return t.conversationTitle+'\n'+messages.map(m=>who(m.role)+': '+m.content).join('\n');
 }
 
 // ── Info keyword formatter ──────────────────────────────────────
@@ -898,7 +919,9 @@ const TEXT={
     talkItThrough:'Talk it through',chatPlaceholder:'Say what\'s on your mind...',send:'Send',chatThinking:'Thinking…',wrapUp:'Wrap up',retry:'Retry',
     discardConfirm:'Discard this conversation?',discardYes:'Discard',discardCancel:'Cancel',
     chatCapReached:'Long enough for now — tap Wrap up to check in.',
-    afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation'},
+    afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation',
+    includeConversation:'Save this conversation with the entry',conversationTitle:'— Talk it through conversation —',
+    chatMe:'Me',chatCompanion:'Companion',aiSummaryPrefix:'(AI Summary)',savingEntry:'Saving…'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
     desktopOnly:'🖥 仅限桌面端 — 详见 README',
@@ -909,7 +932,9 @@ const TEXT={
     talkItThrough:'聊一聊',chatPlaceholder:'说说你在想什么...',send:'发送',chatThinking:'思考中…',wrapUp:'结束对话',retry:'重试',
     discardConfirm:'放弃这段对话？',discardYes:'放弃',discardCancel:'取消',
     chatCapReached:'先聊到这里 — 点击"结束对话"来记录当下的心情。',
-    afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话'},
+    afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话',
+    includeConversation:'将这段对话保存到记录中',conversationTitle:'— 聊一聊对话记录 —',
+    chatMe:'我',chatCompanion:'伙伴',aiSummaryPrefix:'（AI 摘要）',savingEntry:'保存中…'},
 };
 
 const EMOTION_BANK=[
@@ -975,6 +1000,7 @@ class Component extends DCLogic {
     showSavedToast:false,
     chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
     chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+    chatIncludeConversation:true, chatSaving:false,
     entryChatExpanded:false
   };
 
@@ -1120,8 +1146,20 @@ class Component extends DCLogic {
     this.setState({
       chatBeforeReading:{v:rec.v,a:rec.a,d:rec.d,score:rec.score},
       chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
-      chatPhase:'talking', chatConfirmDiscard:false,
+      chatPhase:'talking', chatConfirmDiscard:false, chatIncludeConversation:true,
       view:'chat'
+    });
+    this.requestGreeting();
+  }
+  requestGreeting(){
+    this.setState({chatStatus:'sending', chatErrorMsg:''});
+    const lang=this.state.lang;
+    const system={role:'system',content:buildChatOpeningPrompt(lang)};
+    llmChat(this.state.llm, [system]).then(reply=>{
+      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
+    }).catch(err=>{
+      console.error('PAD Tracker: requestGreeting failed',err);
+      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
     });
   }
   onChatInputChange(e){const val=e.target.value; this.setState({chatInput:val});}
@@ -1144,7 +1182,7 @@ class Component extends DCLogic {
   retryLastMessage(){
     if(this.state.chatStatus==='sending')return;
     const msgs=this.state.chatMessages;
-    if(!msgs.length)return;
+    if(!msgs.length){ this.requestGreeting(); return; }
     this.setState({chatStatus:'sending', chatErrorMsg:''});
     const lang=this.state.lang;
     const system={role:'system',content:buildChatSystemPrompt(lang)};
@@ -1164,11 +1202,13 @@ class Component extends DCLogic {
     this.setState({
       chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
       chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+      chatIncludeConversation:true,
       view:'record'
     });
   }
   cancelDiscardChat(){this.setState({chatConfirmDiscard:false});}
-  saveChatEntry(){
+  toggleIncludeConversation(){this.setState(s=>({chatIncludeConversation:!s.chatIncludeConversation}));}
+  finishSaveChatEntry(note, chatData){
     const rec=this.state.record;
     const entry={
       id: (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('e'+Date.now()+Math.random().toString(36).slice(2)),
@@ -1176,9 +1216,9 @@ class Component extends DCLogic {
       v: rec.v, a: rec.a, d: rec.d,
       score: rec.score,
       emotion: rec.title || '',
-      note: rec.note,
+      note: note,
       before: this.state.chatBeforeReading,
-      chat: this.state.chatMessages
+      ...(chatData ? {chat: chatData} : {})
     };
     const entries=[...this.state.entries, entry];
     Storage.save(entries);
@@ -1188,11 +1228,37 @@ class Component extends DCLogic {
       wordsExpanded:false,
       chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
       chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
+      chatIncludeConversation:true, chatSaving:false,
       view:'journal',
       showSavedToast:true
     });
     if(this._toastTimer)clearTimeout(this._toastTimer);
     this._toastTimer=setTimeout(()=>this.setState({showSavedToast:false}),2000);
+  }
+  saveChatEntry(){
+    if(this.state.chatSaving)return;
+    const rec=this.state.record;
+    const userNote=(rec.note||'').trim();
+    if(!this.state.chatIncludeConversation){
+      this.finishSaveChatEntry(rec.note, null);
+      return;
+    }
+    const lang=this.state.lang;
+    const transcriptText=formatChatTranscript(lang, this.state.chatMessages);
+    if(userNote){
+      this.finishSaveChatEntry(userNote+'\n\n'+transcriptText, this.state.chatMessages);
+      return;
+    }
+    this.setState({chatSaving:true});
+    const t=TEXT[lang];
+    const system={role:'system',content:buildChatSummaryPrompt(lang)};
+    const history=this.state.chatMessages.map(m=>({role:m.role,content:m.content}));
+    llmChat(this.state.llm, [system, ...history]).then(summary=>{
+      this.finishSaveChatEntry(t.aiSummaryPrefix+' '+summary.trim()+'\n\n'+transcriptText, this.state.chatMessages);
+    }).catch(err=>{
+      console.error('PAD Tracker: chat summary generation failed, saving without it',err);
+      this.finishSaveChatEntry(transcriptText, this.state.chatMessages);
+    });
   }
   getInsights(){
     if(this.state.insightsStatus==='loading')return;
@@ -1474,6 +1540,10 @@ class Component extends DCLogic {
       cancelDiscardChat:()=>this.cancelDiscardChat(),
       saveChatEntry:()=>this.saveChatEntry(),
       chatBeforeSummary: this.state.chatBeforeReading ? `V${fmtSigned(this.state.chatBeforeReading.v)} A${fmtSigned(this.state.chatBeforeReading.a)} D${fmtSigned(this.state.chatBeforeReading.d)} · ${this.state.chatBeforeReading.score}/10` : '',
+      toggleIncludeConversation:()=>this.toggleIncludeConversation(),
+      includeConvoKnob: this.state.chatIncludeConversation?24:2,
+      saveChatButtonLabel: this.state.chatSaving ? t.savingEntry : t.save,
+      saveChatButtonOpacity: this.state.chatSaving ? 0.5 : 1,
 
       journalGroups
     };
