@@ -26,11 +26,11 @@ cross-device transfer mechanism until JSON import/export ships.
 
 ## Optional local-AI assistance (Ollama)
 The gear icon (⚙) opens **Settings**, where you can optionally point the app
-at a local [Ollama](https://ollama.com) instance for two things: re-ranking
-emotion-word suggestions using your note text ("Ask AI" in Record), and a
-"Get Insights" summary of recent patterns in Journal. This is entirely
-opt-in — off by default, and the existing free/offline nearest-neighbor
-suggestions keep working exactly the same either way.
+at a local [Ollama](https://ollama.com) instance for **"Talk it through"** —
+a multi-turn conversation (in Record, next to the Note field) that helps you
+process what you're feeling, capturing your mood both before and after the
+conversation on the same entry. This is entirely opt-in — off by default,
+and logging an entry without it works exactly the same either way.
 
 **Required one-time setup** — Ollama blocks cross-origin requests by default,
 and it treats this app's origin and its own `:11434` port as different origins
@@ -65,11 +65,15 @@ this ties the integration to Ollama specifically rather than any
 OpenAI-compatible local server — accepted deliberately since Ollama is
 what's actually being used.
 
-**Expect slow responses from small local models with reasoning/thinking
-enabled** — 60-90+ seconds is normal for a single "Ask AI" or "Get Insights"
-call on modest hardware, not a hang. The client-side timeout is set to
-120s to accommodate this; don't lower it without testing against your
-actual model first.
+**Thinking is explicitly disabled** (`"think": false` in the request body)
+for models that support it. Without this, reasoning models like `gemma4`
+spend 60-90+ seconds per reply on hidden chain-of-thought before answering
+— fine for quality, bad for a live conversation. With it off, the same
+model answers directly in a couple of seconds with no change in which model
+runs, only whether it deliberates first. The client-side timeout is still
+set to 120s as a safety margin; don't lower it without testing against your
+actual model first, since non-reasoning or differently-configured models
+may not benefit the same way.
 
 Installing via **Add to Home Screen** (iOS Safari) or **Add to Home
 screen/Install app** (Android Chrome) matters beyond convenience: an
