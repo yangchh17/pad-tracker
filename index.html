@@ -1199,11 +1199,14 @@ class Component extends DCLogic {
       this.setState({chatConfirmDiscard:true});
       return;
     }
+    // Exiting the chat discards the conversation itself, but the mood reading
+    // (and note) the user already set is still real and shouldn't be lost -
+    // save it as a normal entry, same as tapping Save Entry from Record directly.
+    this.saveEntry();
     this.setState({
       chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
       chatBeforeReading:null, chatPhase:'talking', chatConfirmDiscard:false,
-      chatIncludeConversation:true,
-      view:'record'
+      chatIncludeConversation:true
     });
   }
   cancelDiscardChat(){this.setState({chatConfirmDiscard:false});}
