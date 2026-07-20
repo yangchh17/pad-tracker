@@ -738,18 +738,20 @@ const Storage={
   }
 };
 const LLM_SETTINGS_KEY='pad-tracker:llm-settings';
+const DEFAULT_LLM_BASE_URL='https://my-brain-1.tail28b58f.ts.net:8443';
+const DEFAULT_LLM_MODEL='gemma4:12b';
 const LlmSettings={
   load(){
     try{
       const raw=localStorage.getItem(LLM_SETTINGS_KEY);
-      if(!raw)return{enabled:false,baseUrl:'http://localhost:11434',model:''};
+      if(!raw)return{enabled:false,baseUrl:DEFAULT_LLM_BASE_URL,model:DEFAULT_LLM_MODEL};
       const parsed=JSON.parse(raw);
       return{
         enabled: !!parsed.enabled,
-        baseUrl: typeof parsed.baseUrl==='string'&&parsed.baseUrl?parsed.baseUrl:'http://localhost:11434',
-        model: typeof parsed.model==='string'?parsed.model:''
+        baseUrl: typeof parsed.baseUrl==='string'&&parsed.baseUrl?parsed.baseUrl:DEFAULT_LLM_BASE_URL,
+        model: typeof parsed.model==='string'&&parsed.model?parsed.model:DEFAULT_LLM_MODEL
       };
-    }catch(e){return{enabled:false,baseUrl:'http://localhost:11434',model:''};}
+    }catch(e){return{enabled:false,baseUrl:DEFAULT_LLM_BASE_URL,model:DEFAULT_LLM_MODEL};}
   },
   save(settings){
     try{
