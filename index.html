@@ -343,7 +343,7 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
           <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
             <sc-for list="{{ selChatMessages }}" as="m" hint-placeholder-count="2">
               <div style="display:flex;justify-content:{{ m.justify }}">
-                <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 12px/1.5 Inter,sans-serif;color:{{ m.color }}">{{ m.content }}</div>
+                <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 12px/1.5 Inter,sans-serif;color:{{ m.color }};white-space:pre-line">{{ m.content }}</div>
               </div>
             </sc-for>
           </div>
@@ -376,7 +376,7 @@ body{margin:0;background:#EDEAE3;font-family:Inter,system-ui,sans-serif}
     <div class="panel" style="max-height:46vh;overflow-y:auto">
       <sc-for list="{{ chatMessages }}" as="m" hint-placeholder-count="2">
         <div style="display:flex;justify-content:{{ m.justify }};margin-bottom:8px">
-          <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 13px/1.5 Inter,sans-serif;color:{{ m.color }}">{{ m.content }}</div>
+          <div style="max-width:80%;padding:9px 12px;border-radius:6px;background:{{ m.bg }};border:1px solid rgba(217,190,122,.15);text-align:{{ m.textAlign }};font:400 13px/1.5 Inter,sans-serif;color:{{ m.color }};white-space:pre-line">{{ m.content }}</div>
         </div>
       </sc-for>
       <sc-if value="{{ chatSending }}" hint-placeholder-val="{{ false }}">
@@ -780,9 +780,6 @@ function buildChatSystemPrompt(lang){
   const langLine = lang==='zh' ? 'Chinese' : 'English';
   return `You are a warm, supportive journaling companion helping someone reflect on how they're feeling right now, using the Valence/Arousal/Dominance (PAD) model this app is built on: pleasant vs. unpleasant, energized vs. calm, in control vs. overwhelmed. You are not a therapist, counselor, or medical professional, and you must never diagnose, label a clinical condition, or suggest treatment.\n\n- Naming feelings in plain PAD language (e.g. "that sounds like it has an unsettled, keyed-up quality" or "more like a stuck, powerless feeling") is exactly what you're here for - it is not a clinical act, and you should do it, not refuse to.\n- Ask short, open, curious questions - one at a time, not a list. Reflect back what you hear before asking the next one.\n- Never rush to reassure, fix, or minimize. Sit with what they share first.\n- If the user asks a direct question about you, this tool, or how it works (e.g. "what model are you," "how many turns do we get," "what's your goal") - answer it plainly and honestly in one sentence, then continue. Do not deflect a direct question back as another reflective question.\n- If the user signals they want to wrap up (e.g. "one more round," "let's stop," "I'm okay now") - treat that as final. Your next reply should briefly summarize what came up and invite them to check in on how they feel now, not open a new thread or ask "anything else?"\n- You have a soft budget of about ${CHAT_MAX_TURNS} exchanges. Use the first few to explore openly; by the middle of that budget, start naming what you're noticing in PAD terms; as you approach the end, move toward summarizing and inviting them to check in on their current mood rather than continuing to explore indefinitely.\n- If they mention self-harm, crisis, or being in danger, gently and clearly encourage them to reach out to a crisis line or someone they trust right now, and do not continue with reflective questions in that moment.\n- Keep responses brief - 2-4 sentences. This is a conversation, not an essay.\n- Write in ${langLine}.`;
 }
-function buildChatOpeningPrompt(lang){
-  return buildChatSystemPrompt(lang) + '\n\nThis is the very start of the conversation - the user has not said anything yet. Send a brief (1-2 sentence) warm greeting and invitation to share what\'s on their mind. Do not ask about any specific topic yet.';
-}
 function buildChatSummaryPrompt(lang){
   return lang==='zh'
     ? '请用不超过3句非临床、温暖的话，总结以下对话中用户分享的内容和情绪走向，不要下诊断或使用临床术语，也不要提及你自己。'
@@ -921,7 +918,8 @@ const TEXT={
     chatCapReached:'Long enough for now — tap Wrap up to check in.',
     afterReadingTitle:'How do you feel now?',before:'Before',after:'After',viewConversation:'View conversation',
     includeConversation:'Save this conversation with the entry',conversationTitle:'— Talk it through conversation —',
-    chatMe:'Me',chatCompanion:'Companion',aiSummaryPrefix:'(AI Summary)',savingEntry:'Saving…'},
+    chatMe:'Me',chatCompanion:'Companion',aiSummaryPrefix:'(AI Summary)',savingEntry:'Saving…',
+    chatOpeningLine:'What\'s on your mind right now?'},
   zh:{home:'主页',record:'记录',journal:'日志',phase:'相空间',pad:'情绪三轴',score:'总分',log:'记录情绪',v:'愉悦度',a:'唤醒度',d:'支配度',now:'当前',suggested:'情绪词',overallScore:'总体评分 (1–10)',note:'备注（可选）',notePlaceholder:'是什么引发的...',save:'保存记录',today:'今天',yesterday:'昨天',thisweek:'本周',earlier:'较早',emptyTrail:'暂无记录 — 点击"记录情绪"开始你的轨迹',emptyChart:'记录第一条情绪以查看趋势',emptyJournal:'暂无记录。',export:'导出 CSV',untitled:'未命名',showMore:'展开更多',showLess:'收起',
     settings:'设置',llmEnable:'使用本地 AI（Ollama）',baseUrl:'服务器地址',modelName:'模型名称',llmOriginsHint:'需要 Ollama 正在运行，并且 OLLAMA_ORIGINS 允许此页面的地址（详见 README）。',
     desktopOnly:'🖥 仅限桌面端 — 详见 README',
@@ -934,7 +932,8 @@ const TEXT={
     chatCapReached:'先聊到这里 — 点击"结束对话"来记录当下的心情。',
     afterReadingTitle:'现在感觉如何？',before:'之前',after:'之后',viewConversation:'查看对话',
     includeConversation:'将这段对话保存到记录中',conversationTitle:'— 聊一聊对话记录 —',
-    chatMe:'我',chatCompanion:'伙伴',aiSummaryPrefix:'（AI 摘要）',savingEntry:'保存中…'},
+    chatMe:'我',chatCompanion:'伙伴',aiSummaryPrefix:'（AI 摘要）',savingEntry:'保存中…',
+    chatOpeningLine:'现在你在想什么？'},
 };
 
 const EMOTION_BANK=[
@@ -1143,23 +1142,13 @@ class Component extends DCLogic {
   onNoteChange(e){const val=e.target.value;this.setState(s=>({record:{...s.record,note:val}}));}
   startChat(){
     const rec=this.state.record;
+    const lang=this.state.lang;
+    const opening=fmtDateTime(Date.now(),lang)+'\n'+TEXT[lang].chatOpeningLine;
     this.setState({
       chatBeforeReading:{v:rec.v,a:rec.a,d:rec.d,score:rec.score},
-      chatMessages:[], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
+      chatMessages:[{role:'assistant',content:opening}], chatInput:'', chatStatus:'idle', chatErrorMsg:'',
       chatPhase:'talking', chatConfirmDiscard:false, chatIncludeConversation:true,
       view:'chat'
-    });
-    this.requestGreeting();
-  }
-  requestGreeting(){
-    this.setState({chatStatus:'sending', chatErrorMsg:''});
-    const lang=this.state.lang;
-    const system={role:'system',content:buildChatOpeningPrompt(lang)};
-    llmChat(this.state.llm, [system]).then(reply=>{
-      this.setState(s=>({chatMessages:[...s.chatMessages, {role:'assistant',content:reply.trim()}], chatStatus:'idle'}));
-    }).catch(err=>{
-      console.error('PAD Tracker: requestGreeting failed',err);
-      this.setState({chatStatus:'error', chatErrorMsg: llmErrorMessage(err,TEXT[lang])});
     });
   }
   onChatInputChange(e){const val=e.target.value; this.setState({chatInput:val});}
@@ -1182,7 +1171,7 @@ class Component extends DCLogic {
   retryLastMessage(){
     if(this.state.chatStatus==='sending')return;
     const msgs=this.state.chatMessages;
-    if(!msgs.length){ this.requestGreeting(); return; }
+    if(!msgs.length)return;
     this.setState({chatStatus:'sending', chatErrorMsg:''});
     const lang=this.state.lang;
     const system={role:'system',content:buildChatSystemPrompt(lang)};
