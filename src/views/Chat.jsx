@@ -202,9 +202,13 @@ export default function Chat({ t, lang, llm, record, setRecord, onSaveEntry, onE
           <span style={{ font: "italic 400 12px 'EB Garamond',serif", color: 'rgba(217,190,122,.6)', animation: 'pulseGlow 1.6s ease-in-out infinite' }}>{t.addingToNote}</span>
         ) : (
           <>
-            <div className="chip" onClick={backFromChat} style={{ font: "italic 400 13px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)' }}>‹ {t.record}</div>
-            {phase === 'talking' && (
-              <div className="chip" onClick={() => setPhase('afterReading')} style={{ font: "400 11px 'JetBrains Mono',monospace", color: '#D9BE7A' }}>{t.wrapUp}</div>
+            {phase === 'afterReading' ? (
+              <div className="chip" onClick={() => setPhase('talking')} style={{ font: "italic 400 13px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)' }}>‹ {t.backToChat}</div>
+            ) : (
+              <>
+                <div className="chip" onClick={backFromChat} style={{ font: "italic 400 13px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)' }}>‹ {t.record}</div>
+                <div className="chip" onClick={() => setPhase('afterReading')} style={{ font: "400 11px 'JetBrains Mono',monospace", color: '#D9BE7A' }}>{t.wrapUp}</div>
+              </>
             )}
           </>
         )}
