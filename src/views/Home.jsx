@@ -4,6 +4,7 @@ import {
   computeChartXs, chartYPad, chartYScore, CHART_PADR,
 } from '../lib/pad';
 import { fmtSigned, fmtDateTime } from '../lib/format';
+import { computeStreak } from '../lib/streak';
 
 const SIZE = 70;
 
@@ -102,6 +103,7 @@ export default function Home({ t, lang, entries }) {
   const trailData = trailPts.length ? buildTrailSegments(trailPts, SIZE, rx, ry) : { segs: [], headDot: { style: '' } };
   const rings = buildRings(SIZE * 1.35);
   const axes = buildAxes(SIZE);
+  const streak = computeStreak(entries);
 
   const dateStr = new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'zh-CN', lang === 'en' ? { month: 'short', day: 'numeric', year: 'numeric' } : { year: 'numeric', month: 'long', day: 'numeric' }).format(now);
 
@@ -144,6 +146,9 @@ export default function Home({ t, lang, entries }) {
 
       <div className="panel" style={{ overflow: 'visible' }}>
         <div style={{ font: "400 11px 'EB Garamond',serif", fontStyle: 'italic', letterSpacing: '.06em', color: 'rgba(217,190,122,.75)', marginBottom: 4 }}>{t.phase}</div>
+        {streak && streak.days > 0 && (
+          <div style={{ font: "400 11px 'EB Garamond',serif", fontStyle: 'italic', color: 'rgba(232,224,255,.55)', marginBottom: 6 }}>{t.streakLabel.replace('{days}', streak.days)}</div>
+        )}
         <div
           className="cube-drag"
           onPointerDown={cubeDown} onPointerMove={cubeMove} onPointerUp={cubeUp} onPointerCancel={cubeUp} onWheel={cubeWheel}
