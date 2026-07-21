@@ -3,7 +3,7 @@ import {
   clamp, buildRings, buildAxes, buildTrailSegments, buildHighlightDot,
   computeChartXs, chartYPad, chartYScore, CHART_PADR,
 } from '../lib/pad';
-import { fmtSigned, fmtTime, fmtDateTime } from '../lib/format';
+import { fmtSigned, fmtDateTime } from '../lib/format';
 
 const SIZE = 70;
 

@@ -5,6 +5,8 @@ import Home from './views/Home';
 import Record from './views/Record';
 import Journal from './views/Journal';
 import Settings from './views/Settings';
+import EntryDetail from './views/EntryDetail';
+import Chat from './views/Chat';
 import OnboardingOverlay from './components/Onboarding';
 
 const EMPTY_RECORD = { v: 0, a: 0, d: 0, title: null, score: 6, note: '' };
@@ -15,6 +17,7 @@ export default function App() {
   const [entries, setEntries] = useState(() => Storage.load());
   const [record, setRecord] = useState(EMPTY_RECORD);
   const [showSavedToast, setShowSavedToast] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState(null);
   const [llm, setLlm] = useState(() => LlmSettings.load());
   const [onboardingStep, setOnboardingStep] = useState(() => (OnboardingStore.isDone() ? 0 : 1));
   const toastTimer = useRef(null);
@@ -30,14 +33,20 @@ export default function App() {
   const zhLabelColor = lang === 'zh' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
   const navColor = (v) => (view === v ? '#D9BE7A' : 'rgba(232,224,255,.35)');
 
-  const saveEntry = () => {
+  // Shared save path for both Record (plain) and Chat (with before/chat).
+  // `overrides` lets Chat pass its own note text + before/chat fields; the
+  // top-level v/a/d/score always come from the live record (the "after"
+  // reading), so every entry reader stays unchanged.
+  const persistEntry = (overrides = {}) => {
     const entry = {
       id: window.crypto && crypto.randomUUID ? crypto.randomUUID() : 'e' + Date.now() + Math.random().toString(36).slice(2),
       ts: Date.now(),
       v: record.v, a: record.a, d: record.d,
       score: record.score,
       emotion: record.title || '',
-      note: record.note,
+      note: overrides.note !== undefined ? overrides.note : record.note,
+      ...(overrides.before ? { before: overrides.before } : {}),
+      ...(overrides.chat ? { chat: overrides.chat } : {}),
     };
     const nextEntries = [...entries, entry];
     Storage.save(nextEntries);
@@ -49,13 +58,14 @@ export default function App() {
     toastTimer.current = setTimeout(() => setShowSavedToast(false), 2000);
   };
 
-  // Talk it through (Phase 7) isn't built yet - placeholder so Record's
-  // chip has something to call without crashing.
-  const talkItThrough = () => console.log('Talk it through: Phase 7, not built yet');
+  const saveEntry = () => persistEntry();
 
-  // Entry Detail (Phase 6) isn't built yet - placeholder so Journal's
-  // rows have something to call without crashing.
-  const selectEntry = (entry) => console.log('Entry Detail: Phase 6, not built yet', entry);
+  const talkItThrough = () => setView('chat');
+
+  const selectEntry = (entry) => {
+    setSelectedEntry(entry);
+    setView('entryDetail');
+  };
 
   const nextOnboarding = () => {
     setOnboardingStep((step) => {
@@ -111,6 +121,14 @@ export default function App() {
 
         {view === 'settings' && (
           <Settings t={t} lang={lang} llm={llm} onLlmChange={setLlm} onReopenOnboarding={reopenOnboarding} onClose={() => setView('home')} />
+        )}
+
+        {view === 'entryDetail' && (
+          <EntryDetail t={t} lang={lang} entries={entries} entry={selectedEntry} onBack={() => setView('journal')} />
+        )}
+
+        {view === 'chat' && (
+          <Chat t={t} lang={lang} llm={llm} record={record} setRecord={setRecord} onSaveEntry={persistEntry} onExit={() => setView('record')} />
         )}
       </div>
 
