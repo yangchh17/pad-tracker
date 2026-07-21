@@ -4,7 +4,7 @@ import { llmChat, llmErrorMessage } from '../lib/llm';
 
 const DEFAULT_BASE_URL = 'http://localhost:11434';
 
-export default function Settings({ t, lang, llm, onLlmChange, onReopenOnboarding, onClose }) {
+export default function Settings({ t, lang, llm, onLlmChange, onReopenOnboarding, onOpenReferences, onClose }) {
   const [baseLlm, setBaseLlm] = useState({ enabled: llm.enabled, baseUrl: llm.baseUrl, model: llm.model });
   const [testConnStatus, setTestConnStatus] = useState('idle'); // 'idle' | 'testing' | 'ok' | 'fail'
   const [testResultText, setTestResultText] = useState('');
@@ -130,13 +130,20 @@ export default function Settings({ t, lang, llm, onLlmChange, onReopenOnboarding
       </div>
 
       {/* Tutorial panel */}
-      <div className="panel" style={{ marginTop: 12 }}>
+      <div className="panel" style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div
           className="chip"
           onClick={onReopenOnboarding}
           style={{ font: "400 12px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)', cursor: 'pointer' }}
         >
           {t.onboardAgain}
+        </div>
+        <div
+          className="chip"
+          onClick={onOpenReferences}
+          style={{ font: "400 12px 'EB Garamond',serif", color: 'rgba(217,190,122,.75)', cursor: 'pointer' }}
+        >
+          {t.readingReferences}
         </div>
       </div>
 

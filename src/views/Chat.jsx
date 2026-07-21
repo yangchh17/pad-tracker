@@ -212,6 +212,9 @@ export default function Chat({ t, lang, llm, record, setRecord, onSaveEntry, onE
 
       {phase === 'talking' && (
         <>
+          <div className="panel" style={{ marginBottom: 10 }}>
+            <div style={{ font: "italic 400 11px/1.55 'EB Garamond',serif", color: 'rgba(232,224,255,.5)' }}>{t.chatGuidance}</div>
+          </div>
           <div className="panel" style={{ maxHeight: '46vh', overflowY: 'auto' }}>
             {displayMessages.map((m) => (
               <div key={m.key} style={{ display: 'flex', justifyContent: m.justify, marginBottom: 8 }}>

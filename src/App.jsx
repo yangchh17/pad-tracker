@@ -7,6 +7,7 @@ import Journal from './views/Journal';
 import Settings from './views/Settings';
 import EntryDetail from './views/EntryDetail';
 import Chat from './views/Chat';
+import References from './views/References';
 import OnboardingOverlay from './components/Onboarding';
 
 const EMPTY_RECORD = { v: 0, a: 0, d: 0, title: null, score: 6, note: '' };
@@ -77,6 +78,9 @@ export default function App() {
       return next;
     });
   };
+  const prevOnboarding = () => {
+    setOnboardingStep((step) => Math.max(1, step - 1));
+  };
   const skipOnboarding = () => {
     OnboardingStore.markDone();
     setOnboardingStep(0);
@@ -85,6 +89,7 @@ export default function App() {
     setOnboardingStep(1);
     setView('home');
   };
+  const openReferences = () => setView('references');
 
   return (
     <div className="frame">
@@ -120,7 +125,11 @@ export default function App() {
         )}
 
         {view === 'settings' && (
-          <Settings t={t} lang={lang} llm={llm} onLlmChange={setLlm} onReopenOnboarding={reopenOnboarding} onClose={() => setView('home')} />
+          <Settings t={t} lang={lang} llm={llm} onLlmChange={setLlm} onReopenOnboarding={reopenOnboarding} onOpenReferences={openReferences} onClose={() => setView('home')} />
+        )}
+
+        {view === 'references' && (
+          <References t={t} lang={lang} onBack={() => setView('settings')} />
         )}
 
         {view === 'entryDetail' && (
@@ -150,6 +159,7 @@ export default function App() {
         knob={knob}
         onToggleLang={toggleLang}
         onNext={nextOnboarding}
+        onPrev={prevOnboarding}
         onSkip={skipOnboarding}
       />
 

@@ -1,7 +1,7 @@
 import { ONBOARDING_PAGES } from '../lib/storage';
 import { buildOnboardInstallBody } from '../lib/llm';
 
-export default function Onboarding({ visible, step, t, lang, isIOS, isAndroid, enLabelColor, zhLabelColor, knob, onToggleLang, onNext, onSkip }) {
+export default function Onboarding({ visible, step, t, lang, isIOS, isAndroid, enLabelColor, zhLabelColor, knob, onToggleLang, onNext, onPrev, onSkip }) {
   if (!visible || step <= 0) return null;
 
   // Title by step
@@ -53,19 +53,29 @@ export default function Onboarding({ visible, step, t, lang, isIOS, isAndroid, e
 
         {/* Bottom row */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          {/* Skip button — hidden on last step */}
-          {!isLastStep && (
-            <div
-              className="chip"
-              onClick={onSkip}
-              style={{ font: "400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)', cursor: 'pointer' }}
-            >
-              {t.onboardSkip}
-            </div>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            {/* Previous button — hidden on first step, nothing to go back to */}
+            {step > 1 && (
+              <div
+                className="chip"
+                onClick={onPrev}
+                style={{ font: "400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.55)', cursor: 'pointer' }}
+              >
+                {t.onboardPrev}
+              </div>
+            )}
 
-          {/* Spacer for last step (center "Done" button) */}
-          {isLastStep && <div style={{ flex: 1 }} />}
+            {/* Skip button — hidden on last step */}
+            {!isLastStep && (
+              <div
+                className="chip"
+                onClick={onSkip}
+                style={{ font: "400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)', cursor: 'pointer' }}
+              >
+                {t.onboardSkip}
+              </div>
+            )}
+          </div>
 
           {/* Next / Got it button */}
           <div
