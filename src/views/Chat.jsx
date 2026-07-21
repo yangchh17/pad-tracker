@@ -245,7 +245,7 @@ export default function Chat({ t, lang, llm, record, setRecord, onSaveEntry, onE
               style={{ width: '100%', minHeight: 70, background: 'rgba(255,255,255,.025)', border: '1px solid rgba(217,190,122,.2)', borderRadius: 6, padding: 12, font: "400 14px/1.45 Inter,sans-serif", color: '#EDE7F6', resize: 'none' }}
             />
             {capReached && (
-              <div style={{ marginTop: 8, font: "italic 400 11px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)' }}>{t.chatCapReached}</div>
+              <div style={{ marginTop: 8, font: "italic 400 11px 'EB Garamond',serif", color: 'rgba(232,224,255,.55)' }}>{t.chatCapReached}</div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
               <div className="chip primary-action" onClick={sendMessage} style={{ opacity: canSend ? 1 : 0.4 }}>{t.send}</div>
@@ -292,8 +292,8 @@ export default function Chat({ t, lang, llm, record, setRecord, onSaveEntry, onE
               <div style={{ position: 'absolute', top: '50%', left: `${scoreFillPct}%`, width: 24, height: 24, borderRadius: '50%', background: '#F5EFE0', boxShadow: '0 0 12px #D9BE7A', transform: 'translate(-50%,-50%)', cursor: 'grab', pointerEvents: 'none' }} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ font: "400 9px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.3)' }}>1</span>
-              <span style={{ font: "400 9px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.3)' }}>10</span>
+              <span style={{ font: "400 9px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.55)' }}>1</span>
+              <span style={{ font: "400 9px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.55)' }}>10</span>
             </div>
           </div>
 

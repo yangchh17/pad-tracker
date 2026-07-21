@@ -137,9 +137,9 @@ export default function Home({ t, lang, entries }) {
       <div className="hdr">
         <div>
           <div style={{ font: "400 24px/1.1 'EB Garamond',serif", color: '#EDE7F6', letterSpacing: '.02em' }}>{t.home}</div>
-          <div style={{ font: "400 10px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.35)', marginTop: 4, letterSpacing: '.06em' }}>{dateStr}</div>
+          <div style={{ font: "400 10px 'JetBrains Mono',monospace", color: 'rgba(232,224,255,.55)', marginTop: 4, letterSpacing: '.06em' }}>{dateStr}</div>
         </div>
-        <div style={{ font: "italic 400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)' }}>{t.now}</div>
+        <div style={{ font: "italic 400 12px 'EB Garamond',serif", color: 'rgba(232,224,255,.55)' }}>{t.now}</div>
       </div>
 
       <div className="panel" style={{ overflow: 'visible' }}>
@@ -168,7 +168,7 @@ export default function Home({ t, lang, entries }) {
             <div className="chip" onClick={zoomOut} style={{ width: 32, height: 32, border: '1px solid rgba(217,190,122,.4)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D9BE7A', font: "400 16px 'JetBrains Mono',monospace" }}>–</div>
           </div>
           {!hasEntries && (
-            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 8, textAlign: 'center', font: "italic 400 11px 'EB Garamond',serif", color: 'rgba(232,224,255,.4)', pointerEvents: 'none' }}>{t.emptyTrail}</div>
+            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 8, textAlign: 'center', font: "italic 400 11px 'EB Garamond',serif", color: 'rgba(232,224,255,.55)', pointerEvents: 'none' }}>{t.emptyTrail}</div>
           )}
         </div>
         <div style={{ display: 'flex', gap: 14, marginTop: 8, paddingTop: 14, borderTop: '1px solid rgba(217,190,122,.12)' }}>
