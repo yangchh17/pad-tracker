@@ -23,6 +23,7 @@ export const TEXT = {
     afterReadingTitle: 'How do you feel now?', before: 'Before', after: 'After', viewConversation: 'View conversation',
     includeConversation: 'Save this conversation with the entry', conversationTitle: '— Talk it through conversation —',
     chatMe: 'Me', chatCompanion: 'Companion', aiSummaryPrefix: '(AI Summary)', savingEntry: 'Saving…',
+    chatGuidance: 'Just talk — say whatever comes to mind, without editing yourself. When you tap Wrap up, your conversation will be summarized for you. This is a supportive space, not therapy or medical advice — if you\'re in crisis, please reach out to a professional or crisis line.',
     chatOpeningFraming: 'There\'s no right or wrong here — just say whatever comes to mind, however small. We\'ll check back on how you feel once we\'re done.',
     chatOpeningQuestions: ['What\'s on your mind right now?', 'What\'s present for you today?', 'Is there something sitting with you right now?', 'What\'s been on your mind lately?', 'How are things, really?'],
     onboardTitle1: 'Install it like an app',
@@ -30,7 +31,8 @@ export const TEXT = {
     onboardBody2: 'Drag the three sliders by feel — no rules, just notice what feels true right now. Watch the emotion words shift as you go; they\'re a mirror for what you\'re already dialing in, not something to get right.',
     onboardTitle3: 'Talk it through (optional)',
     onboardBody3: 'Turn on "Use local AI" in Settings to talk through your day with an AI companion before logging your mood. It helps you notice and name what you\'re feeling, then compares how you felt before and after.',
-    onboardSkip: 'Skip', onboardNext: 'Next', onboardDone: 'Got it', onboardAgain: 'View tutorial again',
+    onboardSkip: 'Skip', onboardNext: 'Next', onboardPrev: 'Previous', onboardDone: 'Got it', onboardAgain: 'View tutorial again',
+    readingReferences: 'Reading References', referencesIntro: 'PAD Tracker is built on established affective-science research, not invented terminology. Here\'s what it draws on.',
   },
   zh: {
     home: '主页', record: '记录', journal: '日志', phase: '相空间', pad: '情绪三轴', score: '总分', log: '记录情绪',
@@ -56,6 +58,7 @@ export const TEXT = {
     afterReadingTitle: '现在感觉如何？', before: '之前', after: '之后', viewConversation: '查看对话',
     includeConversation: '将这段对话保存到记录中', conversationTitle: '— 聊一聊对话记录 —',
     chatMe: '我', chatCompanion: '伙伴', aiSummaryPrefix: '（AI 摘要）', savingEntry: '保存中…',
+    chatGuidance: '想到什么就说什么，不用先组织语言。准备好后点击"结束对话"，你的对话会被总结。这里是一个支持性的空间，并非心理治疗或医疗建议 — 如果你正处于危机中，请联系专业人士或危机热线。',
     chatOpeningFraming: '这里没有对错，想到什么就说什么，不需要想好了再说。聊完之后，我们会再看看你的感受有没有变化。',
     chatOpeningQuestions: ['现在你在想什么？', '今天有什么一直放在心里吗？', '此刻，你在意的是什么？', '最近有什么事一直萦绕着你？', '老实说，最近怎么样？'],
     onboardTitle1: '把它安装成 App',
@@ -63,9 +66,63 @@ export const TEXT = {
     onboardBody2: '凭感觉拖动三个滑块——没有对错，只是留意当下真实的感受。情绪词会随之变化，它们只是一面镜子，不是需要"答对"的题目。',
     onboardTitle3: '聊一聊（可选）',
     onboardBody3: '在设置中开启"使用本地 AI"，即可在记录心情前先和 AI 伙伴聊聊你的一天。它能帮你留意并说出你的感受，并对比聊天前后的状态变化。',
-    onboardSkip: '跳过', onboardNext: '下一步', onboardDone: '知道了', onboardAgain: '重新查看教程',
+    onboardSkip: '跳过', onboardNext: '下一步', onboardPrev: '上一步', onboardDone: '知道了', onboardAgain: '重新查看教程',
+    readingReferences: '参考文献', referencesIntro: 'PAD Tracker 建立在成熟的情感科学研究之上，而非凭空创造的术语。以下是它所依据的文献。',
   },
 };
+
+export const REFERENCES = [
+  {
+    cite: 'Mehrabian, A., & Russell, J. A. (1974). An Approach to Environmental Psychology. MIT Press.',
+    note_en: 'Origin of the Pleasure-Arousal-Dominance (PAD) model this entire app is built on.',
+    note_zh: '本应用所依据的愉悦度-唤醒度-支配度（PAD）模型的最初来源。',
+  },
+  {
+    cite: 'Russell, J. A. (1980). A circumplex model of affect. Journal of Personality and Social Psychology, 39(6), 1161-1178.',
+    note_en: 'The circular Valence/Arousal structure behind the Phase Space cube and chart.',
+    note_zh: '相空间立方体与图表所依据的愉悦度/唤醒度环形结构模型。',
+  },
+  {
+    cite: 'Bradley, M. M., & Lang, P. J. (1994). Measuring emotion: The Self-Assessment Manikin and the Semantic Differential. Journal of Behavior Therapy and Experimental Psychiatry, 25(1), 49-59.',
+    note_en: 'Basis for the Overall Score (1-10) rating as a self-assessed pleasure/wellbeing scale.',
+    note_zh: '"总体评分（1-10）"作为自评愉悦度/幸福感量表的依据。',
+  },
+  {
+    cite: 'Warriner, A. B., Kuperman, V., & Brysbaert, M. (2013). Norms of valence, arousal, and dominance for 13,915 English lemmas. Behavior Research Methods, 45, 1191-1207.',
+    note_en: 'Affective norms used to calibrate the coordinates of all 110 words in the Emotion Words bank.',
+    note_zh: '用于校准情绪词库中全部 110 个词坐标的情感常模数据。',
+  },
+  {
+    cite: 'Bradley, M. M., & Lang, P. J. (1999). Affective Norms for English Words (ANEW). University of Florida.',
+    note_en: 'Earlier affective-norms dataset cross-referenced during word calibration.',
+    note_zh: '在情绪词校准过程中交叉参考的早期情感常模数据集。',
+  },
+  {
+    cite: 'Ekman, P. (1999). Basic Emotions. In T. Dalgleish & M. Power (Eds.), Handbook of Cognition and Emotion.',
+    note_en: 'Basic-emotion families used to check coverage and intensity gradients (e.g. fear -> dread -> terrified -> panicked).',
+    note_zh: '用于检查情绪词覆盖范围与强度梯度（如恐惧→忧惧→惊恐→惊慌）的基本情绪分类框架。',
+  },
+  {
+    cite: 'Plutchik, R. (2001). The nature of emotions. American Scientist, 89(4), 344-350.',
+    note_en: 'Wheel-of-emotions structure used to check commonly-confused pairs stay distinct (e.g. Envious vs. Jealous).',
+    note_zh: '用于确保易混淆情绪词（如"羡慕"与"嫉妒"）保持区分的情绪之轮结构。',
+  },
+  {
+    cite: 'Fredrickson, B. L. (2001). The role of positive emotions in positive psychology: The broaden-and-build theory. American Psychologist, 56(3), 218-226.',
+    note_en: 'Informed the positive-emotion words added when the bank was expanded (Relieved, Awe, and others).',
+    note_zh: '在情绪词库扩充时用于指导积极情绪词（如"如释重负""敬畏"等）的加入。',
+  },
+  {
+    cite: 'Larsen, R. J., & Diener, E. (1987). Affect intensity as an individual difference characteristic: A review. Journal of Research in Personality, 21(1), 1-39.',
+    note_en: 'Basis for treating self-reported intensity as a distinct signal from emotional position, explored for future score-based ranking.',
+    note_zh: '将自评情绪强度视为独立于情绪位置的信号，为未来基于评分的排序机制提供理论依据。',
+  },
+  {
+    cite: 'Frijda, N. H. (1986). The Emotions. Cambridge University Press.',
+    note_en: 'Appraisal-theory basis for the Dominance-axis correction: anger and contempt are approach-motivated (not low-dominance), unlike fear and shame.',
+    note_zh: '支配度轴校正的评价理论依据：愤怒与轻蔑属于趋近动机（并非低支配度），区别于恐惧与羞耻。',
+  },
+];
 
 // Coordinates (tv/ta/td) are research-informed approximations calibrated
 // against ANEW (Bradley & Lang 1999) / Warriner et al. (2013), Russell's
