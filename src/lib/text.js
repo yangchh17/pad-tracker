@@ -33,6 +33,8 @@ export const TEXT = {
     onboardBody3: 'Turn on "Use local AI" in Settings to talk through your day with an AI companion before logging your mood. It helps you notice and name what you\'re feeling, then compares how you felt before and after.',
     onboardSkip: 'Skip', onboardNext: 'Next', onboardPrev: 'Previous', onboardDone: 'Got it', onboardAgain: 'View tutorial again',
     readingReferences: 'Reading References', referencesIntro: 'PAD Tracker is built on established affective-science research, not invented terminology. Here\'s what it draws on.',
+    milestoneToast: '{n} entries — you showed up. ✦',
+    milestoneProgress: '{current} / {next} entries',
   },
   zh: {
     home: '主页', record: '记录', journal: '日志', phase: '相空间', pad: '情绪三轴', score: '总分', log: '记录情绪',
@@ -68,6 +70,8 @@ export const TEXT = {
     onboardBody3: '在设置中开启"使用本地 AI"，即可在记录心情前先和 AI 伙伴聊聊你的一天。它能帮你留意并说出你的感受，并对比聊天前后的状态变化。',
     onboardSkip: '跳过', onboardNext: '下一步', onboardPrev: '上一步', onboardDone: '知道了', onboardAgain: '重新查看教程',
     readingReferences: '参考文献', referencesIntro: 'PAD Tracker 建立在成熟的情感科学研究之上，而非凭空创造的术语。以下是它所依据的文献。',
+    milestoneToast: '{n} 条记录 — 你做到了。✦',
+    milestoneProgress: '{current} / {next} 条',
   },
 };
 

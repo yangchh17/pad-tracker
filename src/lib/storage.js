@@ -50,6 +50,33 @@ export const LlmSettings = {
   },
 };
 
+const MILESTONES_KEY = 'pad-tracker:milestones-shown';
+export const MilestoneStore = {
+  load() {
+    try {
+      const raw = localStorage.getItem(MILESTONES_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((n) => typeof n === 'number') : [];
+    } catch (e) {
+      return [];
+    }
+  },
+  save(shownMilestones) {
+    try {
+      localStorage.setItem(MILESTONES_KEY, JSON.stringify(shownMilestones));
+    } catch (e) {
+      console.error('PAD Tracker: failed to save milestones', e);
+    }
+  },
+  markShown(milestone) {
+    const existing = MilestoneStore.load();
+    if (!existing.includes(milestone)) {
+      MilestoneStore.save([...existing, milestone]);
+    }
+  },
+};
+
 const ONBOARD_KEY = 'pad-tracker:onboarded';
 export const ONBOARDING_PAGES = 3;
 export const Onboarding = {

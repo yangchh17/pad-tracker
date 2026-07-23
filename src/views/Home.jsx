@@ -5,6 +5,7 @@ import {
 } from '../lib/pad';
 import { fmtSigned, fmtDateTime } from '../lib/format';
 import { computeStreak } from '../lib/streak';
+import { getMilestoneStatus } from '../lib/milestones';
 
 const SIZE = 70;
 
@@ -104,6 +105,7 @@ export default function Home({ t, lang, entries }) {
   const rings = buildRings(SIZE * 1.35);
   const axes = buildAxes(SIZE);
   const streak = computeStreak(entries);
+  const milestoneStatus = getMilestoneStatus(entries);
 
   const dateStr = new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'zh-CN', lang === 'en' ? { month: 'short', day: 'numeric', year: 'numeric' } : { year: 'numeric', month: 'long', day: 'numeric' }).format(now);
 
@@ -148,6 +150,16 @@ export default function Home({ t, lang, entries }) {
         <div style={{ font: "400 11px 'EB Garamond',serif", fontStyle: 'italic', letterSpacing: '.06em', color: 'rgba(217,190,122,.75)', marginBottom: 4 }}>{t.phase}</div>
         {streak && streak.days > 0 && (
           <div style={{ font: "400 11px 'EB Garamond',serif", fontStyle: 'italic', color: 'rgba(232,224,255,.55)', marginBottom: 6 }}>{t.streakLabel.replace('{days}', streak.days)}</div>
+        )}
+        {milestoneStatus.next !== null && (
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ font: "400 10px 'JetBrains Mono',monospace", color: 'rgba(217,190,122,.45)', marginBottom: 3 }}>
+              {t.milestoneProgress.replace('{current}', milestoneStatus.total).replace('{next}', milestoneStatus.next)}
+            </div>
+            <div style={{ height: 2, background: 'rgba(217,190,122,.12)', borderRadius: 1 }}>
+              <div style={{ height: '100%', width: `${(milestoneStatus.progress * 100).toFixed(1)}%`, background: 'rgba(217,190,122,.5)', borderRadius: 1, transition: 'width .4s ease' }} />
+            </div>
+          </div>
         )}
         <div
           className="cube-drag"

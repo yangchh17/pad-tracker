@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Storage, LlmSettings, Onboarding as OnboardingStore, ONBOARDING_PAGES } from './lib/storage';
+import { Storage, LlmSettings, Onboarding as OnboardingStore, ONBOARDING_PAGES, MilestoneStore } from './lib/storage';
+import { getNewMilestones } from './lib/milestones';
 import { TEXT } from './lib/text';
 import Home from './views/Home';
 import Record from './views/Record';
@@ -18,10 +19,12 @@ export default function App() {
   const [entries, setEntries] = useState(() => Storage.load());
   const [record, setRecord] = useState(EMPTY_RECORD);
   const [showSavedToast, setShowSavedToast] = useState(false);
+  const [milestoneToast, setMilestoneToast] = useState(null);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [llm, setLlm] = useState(() => LlmSettings.load());
   const [onboardingStep, setOnboardingStep] = useState(() => (OnboardingStore.isDone() ? 0 : 1));
   const toastTimer = useRef(null);
+  const milestoneToastTimer = useRef(null);
   const [{ isIOS, isAndroid }] = useState(() => {
     const ua = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
     return { isIOS: /iPhone|iPad|iPod/.test(ua), isAndroid: /Android/.test(ua) };
@@ -30,9 +33,9 @@ export default function App() {
   const t = TEXT[lang];
   const toggleLang = () => setLang((l) => (l === 'en' ? 'zh' : 'en'));
   const knob = lang === 'en' ? 2 : 32;
-  const enLabelColor = lang === 'en' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
-  const zhLabelColor = lang === 'zh' ? '#D9BE7A' : 'rgba(232,224,255,.35)';
-  const navColor = (v) => (view === v ? '#D9BE7A' : 'rgba(232,224,255,.35)');
+  const enLabelColor = lang === 'en' ? '#D9BE7A' : 'rgba(232,224,255,.55)';
+  const zhLabelColor = lang === 'zh' ? '#D9BE7A' : 'rgba(232,224,255,.55)';
+  const navColor = (v) => (view === v ? '#D9BE7A' : 'rgba(232,224,255,.55)');
 
   // Shared save path for both Record (plain) and Chat (with before/chat).
   // `overrides` lets Chat pass its own note text + before/chat fields; the
@@ -57,6 +60,16 @@ export default function App() {
     setShowSavedToast(true);
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setShowSavedToast(false), 2000);
+    // Check for newly reached milestones and celebrate once each
+    const shownMilestones = MilestoneStore.load();
+    const newMilestones = getNewMilestones(nextEntries, shownMilestones);
+    if (newMilestones.length > 0) {
+      newMilestones.forEach((m) => MilestoneStore.markShown(m));
+      const highest = Math.max(...newMilestones);
+      setMilestoneToast(highest);
+      if (milestoneToastTimer.current) clearTimeout(milestoneToastTimer.current);
+      milestoneToastTimer.current = setTimeout(() => setMilestoneToast(null), 3500);
+    }
   };
 
   const saveEntry = () => persistEntry();
@@ -145,6 +158,11 @@ export default function App() {
         <div className="chip log-now-fab" onClick={() => setView('record')}>{t.log}</div>
       )}
 
+      {milestoneToast !== null && (
+        <div className="toast" style={{ top: 'auto', bottom: 72 }}>
+          {t.milestoneToast.replace('{n}', milestoneToast)}
+        </div>
+      )}
       {showSavedToast && <div className="toast">{t.saved}</div>}
 
       <OnboardingOverlay
